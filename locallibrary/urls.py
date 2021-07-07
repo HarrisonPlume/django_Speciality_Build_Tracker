@@ -26,12 +26,12 @@ urlpatterns = [
 
 
 urlpatterns += [
-    path('catalog/', include('catalog.urls')),
+    path('tasks/', include('catalog.urls')),
 ]
 
 
 urlpatterns += [
-    path('', RedirectView.as_view(url='catalog/', permanent=True)),
+    path('', RedirectView.as_view(url='tasks/', permanent=True)),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

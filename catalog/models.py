@@ -3,30 +3,40 @@ from django.urls import reverse # generate urls' by reversing url patterns
 import uuid #Required for unique book instances
 from django.contrib.auth.models import User
 from datetime import date
-
-class Genre(models.Model):
-    """Model representing a book genre."""
-    name = models.CharField(max_length=200, help_text="Enter a book genre \
-                            (e.g. Science Fiction)")
     
-    def __str__(self):
-        """String for representing the Model object."""
-        return self.name
-    
-class Language(models.Model):
-    """Model representing a language (e.g. English, French)."""
-    name = models.CharField(max_length = 200,
-                            help_text = "Enter The Book's Language")
+class Component_PrepTask(models.Model):
+    """Model representing the multiple component prep tasks that must be 
+    completed for a part to be finished"""
+    title = models.CharField(max_length = 100, help_text = " Name of a\
+                             component prep task")
     
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""
-        return self.name
+        return self.title
+    
+class ComponentPrepTaskInstance(models.Model):
+    """ Instance of a specific component prep task"""
+    #speciality_build_area = models.ForeignKey('Component_Prep',
+                                              #on_delete=models.RESTRICT,
+                                              #null=True)
+    TASK_STATUS = (("a","Available"),("h", "On Hold"),("c", "Complete"),
+                   ("p", "In Progress"), ("f", "Failed"))
+    
+    status = models.CharField(max_length = 1, choices= TASK_STATUS, 
+                              blank = True, default = "m", help_text = "Book \
+                                  availability")
+    
+class Part(models.Model):
+    """ Model represents a Part to be completed"""
+    title = models.CharField(max_length = 100)
+    team = models.CharField(max_length = 100)
+
     
 class Book(models.Model):
     """ Model Representing a book"""
     title = models.CharField(max_length=200)
     
-    #Foreign Key relationship as a book aha multiple one many relationships
+    #Foreign Key relationship as a book has multiple one many relationships
     #Books can only have a single author but an author can have multiple 
     #books.
     author = models.ForeignKey("Author", on_delete = models.SET_NULL,
@@ -41,10 +51,6 @@ class Book(models.Model):
     #ManyToManyField used becasue genre can contain many books. Books can cover
     #many genres. 
     #Utalsies the Genre class which is defined above
-    genre = models.ManyToManyField(Genre, help_text = 'Select a genre for this\
-                                  book')
-    language = models.ForeignKey("Language", on_delete=models.SET_NULL, 
-                                 null=True)
     
     class Meta:
         ordering = ["title", "author"]

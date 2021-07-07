@@ -3,14 +3,15 @@
 
 {% block content %}
   <h1>Speciality Build Tracking Software</h1>
-  <p>Speciality Build Traking DataBase, a website developed by <em>Harrison Plume</em></p>
-  <h2>Dynamic content</h2>
-  <p>The library has the following record counts:</p>
+  <p>Speciality Build Traking DataBase developed by <em>Harrison Plume</em><p>
+  <p>Any bugs please report to harrison@pwr.com.au</p>
+  
+  <h2>Current Tasks</h2>
+  <p>The Current Tasks List is as follows</p>
   <ul>
-    <li> <a href="{% url 'books' %}"> <strong>Books:</strong></a> {{ num_books }} </li>
-    <li><strong>Copies:</strong> {{ num_instances }}</li>
-    <li><strong>Copies available:</strong> {{ num_instances_available }}</li>
-    <li> <a href="{% url 'authors' %}"> <strong>Authors:</strong></a> {{ num_authors }}</li>
+    <li><strong>Tasks Outstanding:</strong> {{ num_instances_available }}</li>
+    <li> <a href="{% url 'books' %}"> <strong>Component Prep Tasks:</strong></a> {{ num_books }} </li>
+    <li> <a href="{% url 'authors' %}"> <strong>Stacking Tasks:</strong></a> {{ num_authors }}</li>
+    <li><strong>Total Tasks:</strong> {{ num_instances }}</li>
   </ul>
-  <p> You have visited this page {{num_visits}} time{{num_visits|pluralize}}.</p>
 {% endblock %}

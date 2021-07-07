@@ -1,12 +1,12 @@
 from django.contrib import admin
-from .models import Author, Genre, Book, BookInstance, Language
+from .models import Author, Book, BookInstance, Component_PrepTask
 # Register your models here.
 
 #admin.site.register(Book)
 #admin.site.register(Author)
-admin.site.register(Genre)
+#admin.site.register(Genre)
 #admin.site.register(BookInstance)
-admin.site.register(Language)
+#admin.site.register(Language)
 
 class AuthorInstanceInline(admin.TabularInline):
     model = Book
@@ -27,7 +27,7 @@ class BookInstanceInline(admin.TabularInline):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("title", "author","display_genre","language")
+    list_display = ("title", "author")
     inlines = [BookInstanceInline]
     
     
@@ -45,4 +45,16 @@ class BookInstanceAdmin(admin.ModelAdmin):
         }),
     )
     list_display = ("book","status","borrower", "due_back", "id")
+    
+#@admin.register(Component_Prep)
+#class TaskInstanceAdmin(admin.ModelAdmin):
+    #list_filter = ["status"]
+    
+    #fieldsets = (
+        #(None, {
+            #'fields': ('speciality_build_area', 'status')
+        #}),
+    #)
+    #list_display = ("book","status","borrower", "due_back", "id")
 
+admin.site.register(Component_PrepTask)
