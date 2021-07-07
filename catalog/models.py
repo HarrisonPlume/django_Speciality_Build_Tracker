@@ -3,12 +3,15 @@ from django.urls import reverse # generate urls' by reversing url patterns
 import uuid #Required for unique book instances
 from django.contrib.auth.models import User
 from datetime import date
+from django.db.models.signals import post_save
     
 class Component_PrepTask(models.Model):
     """Model representing the multiple component prep tasks that must be 
     completed for a part to be finished"""
     title = models.CharField(max_length = 100, help_text = " Name of a\
                              component prep task")
+    description = models.TextField(max_length = 1000, help_text = "Task\
+                                   description to aid new employees", null=True)
     
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""
@@ -16,20 +19,38 @@ class Component_PrepTask(models.Model):
     
 class ComponentPrepTaskInstance(models.Model):
     """ Instance of a specific component prep task"""
-    #speciality_build_area = models.ForeignKey('Component_Prep',
-                                              #on_delete=models.RESTRICT,
-                                              #null=True)
-    TASK_STATUS = (("a","Available"),("h", "On Hold"),("c", "Complete"),
+    task = models.ForeignKey(Component_PrepTask, on_delete=models.RESTRICT, null=True)
+    part = models.ForeignKey("Part",on_delete=models.RESTRICT, null=True)
+    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("c", "Complete"),
                    ("p", "In Progress"), ("f", "Failed"))
     
     status = models.CharField(max_length = 1, choices= TASK_STATUS, 
-                              blank = True, default = "m", help_text = "Book \
+                              blank = False, default = "a", help_text = "Book \
                                   availability")
-    
+    class Meta:
+        ordering = ['status']
+        
+    def __str__(self):
+        """string for representing the Model object."""
+        return f'{self.task.title}'
+        
 class Part(models.Model):
     """ Model represents a Part to be completed"""
     title = models.CharField(max_length = 100)
     team = models.CharField(max_length = 100)
+    CPtasks = models.ManyToManyField(Component_PrepTask, help_text = "Select \
+                                     the nessessacy component prep tasks \
+                                         to be completed.")
+                                    
+    @receiver(post_save,)
+    def CreateComponentPrepTastInstances(Cptasks):
+        print(Cptasks)
+        #ComponentPrepTaskInstance.objects.create()
+    
+    #newtask = ComponentPrepTaskInstance.objects.create(part = title, status = "a")
+    def __str__(self):
+        """String for Representing the model objetc (on admin site)"""
+        return self.title
 
     
 class Book(models.Model):

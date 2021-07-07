@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Author, Book, BookInstance, Component_PrepTask
+from .models import Author, Book, BookInstance, Component_PrepTask, ComponentPrepTaskInstance, Part
 # Register your models here.
 
 #admin.site.register(Book)
@@ -58,3 +58,5 @@ class BookInstanceAdmin(admin.ModelAdmin):
     #list_display = ("book","status","borrower", "due_back", "id")
 
 admin.site.register(Component_PrepTask)
+admin.site.register(ComponentPrepTaskInstance)
+admin.site.register(Part)
