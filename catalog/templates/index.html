@@ -1,0 +1,16 @@
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Speciality Build Tracking Software</h1>
+  <p>Speciality Build Traking DataBase, a website developed by <em>Harrison Plume</em></p>
+  <h2>Dynamic content</h2>
+  <p>The library has the following record counts:</p>
+  <ul>
+    <li> <a href="{% url 'books' %}"> <strong>Books:</strong></a> {{ num_books }} </li>
+    <li><strong>Copies:</strong> {{ num_instances }}</li>
+    <li><strong>Copies available:</strong> {{ num_instances_available }}</li>
+    <li> <a href="{% url 'authors' %}"> <strong>Authors:</strong></a> {{ num_authors }}</li>
+  </ul>
+  <p> You have visited this page {{num_visits}} time{{num_visits|pluralize}}.</p>
+{% endblock %}
