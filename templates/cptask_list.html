@@ -2,10 +2,25 @@
 
 {% block content %}
   <h1>Component Prep Tasks</h1>
-  {% if cptask_list %}
+  <hr>
+  {% if cptask_list %} 
+  <h4>Tasks Remaining: {{tasks_remaining}}</h4>
+  {% if user.is_authenticated %}
+  <hr>
+  <h5>Admin Panel</h5>
+  <div>Tasks not yet started: {{num_tasks_not_started}} </div>
+  <div>Tasks on hold: {{tasks_on_hold}} </div>
+  <div>Tasks completed: {{tasks_complete}} </div>
+  <hr>
+  {% endif %}
   <ul>
     {% for newtask in cptask_list %}
-      <li><a href = "{{newtask.get_absolute_url}}">{{newtask.part}} - {{newtask.task}}</a></li>
+      <li class ="{% if newtask.status == 'c' %}text-success
+      {% elif newtask.status == 'h' %}text-warning
+      {% elif newtask.status == 'p' %}text-info
+      {% else %}text-body{% endif %}">
+      <a href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) - {{newtask.task}}</a>
+       - {{ newtask.get_status_display }}</li>
     {% endfor %}
   </ul>
   {% else %}

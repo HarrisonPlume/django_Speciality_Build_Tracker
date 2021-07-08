@@ -2,16 +2,14 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Speciality Build Tracking Software</h1>
   <p>Speciality Build Traking DataBase developed by <em>Harrison Plume</em><p>
   <p>Any bugs please report to <a href = "{% url 'cptasks' %}">harrison@pwr.com.au</a></p>
   
   <h2>Current Tasks</h2>
   <p>The Current Tasks List is as follows</p>
   <ul>
-    <li><strong>Tasks Outstanding:</strong> {{ num_instances_available }}</li>
+    <li><strong>Tasks Outstanding:</strong> {{ tasks_remaning}}</li>
     <li> <a href="{% url 'cptasks' %}"> <strong>Component Prep Tasks:</strong></a> {{ num_CpTasks }} </li>
-    <li> <a href="{% url 'parts' %}"> <strong>Current Parts in progress</strong></a> {{ num_authors }}</li>
-    <li><strong>Total Tasks:</strong> {{ num_instances }}</li>
+    <li> <a href="{% url 'parts' %}"> <strong>Current Parts in progress:</strong></a> {{ num_parts }}</li>
   </ul>
 {% endblock %}

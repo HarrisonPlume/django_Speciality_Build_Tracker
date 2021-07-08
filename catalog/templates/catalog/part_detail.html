@@ -2,11 +2,18 @@
 
 {% block content %}
 
-<h1>{{ Part.title}} </h1>
-<p>Update part</p>
+<h1>{{part}} ({{part.team}})</h1>
+{% if user.is_authenticated %}
+<hr>
+<h5>Admin Panel</h5>
+<li><a href = "{% url 'part-update' part.pk %}">Update part</a></li>
+<li><a href = "{% url 'part-delete' part.pk %}">Delete part</a></li>
+<hr>
+{% endif %}
 
 <div style="margin-left:20px;margin-top:20px">
-<h4>Parts</h4>
+<h4>Current Tasks</h4>
+<hr>
 
 </div>
 {% endblock %}

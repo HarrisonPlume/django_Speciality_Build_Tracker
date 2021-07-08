@@ -3,13 +3,16 @@
 {% block content %}
   <h1>Parts In Progress</h1>
   {% if user.is_authenticated %}
-      <p><a href = "{% url 'part-create' %}">Create Part</a></p>
+      <hr>
+      <h5>Admin Panel</h5>
+      <p><a href = "{% url 'part-create' %}">Create new part</a></p>
+      <hr>
   {% endif %}
   {% if part_list %}
   <ul>
     {% for part in part_list %}
       <li>
-        <a href="{{ part.get_absolute_url }}">{{ part.title }}</a>
+        <a href="{{ part.get_absolute_url }}">{{ part.title }} ({{part.team}})</a>
       </li>
     {% endfor %}
   </ul>
