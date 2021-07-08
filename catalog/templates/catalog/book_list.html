@@ -4,13 +4,12 @@
   <h1>Book List</h1>
   {% if book_list %}
   <ul>
-    {% for book in book_list %}
+    {% for task in cptask_list %}
       <li>
-        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a> ({{book.author}})
-      </li>
+        <a href="">{{ ComponentPrepTaskInstance.task }}</a></li>
     {% endfor %}
   </ul>
   {% else %}
-    <p>There are no Books in the library.</p>
+    <p>There are no Tasks Currently listed.</p>
   {% endif %} 
 {% endblock %}

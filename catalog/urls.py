@@ -3,10 +3,8 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name = "index"),
-    path("books/", views.BookListView.as_view(), name="books"),
-    path("book/<int:pk>", views.BookDetailView.as_view(), name = "book-detail"),
-    path("authors/", views.AuthorListView.as_view(), name = "authors"),
-    path("author/<int:pk>", views.AuthorDetailView.as_view(), name = "author-detail")
+    path("CPTasks/", views.CpTaskListView.as_view(), name="cptasks"),
+    path("CPTask/<int:pk>", views.CPTaskDetailView.as_view(), name = "cptask-detail"),
     ]
 
 urlpatterns += [
@@ -30,4 +28,11 @@ urlpatterns += [
 urlpatterns += [
     path('book/create/', views.BookCreate.as_view(), name='book-create'),
     path('book/<int:pk>/update/', views.BookUpdate.as_view(), name='book-update'),
+]
+
+urlpatterns += [
+    path("parts/", views.PartListView.as_view(), name = "parts"),
+    path("part/<int:pk>", views.PartDetailView.as_view(), name = "part-detail"),
+    path('part/create/', views.PartCreate.as_view(), name='part-create'),
+    path('part/<int:pk>/update/', views.PartUpdate.as_view(), name='part-update'),
 ]

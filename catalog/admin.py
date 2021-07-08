@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Author, Book, BookInstance, Component_PrepTask, ComponentPrepTaskInstance, Part
+from .models import Author, Book, BookInstance, Component_PrepTask, ComponentPrepTaskInstance, Part, Team
 # Register your models here.
 
 #admin.site.register(Book)
@@ -25,38 +25,11 @@ class BookInstanceInline(admin.TabularInline):
     model = BookInstance
     extra = 0
 
-@admin.register(Book)
-class BookAdmin(admin.ModelAdmin):
-    list_display = ("title", "author")
-    inlines = [BookInstanceInline]
-    
-    
-    
-@admin.register(BookInstance)
-class BookInstanceAdmin(admin.ModelAdmin):
-    list_filter = ("status", "due_back")
-    
-    fieldsets = (
-        (None, {
-            'fields': ('book', 'imprint', 'id')
-        }),
-        ('Availability', {
-            'fields': ('status', 'due_back', "borrower")
-        }),
-    )
-    list_display = ("book","status","borrower", "due_back", "id")
-    
-#@admin.register(Component_Prep)
-#class TaskInstanceAdmin(admin.ModelAdmin):
-    #list_filter = ["status"]
-    
-    #fieldsets = (
-        #(None, {
-            #'fields': ('speciality_build_area', 'status')
-        #}),
-    #)
-    #list_display = ("book","status","borrower", "due_back", "id")
+class ComponentPrepTaskAdmin(admin.ModelAdmin):
+    list_display = ("task","part","status")
 
+admin.site.register(ComponentPrepTaskInstance, ComponentPrepTaskAdmin)
 admin.site.register(Component_PrepTask)
-admin.site.register(ComponentPrepTaskInstance)
+#admin.site.register(ComponentPrepTaskInstance)
 admin.site.register(Part)
+admin.site.register(Team)

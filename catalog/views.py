@@ -1,11 +1,11 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from .models import Book, Author, BookInstance
+from .models import Book, Author, BookInstance, ComponentPrepTaskInstance, Part
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
-from django.urls import reverse
-
+from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
@@ -15,8 +15,7 @@ def index(request):
     """View for the home page of the website"""
     
     #Generate counts for soe of the main objetcs
-    num_books = Book.objects.all().count()
-    num_instances = BookInstance.objects.all().count()
+    num_CpTasks = ComponentPrepTaskInstance.objects.all().count()
     
     #Avivable books (status = "a")
     num_instances_avaliable = BookInstance.objects.filter(status__exact="a").count()
@@ -30,8 +29,7 @@ def index(request):
     
     
     context = {
-        "num_books": num_books,
-        "num_instances": num_instances,
+        "num_CpTasks": num_CpTasks,
         "num_instances_available": num_instances_avaliable,
         "num_authors": num_authors,        
         "num_visits": num_visits,
@@ -50,26 +48,26 @@ def BookRenewSuccess(request):
     return render(request, "catalog/book_renew_success.html", context = None)
 
 
-class BookListView(generic.ListView):
-    permission_required = 'catalog.can_mark_returned'
-    model = Book
-    context_object_name = "book_list"
-    #queryset = Book.objects.filter(title__icontains="Enginee"[:3])
-    template_name = "books/book_list.html"
-    paginate_by = 10
+class CpTaskListView(generic.ListView):
+    #permission_required = 'catalog.can_mark_returned'
+    model = ComponentPrepTaskInstance
+    context_object_name = "cptask_list"
+    template_name = "cptask_list.html"
+    paginate_by = 30
  
 
-class BookDetailView(generic.DetailView):
-    model = Book
+class CPTaskDetailView(generic.DetailView):
+    model = ComponentPrepTaskInstance
     
-class AuthorListView(generic.ListView):
-    model = Author
-    context_object_name = "author_list"
-    template_name = "authors/author_list.html"
+    
+class PartListView(generic.ListView):
+    model = Part
+    context_object_name = "part_list"
+    template_name = "parts/part_list.html"
     paginate_by = 10
-    
-class AuthorDetailView(generic.DetailView):
-    model = Author
+
+class PartDetailView(generic.DetailView):
+    model = Part
     
 class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
     """Generic class-based view listing books on loan to current user."""
@@ -122,10 +120,21 @@ class AuthorCreate(LoginRequiredMixin,CreateView):
     model = Author
     fields = ['first_name', 'last_name', 'date_of_birth', 'date_of_death']
     initial = {'date_of_death': '11/06/2020'}
-
+    
+class PartCreate(LoginRequiredMixin,CreateView):
+    model = Part 
+    fields = ['title', 'team', 'CPtasks', 'pub_date']
+    initial = {'pub_date': timezone.now}
+    success_url = reverse_lazy('parts')
+    
+class PartUpdate(LoginRequiredMixin,UpdateView):
+    model = Part 
+    fields = '__all__'
+    success_url = reverse_lazy('parts')
+    
 class AuthorUpdate(LoginRequiredMixin,UpdateView):
     model = Author
-    fields = '__all__' # Not recommended (potential security issue if more fields added)
+    fields = '__all__' 
 
 class AuthorDelete(LoginRequiredMixin,DeleteView):
     model = Author

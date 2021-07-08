@@ -9,11 +9,11 @@
   <ul>
     {% for part in part_list %}
       <li>
-        <a href="{{ part.get_absolute_url }}">{{ part.title }} - {part.team}}</a>
+        <a href="{{ part.get_absolute_url }}">{{ part.title }}</a>
       </li>
     {% endfor %}
   </ul>
   {% else %}
-    <p>There are no Authors in the library.</p>
+    <p>There are no parts in the system</p>
   {% endif %} 
 {% endblock %}

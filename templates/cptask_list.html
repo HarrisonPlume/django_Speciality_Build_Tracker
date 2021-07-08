@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Component Prep Tasks</h1>
+  {% if cptask_list %}
+  <ul>
+    {% for newtask in cptask_list %}
+      <li><a href = "{{newtask.get_absolute_url}}">{{newtask.part}} - {{newtask.task}}</a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no tasks currently listed.</p>
+  {% endif %} 
+{% endblock %}

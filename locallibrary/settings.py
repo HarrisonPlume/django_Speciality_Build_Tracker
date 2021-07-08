@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #added new application
-    'catalog.apps.CatalogConfig', #We created this app usalsing manage.py
+    'catalog.apps.CatalogConfig', 
 ]
 
 MIDDLEWARE = [
