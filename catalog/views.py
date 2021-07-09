@@ -75,11 +75,10 @@ class PartListView(generic.ListView):
 
 class PartDetailView(generic.DetailView):
     model = Part
-    #context_object_name = "task_list"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        part_specific_tasks = ComponentPrepTaskInstance.objects.all().filter(part__title = "104068")
+        part_specific_tasks = ComponentPrepTaskInstance.objects.all()
         context["part_specific_tasks"] = part_specific_tasks
         return context
     
