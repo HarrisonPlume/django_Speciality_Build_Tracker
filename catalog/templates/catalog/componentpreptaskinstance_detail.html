@@ -8,12 +8,13 @@
     <h4>Status: 
     <span class= "{% if componentpreptaskinstance.status == 'c' %}text-success
     {% elif componentpreptaskinstance.status == 'h' %}text-warning
-    {% elif componentpreptaskinstance.status == 'p' %}text-primary
+    {% elif componentpreptaskinstance.status == 'p' %}text-info
     {% else %}text-body{% endif %}">
     {{componentpreptaskinstance.get_status_display}}</span>
     {% if user.is_authenticated %} 
-    <a href = "{% url 'cptask-update-status' componentpreptaskinstance.pk %">
-    - Edit status</a>
+    -
+    <a href = "{% url 'cptask-update-status' componentpreptaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'cptask-delete' componentpreptaskinstance.pk %}">Delete Task</a>
     {% endif %}
     </h4>
       <hr>

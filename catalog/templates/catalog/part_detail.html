@@ -10,10 +10,12 @@
 <li><a href = "{% url 'part-delete' part.pk %}">Delete part</a></li>
 <hr>
 {% endif %}
-
 <div style="margin-left:20px;margin-top:20px">
 <h4>Current Tasks</h4>
 <hr>
-
+{% for task in part_specific_tasks %}
+<li> <a href = "">{{task}}</a> 
+      <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}text-warning {% elif task.status == 'p' %}text-info {% else %}text-body{% endif %}">- {{task.get_status_display}} </span> </li>
+{% endfor %}
 </div>
 {% endblock %}
