@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from .models import Book, Author, BookInstance, ComponentPrepTaskInstance, Part
+from .models import ComponentPrepTaskInstance, Part
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
@@ -32,15 +32,6 @@ def index(request):
     
     #Render the HTML template index.html with the data in the context vairable
     return render(request, "index.html", context = context)
-
-def BookRenewSuccess(request):
-    """View confirming the book renewal has been completed"""
-    
-    #book_instance = get_object_or_404(BookInstance)
-    #context = {
-        #'book_instance': book_instance,
-    #}
-    return render(request, "catalog/book_renew_success.html", context = None)
 
 
 class CpTaskListView(generic.ListView):
@@ -89,7 +80,7 @@ from django.contrib.auth.decorators import login_required, permission_required
     
 class PartCreate(LoginRequiredMixin,CreateView):
     model = Part 
-    fields = ['title', 'team', 'CPtasks', 'pub_date']
+    fields = ['title', 'team', 'Component_Prep_tasks','Stacking_tasks', 'pub_date']
     initial = {'pub_date': timezone.now}
     success_url = reverse_lazy('parts')
     
