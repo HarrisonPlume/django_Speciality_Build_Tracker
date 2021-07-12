@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>{{stackingtaskinstance.part}} 
+  ({{stackingtaskinstance.part.team}}) - 
+  {{stackingtaskinstance}}</h1>
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Status: 
+    <span class= "{% if stackingtaskinstance.status == 'c' %}text-success
+    {% elif stackingtaskinstance.status == 'h' %}text-warning
+    {% elif stackingtaskinstance.status == 'p' %}text-info
+    {% else %}text-body{% endif %}">
+    {{stackingtaskinstance.get_status_display}}</span>
+    {% if user.is_authenticated %} 
+    -
+    <a href = "{% url 'stackingtask-update-status' stackingtaskinstance.pk %}">
+     Edit status</a>, <a href="">Delete Task</a>
+    {% endif %}
+    </h4>
+      <hr>
+     <h5>Current options</h5>
+    {% if stackingtaskinstance.status == 'c' %}
+    <p>Task Complete</p> 
+    {% elif stackingtaskinstance.status == 'h' %}
+    <p><a href="">Resume Task</a></p>
+    {% elif stackingtaskinstance.status == 'a' %}
+    <p><a href="">Begin Task</a></p>
+    {% elif stackingtaskinstance.status == 'p' %}
+    <p><a href="">Finish Task</a></p>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -27,8 +27,10 @@
           <li><a href="{% url 'login'%}?next={{request.path}}">Staff Login</a></li>
           {% endif %}
           <hr>
-          <li><a href="{% url 'cptasks' %}">Component Prep Tasks</a></li>
           <li><a href="{% url 'parts' %}">Current Parts in progress</a></li>
+          <li><a href="{% url 'cptasks' %}">Component Prep Tasks</a></li>
+          <li><a href="{% url 'stackingtasks' %}">Stacking Tasks</a></li>
+          
 
         </ul>
      {% endblock %}

@@ -6,10 +6,9 @@
   <p>Any bugs please report to <a href = "{% url 'cptasks' %}">harrison@pwr.com.au</a></p>
   
   <h2>Current Tasks</h2>
-  <p>The Current Tasks List is as follows</p>
-  <ul>
-    <li><strong>Tasks Outstanding:</strong> {{ tasks_remaning}}</li>
-    <li> <a href="{% url 'cptasks' %}"> <strong>Component Prep Tasks:</strong></a> {{ num_CpTasks }} </li>
-    <li> <a href="{% url 'parts' %}"> <strong>Current Parts in progress:</strong></a> {{ num_parts }}</li>
-  </ul>
+    <div> <a href="{% url 'parts' %}"> Parts in progress:</a> {{ num_parts }}</div>
+    <hr>
+    <li>Tasks Outstanding: {{ tasks_remaning}}</li>
+    <li> <a href="{% url 'cptasks' %}"> Component Prep Tasks:</a> {{ num_CpTasks }} </li>
+    <li> <a href="{% url 'stackingtasks' %}"> Stacking Tasks:</a> {{ num_Stacking_Tasks }} </li>
 {% endblock %}

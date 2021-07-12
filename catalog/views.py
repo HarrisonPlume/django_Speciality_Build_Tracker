@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from .models import ComponentPrepTaskInstance, Part
+from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
@@ -16,6 +16,7 @@ def index(request):
     
     #Generate counts for soe of the main objetcs
     num_CpTasks = ComponentPrepTaskInstance.objects.all().count()
+    num_Stacking_Tasks = StackingTaskInstance.objects.all().count()
     
     #avalible tasks remaining
     tasks_remaning = ComponentPrepTaskInstance.objects.exclude(status__exact="c").count()
@@ -28,6 +29,7 @@ def index(request):
         "num_CpTasks": num_CpTasks,
         "num_parts": num_parts,  
         "tasks_remaning":tasks_remaning,
+        "num_Stacking_Tasks": num_Stacking_Tasks,
         }
     
     #Render the HTML template index.html with the data in the context vairable
@@ -52,8 +54,28 @@ class CpTaskListView(generic.ListView):
         context["tasks_complete"] = tasks_complete
         context["tasks_on_hold"] = tasks_on_hold
         return context
- 
-
+    
+class StackingTaskListView(generic.ListView):
+    model = StackingTaskInstance
+    context_object_name = "stackingtask_list"
+    template_name = "stackingtask/stackingtaskinstacne_list.html"
+    paginate_by = 10
+    
+    def get_context_data(self, **kwargs):
+         context = super().get_context_data(**kwargs)
+         num_tasks_not_started = StackingTaskInstance.objects.filter(status__exact="a").count()
+         tasks_remaining = StackingTaskInstance.objects.exclude(status__exact="c").count()
+         context["num_tasks_not_started"] = num_tasks_not_started
+         context["tasks_remaining"] = tasks_remaining
+         return context
+     
+class StackingTaskDetailView(generic.DetailView):
+    model = StackingTaskInstance
+    
+class StackingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
+    model = StackingTaskInstance
+    fields = ['status'] 
+    
 class CPTaskDetailView(generic.DetailView):
     model = ComponentPrepTaskInstance
     
@@ -63,6 +85,8 @@ class PartListView(generic.ListView):
     context_object_name = "part_list"
     template_name = "parts/part_list.html"
     paginate_by = 10
+
+
 
 class PartDetailView(generic.DetailView):
     model = Part
@@ -96,7 +120,7 @@ class PartDelete(LoginRequiredMixin,DeleteView):
 
 class CPTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = ComponentPrepTaskInstance
-    fields = ['status'] # Not recommended (potential security issue if more fields added)
+    fields = ['status'] 
     
 class CPTaskDelete(LoginRequiredMixin,DeleteView):
     model = ComponentPrepTaskInstance 

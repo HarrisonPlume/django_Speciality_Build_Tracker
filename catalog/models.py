@@ -38,7 +38,7 @@ class StackingTaskInstance(models.Model):
     
     def get_absolute_url(self):
         """Returns the url to access a detail record for this task."""
-        return reverse('cptask-detail', args = [str(self.id)])
+        return reverse('stackingtask-detail', args = [str(self.id)])
     
 class Component_Prep_Task(models.Model):
     """Model representing the multiple component prep tasks that must be 
@@ -109,16 +109,18 @@ def CreateNewCPTaskInstance(sender, **kwargs):
     #part = getattr(obj, part_name)
     CPtask_list = obj.Component_Prep_tasks.all()
     Current_Tasks = ComponentPrepTaskInstance.objects.all()
+    Current_Task_list = []
+    for task in Current_Tasks:
+        Current_Task_list.append(task.task)
     Create_list = []  
     if len(CPtask_list) == 0:
         pass
     else:
         for task in CPtask_list:
-            if task is in Current_Tasks:
+            if task.title in Current_Task_list:
                 pass
             else:
                 Create_list.append(task)
-            
         for task in Create_list:
             ComponentPrepTaskInstance.objects.create(task= task, part=obj, status="a")
     
@@ -128,10 +130,19 @@ def CreateNewCPTaskInstance(sender, **kwargs):
 def CreateNewStackingTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Stacktask_list = obj.Stacking_tasks.all()
-    print(Stacktask_list)
+    Current_Tasks = StackingTaskInstance.objects.all()
+    Current_Task_list = []
+    for task in Current_Tasks:
+        Current_Task_list.append(task.task)
+    Create_list = []
     if len(Stacktask_list) == 0:
         pass
     else:
         for task in Stacktask_list:
+            if task.title in Current_Task_list:
+                pass
+            else:
+                Create_list.append(task)
+        for task in Create_list:
             StackingTaskInstance.objects.create(task= task, part=obj, status="a")
             
