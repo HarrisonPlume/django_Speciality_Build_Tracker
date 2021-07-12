@@ -14,7 +14,7 @@
     {% if user.is_authenticated %} 
     -
     <a href = "{% url 'stackingtask-update-status' stackingtaskinstance.pk %}">
-     Edit status</a>, <a href="">Delete Task</a>
+     Edit status</a>, <a href="{% url 'stackingtask-delete' stackingtaskinstance.pk %}">Delete Task</a>
     {% endif %}
     </h4>
       <hr>

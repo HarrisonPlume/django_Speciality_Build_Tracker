@@ -31,4 +31,6 @@ urlpatterns += [
   path("StackingTask/<int:pk>/updatestatus/", 
        views.StackingTaskStatusUpdate.as_view(), 
        name = "stackingtask-update-status"),
+  path("StackingTask/<int:pk>/delete/", views.StackingTaskDelete.as_view(), 
+         name = "stackingtask-delete"),
     ]

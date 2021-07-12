@@ -65,8 +65,27 @@ class StackingTaskListView(generic.ListView):
          context = super().get_context_data(**kwargs)
          num_tasks_not_started = StackingTaskInstance.objects.filter(status__exact="a").count()
          tasks_remaining = StackingTaskInstance.objects.exclude(status__exact="c").count()
+         component_prep_tasks = ComponentPrepTaskInstance.objects.all()
+         counter = 0
+         part = None
+         Completedict = {}
+         for task in ComponentPrepTaskInstance.objects.all():
+             print(task)
+             if task.part != part:
+                 if counter != 0:
+                     Completedict[task.part] = "Not Complete"
+                 counter = 0
+                 part = task.part
+                 if task.status != "c":
+                     counter += 1
+             else:
+                if task.status != "c":
+                     counter += 1
+         print(Completedict)
+
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
+         context["component_prep_tasks"] = component_prep_tasks
          return context
      
 class StackingTaskDetailView(generic.DetailView):
@@ -75,6 +94,10 @@ class StackingTaskDetailView(generic.DetailView):
 class StackingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = StackingTaskInstance
     fields = ['status'] 
+    
+class StackingTaskDelete(LoginRequiredMixin,DeleteView):
+    model = StackingTaskInstance 
+    success_url = reverse_lazy('stackingtasks')
     
 class CPTaskDetailView(generic.DetailView):
     model = ComponentPrepTaskInstance
@@ -93,8 +116,14 @@ class PartDetailView(generic.DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        part_specific_tasks = ComponentPrepTaskInstance.objects.all()
-        context["part_specific_tasks"] = part_specific_tasks
+        part_component_prep_tasks = ComponentPrepTaskInstance.objects.all()
+        part_stacking_tasks = StackingTaskInstance.objects.all()
+        part_component_prep_tasks_complete = ComponentPrepTaskInstance.objects.exclude(status__exact="c").count()
+        part_stacking_tasks_complete = StackingTaskInstance.objects.exclude(status__exact="c").count()
+        context["part_component_prep_tasks_complete"] = part_component_prep_tasks_complete
+        context["part_component_prep_tasks"] = part_component_prep_tasks
+        context["part_stacking_tasks_complete"] = part_stacking_tasks_complete
+        context["part_stacking_tasks"] = part_stacking_tasks
         return context
     
     

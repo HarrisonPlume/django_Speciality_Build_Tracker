@@ -15,12 +15,14 @@
   {% endif %}
   <ul>
     {% for newtask in cptask_list %}
-      <li class ="{% if newtask.status == 'c' %}text-success
-      {% elif newtask.status == 'h' %}text-warning
-      {% elif newtask.status == 'p' %}text-info
-      {% else %}text-body{% endif %}">
+      <li> 
       <a href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) - {{newtask.task}}</a>
-       - {{ newtask.get_status_display }}</li>
+       <span class ="{% if newtask.status == 'c' %}text-success 
+      {% elif newtask.status == 'h' %}text-warning 
+      {% elif newtask.status == 'p' %}text-info 
+      {% else %}text-body{% endif %}">
+       - {{ newtask.get_status_display }}</span>
+    </li>
     {% endfor %}
   </ul>
   {% else %}

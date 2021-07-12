@@ -13,11 +13,36 @@
 <div style="margin-left:20px;margin-top:20px">
 <h4>Current Component Prep Tasks</h4>
 <hr>
-{% for task in part_specific_tasks %}
+{% for task in part_component_prep_tasks %}
 {% if task.part == part %}
 <li> <a href = "{% url 'cptask-detail' task.pk %}">{{task}}</a> 
       <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}text-warning {% elif task.status == 'p' %}text-info {% else %}text-body{% endif %}">- {{task.get_status_display}} </span> </li>
 {% endif %}
 {% endfor %}
+
+
+<br>
+{% if part_component_prep_tasks_complete > 0 %}
+{# #}
+{% else %}
+<h5 class = "text-success"> Component Prep Tasks Complete </h5>
+{% endif %}
+
+<br>
+<h4>Current Stacking Tasks</h4>
+<hr>
+{% for task in part_stacking_tasks %}
+{% if task.part == part %}
+<li> <a href = "{% url 'stackingtask-detail' task.pk %}">{{task}}</a> 
+      <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}text-warning {% elif task.status == 'p' %}text-info {% else %}text-body{% endif %}">- {{task.get_status_display}} </span> </li>
+{% endif %}
+{% endfor %}
+
+<br>
+{% if part_stacking_tasks_complete > 0 %}
+{# #}
+{% else %}
+<h5 class = "text-success"> Stacking Tasks Complete </h5>
+{% endif %}
 </div>
 {% endblock %}
