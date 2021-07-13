@@ -1,6 +1,9 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+<h1>Update Task Status: {{headerplatetaskinstance.part}} 
+({{headerplatetaskinstance.part.team}}) - {{headerplatetaskinstance.task}} </h1>
+    <hr>
   <form action="" method="post">
     {% csrf_token %}
     <table>

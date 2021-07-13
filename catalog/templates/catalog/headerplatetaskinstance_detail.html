@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1><a href ="{% url 'part-detail' headerplatetaskinstance.part.pk %}">{{headerplatetaskinstance.part}} 
+  ({{headerplatetaskinstance.part.team}})</a> - 
+  {{headerplatetaskinstance}}</h1>
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Status: 
+    <span class= "{% if headerplatetaskinstance.status == 'c' %}text-success
+    {% elif headerplatetaskinstance.status == 'h' %}text-warning
+    {% elif headerplatetaskinstance.status == 'p' %}text-info
+    {% else %}text-body{% endif %}">
+    {{headerplatetaskinstance.get_status_display}}</span>
+    {% if user.is_authenticated %} 
+    -
+    <a href = "{% url 'hptask-update-status' headerplatetaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'hptask-delete' headerplatetaskinstance.pk %}">Delete Task</a>
+    {% endif %}
+    </h4>
+      <hr>
+     <h5>Current options</h5>
+    {% if headerplatetaskinstance.status == 'c' %}
+    <p>Task Complete</p> 
+    {% elif headerplatetaskinstance.status == 'h' %}
+    <p><a href="">Resume Task</a></p>
+    {% elif headerplatetaskinstance.status == 'a' %}
+    <p><a href="">Begin Task</a></p>
+    {% elif headerplatetaskinstance.status == 'p' %}
+    <p><a href="">Finish Task</a></p>
+    {% endif %}
+  </div>
+{% endblock %}

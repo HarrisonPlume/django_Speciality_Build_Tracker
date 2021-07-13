@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance
+from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
@@ -96,7 +96,7 @@ class PartDetailView(generic.DetailView):
 class PartCreate(LoginRequiredMixin,CreateView):
     model = Part 
     fields = ['title', 'team', 'Component_Prep_tasks','Stacking_tasks',
-              'Forming_tasks','pub_date']
+              'Forming_tasks','Header_Plate_tasks','pub_date']
     initial = {'pub_date': timezone.now}
     success_url = reverse_lazy('parts')
     
@@ -242,6 +242,10 @@ class FormingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     fields = ['status'] 
     success_url = reverse_lazy('formingtasks')
     
+class FormingTaskDelete(LoginRequiredMixin,DeleteView):
+    model = FormingTaskInstance 
+    success_url = reverse_lazy('formingtasks')
+    
 def StartFormingTask(request, pk):
     Task = FormingTaskInstance.objects.get(pk = pk)
     Task.status = "p"
@@ -254,5 +258,29 @@ def FinishFormingTask(request, pk):
     Task.save()
     return HttpResponseRedirect(reverse('formingtasks'))
     
+#Header Plate Views
+class HeaderPlateTaskInstanceListView(generic.ListView):
+    model = HeaderPlateTaskInstance
+    context_object_name = "headerplatetask_list"
+    template_name = "headerplatetask/headerplatetaskinstance_list.html"
+    paginate_by = 10
+    
+    def get_context_data(self, **kwargs):
+         context = super().get_context_data(**kwargs)
+         tasks_remaining = HeaderPlateTaskInstance.objects.exclude(status__exact="c").count()
+         num_tasks_not_started = HeaderPlateTaskInstance.objects.filter(status__exact="a").count()
+         context["num_tasks_not_started"] = num_tasks_not_started
+         context["tasks_remaining"] = tasks_remaining
+         return context 
 
+class HeaderPlateTaskInstanceDetailView(generic.DetailView):
+    model = HeaderPlateTaskInstance
 
+class HeaderPlateTaskStatusUpdate(LoginRequiredMixin,UpdateView):
+    model = HeaderPlateTaskInstance
+    fields = ['status'] 
+    success_url = reverse_lazy('headerplatetasks')
+    
+class HeaderPlateTaskDelete(LoginRequiredMixin,DeleteView):
+    model = HeaderPlateTaskInstance 
+    success_url = reverse_lazy('headerplatetasks')

@@ -44,7 +44,26 @@ urlpatterns += [
        name="formingtask-detail"),
   path("FormingTask/<int:pk>/updatestatus/", views.FormingTaskStatusUpdate.as_view(), 
        name="formingtask-update-status"),
+  path("FormingTask/<int:pk>/delete/", views.FormingTaskDelete.as_view(), 
+       name="formingtask-delete"),
     ]
+
+
+
+#Header Plate Task Url's
+urlpatterns += [
+  path("HPTasks/", views.HeaderPlateTaskInstanceListView.as_view(), 
+       name="headerplatetasks"),
+  path("HPTask/<int:pk>/", views.HeaderPlateTaskInstanceDetailView.as_view(), 
+       name="hptask-detail"),
+  path("HPTask/<int:pk>/updatestatus/", views.HeaderPlateTaskStatusUpdate.as_view(), 
+       name="hptask-update-status"),
+  path("HPTask/<int:pk>/delete/", views.HeaderPlateTaskDelete.as_view(), 
+       name="hptask-delete"),
+    ]
+
+
+
 
 #Update Component prep task status
 urlpatterns += [

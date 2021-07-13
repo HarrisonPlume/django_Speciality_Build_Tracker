@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1>Delete Task: {{headerplatetaskinstance.part}} 
+  ({{headerplatetaskinstance.part.team}}) - 
+  {{headerplatetaskinstance}}</h1>
+
+<p>Are you sure you want to delete the task: 
+{{headerplatetaskinstance.part}} 
+  ({{headerplatetaskinstance.part.team}}) - 
+  {{headerplatetaskinstance}}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Yes, delete.">
+</form>
+
+{% endblock %}

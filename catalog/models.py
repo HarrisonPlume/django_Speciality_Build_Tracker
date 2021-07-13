@@ -130,6 +130,9 @@ class Part(models.Model):
                                          the required stacking tasks.")
     Forming_tasks = models.ManyToManyField(Forming_Task, help_text = "Select\
                                            the required forming tasks.")
+    Header_Plate_tasks = models.ManyToManyField("Header_Plate_Task", help_text = "\
+                                                Select The nessessary header \
+                                                    plate tasks")
     pub_date = models.DateTimeField("time published", default = timezone.now)
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""
@@ -144,9 +147,31 @@ class Header_Plate_Task(models.Model):
     title = models.CharField(max_length = 100, help_text = "Enter the Name\
                      of a header plate machining task")
                      
+    def __str__(self):
+        """string for representing the Model object."""
+        return self.title
+                     
 class HeaderPlateTaskInstance(models.Model):
     """Model representing the multiple instances of a header plate task"""
     task = models.CharField(max_length = 100, null = True)
+    part = models.ForeignKey("Part", on_delete = models.CASCADE,null = True)
+    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("c", "Complete"),
+                   ("p", "In Progress"), ("f", "Failed"))
+    
+    status = models.CharField(max_length = 1, choices= TASK_STATUS, 
+                              blank = False, default = "a", help_text = "Set \
+                                  task completion status")
+    class Meta:
+        ordering = ['status']
+        
+    def __str__(self):
+        """string for representing the Model object."""
+        return self.task
+    
+    def get_absolute_url(self):
+        """Returns the url to access a detail record for this task."""
+        return reverse('hptask-detail', args = [str(self.id)])                          
+                        
     
 # Create Sheet Metal Forming Tasks
 @receiver(m2m_changed, sender = Part.Forming_tasks.through)
@@ -180,4 +205,15 @@ def CreateNewStackingTaskInstance(sender, **kwargs):
             StackingTaskInstance.objects.get(task = task, part = obj)
         except:
             StackingTaskInstance.objects.create(task = task, part = obj, status = "a")
+            
+# Create Header Plate Machining Tasks
+@receiver(m2m_changed, sender = Part.Header_Plate_tasks.through)
+def CreateNewHeaderPlateTaskInstance(sender, **kwargs):
+    obj = Part.objects.latest("pub_date")
+    HPtask_list = obj.Header_Plate_tasks.all()
+    for task in HPtask_list:
+        try:
+            HeaderPlateTaskInstance.objects.get(task = task, part = obj)
+        except:
+            HeaderPlateTaskInstance.objects.create(task = task, part = obj, status = "a")
             

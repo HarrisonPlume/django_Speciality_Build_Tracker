@@ -1,8 +1,8 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>{{stackingtaskinstance.part}} 
-  ({{stackingtaskinstance.part.team}}) - 
+  <h1><a href = "{% url 'part-detail' stackingtaskinstance.part.pk %}">{{stackingtaskinstance.part}} 
+  ({{stackingtaskinstance.part.team}})</a> - 
   {{stackingtaskinstance}}</h1>
   <div style="margin-left:20px;margin-top:20px">
     <h4>Status: 
@@ -26,6 +26,9 @@
     </h4>
       <hr>
      <h5>Current options</h5>
+    {% if stackingtaskinstance.part in component_prep_tasks_not_completed %}
+    <p> Component Prep Tasks Incomplete </p>
+    {% else %}
     {% if stackingtaskinstance.status == 'c' %}
     <p>Task Complete</p> 
     {% elif stackingtaskinstance.status == 'h' %}
@@ -34,6 +37,7 @@
     <p><a href="{% url 'startstackingtask' pk=stackingtaskinstance.pk %}">Begin Task</a></p>
     {% elif stackingtaskinstance.status == 'p' %}
     <p><a href="{% url 'finishstackingtask' pk=stackingtaskinstance.pk %}">Finish Task</a></p>
+    {% endif %}
     {% endif %}
   </div>
 {% endblock %}
