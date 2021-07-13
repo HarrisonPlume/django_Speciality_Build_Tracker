@@ -17,7 +17,7 @@
       <div class="col-sm-2">
       {% block sidebar %}
         <ul class="sidebar-nav">
-          <li><a href="{% url 'index' %}">Home</a></li>
+          <h6><a href="{% url 'index' %}">Home</a></h6>
           <hr>
           {% if user.is_authenticated %}
           <li>User: {{ user.get_username }}</li>
@@ -27,10 +27,11 @@
           <li><a href="{% url 'login'%}?next={{request.path}}">Staff Login</a></li>
           {% endif %}
           <hr>
-          <li><a href="{% url 'parts' %}">Current Parts in progress</a></li>
+          <h6><a href="{% url 'parts' %}">Current Parts in progress</a></h6>
+          <hr>
           <li><a href="{% url 'cptasks' %}">Component Prep Tasks</a></li>
           <li><a href="{% url 'stackingtasks' %}">Stacking Tasks</a></li>
-          <li><a href = "">Sheet Metal Forming Tasks</a></li>
+          <li><a href = "{% url 'formingtasks' %}">Sheet Metal Forming Tasks</a></li>
           <li><a href = "">Header Plate Machining Tasks</a></li>
           <li><a href = "">Deburr Tasks</a></li>
           <li><a href = "">Plating Tasks</a></li>

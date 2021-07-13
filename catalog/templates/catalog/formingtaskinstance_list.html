@@ -1,9 +1,9 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Stacking Tasks</h1>
+  <h1>Sheet Metal Forming Tasks</h1>
   <hr>
-  {% if stackingtask_list %} 
+  {% if formingtask_list %} 
   <h4>Tasks Remaining: {{tasks_remaining}}</h4>
   {% if user.is_authenticated %}
   <hr>
@@ -12,7 +12,7 @@
   <hr>
   {% endif %}
   <ul>
-    {% for newtask in stackingtask_list %}
+    {% for newtask in formingtask_list %}
       <li> 
       <a href = "{{newtask.get_absolute_url}}">{{newtask.part}} 
       ({{newtask.part.team}}) - {{newtask.task}}</a>
@@ -21,17 +21,6 @@
       {% elif newtask.status == 'p' %}text-info 
       {% else %}text-body{% endif %}">
        - {{ newtask.get_status_display }}</span>
-      {% if newtask.status != "c" %}
-      {% if newtask.part in component_prep_tasks_not_completed %}   
-      <span class = "text-danger">
-      - Not Avaliable
-      </span>
-      {% else %}
-      <span class = "text-success">
-      - Avaliable
-      </span>
-      {% endif %}
-      {% endif %}
         </li>
     {% endfor %}
   </ul>

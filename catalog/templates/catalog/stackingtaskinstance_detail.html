@@ -29,7 +29,7 @@
     {% if stackingtaskinstance.status == 'c' %}
     <p>Task Complete</p> 
     {% elif stackingtaskinstance.status == 'h' %}
-    <p><a href="">Resume Task</a></p>
+    <p><a href="{% url 'startstackingtask' pk=stackingtaskinstance.pk %}">Resume Task</a></p>
     {% elif stackingtaskinstance.status == 'a' %}
     <p><a href="{% url 'startstackingtask' pk=stackingtaskinstance.pk %}">Begin Task</a></p>
     {% elif stackingtaskinstance.status == 'p' %}

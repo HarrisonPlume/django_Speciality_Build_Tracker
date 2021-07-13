@@ -7,13 +7,17 @@ from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from django.utils import timezone
 
-class Sheet_Metal_Forming_Task(models.Model):
+class Forming_Task(models.Model):
     """
     Model for the required sheet metal forming tasks on the press:
     """
     title = models.CharField(max_length = 100, null = True)
     
-class Sheet_Metal_Forming_Task_Instance(models.Model):
+    def __str__(self):
+        """String for Representing the model objetc (on admin site)"""
+        return self.title
+    
+class FormingTaskInstance(models.Model):
     """
     Model for representing multiple sheet metal forming tasks required to be
     completed
@@ -25,7 +29,18 @@ class Sheet_Metal_Forming_Task_Instance(models.Model):
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
+    
+    class Meta:
+        ordering = ['status']
 
+    def __str__(self):
+        """String for Representing the model objetc (on admin site)"""
+        return self.task
+    
+    def get_absolute_url(self):
+        """Returns the url to access a detail record for this task."""
+        return reverse('formingtask-detail', args = [str(self.id)])
+    
 class Stacking_Task(models.Model):
     """Model representing the multiple stacking tasks that must be 
     completed for a part to be finished"""
@@ -37,6 +52,7 @@ class Stacking_Task(models.Model):
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""
         return self.title
+    
     
 class StackingTaskInstance(models.Model):
     """ Instance of a specific component prep task"""
@@ -112,6 +128,8 @@ class Part(models.Model):
                                          to be completed.") 
     Stacking_tasks = models.ManyToManyField(Stacking_Task, help_text = "Select\
                                          the required stacking tasks.")
+    Forming_tasks = models.ManyToManyField(Forming_Task, help_text = "Select\
+                                           the required forming tasks.")
     pub_date = models.DateTimeField("time published", default = timezone.now)
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""

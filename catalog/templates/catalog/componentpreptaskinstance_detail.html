@@ -22,7 +22,7 @@
     {% if componentpreptaskinstance.status == 'c' %}
     <p>Task Complete</p> 
     {% elif componentpreptaskinstance.status == 'h' %}
-    <p><a href="">Resume Task</a></p>
+    <p><a href="{% url 'startcptask' pk=componentpreptaskinstance.pk %}">Resume Task</a></p>
     {% elif componentpreptaskinstance.status == 'a' %}
     <p><a href="{% url 'startcptask' pk=componentpreptaskinstance.pk %}">Begin Task</a></p>
     {% elif componentpreptaskinstance.status == 'p' %}

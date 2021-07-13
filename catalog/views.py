@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance
+from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
@@ -9,30 +9,6 @@ from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from catalog.forms import RenewBookForm
-
-def StartCPTask(request, pk):
-    Task = ComponentPrepTaskInstance.objects.get(pk = pk)
-    Task.status = "p"
-    Task.save()
-    return HttpResponseRedirect(reverse('cptasks'))
-
-def FinishCPTask(request, pk):
-    Task = ComponentPrepTaskInstance.objects.get(pk = pk)
-    Task.status = "c"
-    Task.save()
-    return HttpResponseRedirect(reverse('cptasks'))
-
-def StartStackTask(request, pk):
-    Task = StackingTaskInstance.objects.get(pk = pk)
-    Task.status = "p"
-    Task.save()
-    return HttpResponseRedirect(reverse('stackingtasks'))
-
-def FinishStackTask(request, pk):
-    Task = StackingTaskInstance.objects.get(pk = pk)
-    Task.status = "c"
-    Task.save()
-    return HttpResponseRedirect(reverse('stackingtasks'))
 
 def index(request):
     """View for the home page of the website"""
@@ -58,9 +34,70 @@ def index(request):
     #Render the HTML template index.html with the data in the context vairable
     return render(request, "index.html", context = context)
 
+# Part Classes
+class PartListView(generic.ListView):
+    model = Part
+    context_object_name = "part_list"
+    template_name = "parts/part_list.html"
+    paginate_by = 10
 
+
+
+class PartDetailView(generic.DetailView):
+    model = Part
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        part_component_prep_tasks = ComponentPrepTaskInstance.objects.all()
+        part_stacking_tasks = StackingTaskInstance.objects.all()
+        
+        #Component Prep Tasks for each individual part
+        part = None
+        Completedict = {}
+        for task in ComponentPrepTaskInstance.objects.all():
+             if task.part != part:
+                 part = task.part
+                 if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+                     
+        #Stacking Tasks for each individual part
+        partst = None
+        StackingCompletedict = {}
+        for task in StackingTaskInstance.objects.all():
+             if task.part != partst:
+                 partst = task.part
+                 if task.status != "c":
+                     StackingCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     StackingCompletedict[task.part] = "Not Complete"
+        
+        context["component_prep_tasks_not_completed"] = Completedict
+        context["stacking_tasks_not_completed"] = StackingCompletedict
+        context["part_component_prep_tasks"] = part_component_prep_tasks
+        context["part_stacking_tasks"] = part_stacking_tasks
+        return context
+
+class PartCreate(LoginRequiredMixin,CreateView):
+    model = Part 
+    fields = ['title', 'team', 'Component_Prep_tasks','Stacking_tasks', 'pub_date']
+    initial = {'pub_date': timezone.now}
+    success_url = reverse_lazy('parts')
+    
+class PartUpdate(LoginRequiredMixin,UpdateView):
+    model = Part 
+    fields = '__all__'
+    success_url = reverse_lazy('parts')
+    
+class PartDelete(LoginRequiredMixin,DeleteView):
+    model = Part 
+    success_url = reverse_lazy('parts')
+
+#Component Prep Classes
 class CpTaskListView(generic.ListView):
-    #permission_required = 'catalog.can_mark_returned'
     model = ComponentPrepTaskInstance
     context_object_name = "cptask_list"
     template_name = "cptask_list.html"
@@ -78,10 +115,35 @@ class CpTaskListView(generic.ListView):
         context["tasks_on_hold"] = tasks_on_hold
         return context
     
+class CPTaskDetailView(generic.DetailView):
+    model = ComponentPrepTaskInstance
+    
+class CPTaskStatusUpdate(LoginRequiredMixin,UpdateView):
+    model = ComponentPrepTaskInstance
+    fields = ['status'] 
+    success_url = reverse_lazy('cptasks')
+    
+class CPTaskDelete(LoginRequiredMixin,DeleteView):
+    model = ComponentPrepTaskInstance 
+    success_url = reverse_lazy('cptasks')
+    
+def StartCPTask(request, pk):
+    Task = ComponentPrepTaskInstance.objects.get(pk = pk)
+    Task.status = "p"
+    Task.save()
+    return HttpResponseRedirect(reverse('cptasks'))
+
+def FinishCPTask(request, pk):
+    Task = ComponentPrepTaskInstance.objects.get(pk = pk)
+    Task.status = "c"
+    Task.save()
+    return HttpResponseRedirect(reverse('cptasks'))
+  
+#Stacking Classes  
 class StackingTaskListView(generic.ListView):
     model = StackingTaskInstance
     context_object_name = "stackingtask_list"
-    template_name = "stackingtask/stackingtaskinstacne_list.html"
+    template_name = "stackingtask/stackingtaskinstance_list.html"
     paginate_by = 10
     
     def get_context_data(self, **kwargs):
@@ -129,82 +191,45 @@ class StackingTaskDelete(LoginRequiredMixin,DeleteView):
     model = StackingTaskInstance 
     success_url = reverse_lazy('stackingtasks')
     
-class CPTaskDetailView(generic.DetailView):
-    model = ComponentPrepTaskInstance
+
+def StartStackTask(request, pk):
+    Task = StackingTaskInstance.objects.get(pk = pk)
+    Task.status = "p"
+    Task.save()
+    return HttpResponseRedirect(reverse('stackingtasks'))
+
+def FinishStackTask(request, pk):
+    Task = StackingTaskInstance.objects.get(pk = pk)
+    Task.status = "c"
+    Task.save()
+    return HttpResponseRedirect(reverse('stackingtasks'))    
     
-    
-class PartListView(generic.ListView):
-    model = Part
-    context_object_name = "part_list"
-    template_name = "parts/part_list.html"
+
+ 
+# Sheet Metal Forming Classes
+class FormingTaskInstanceListView(generic.ListView):
+    model = FormingTaskInstance
+    context_object_name = "formingtask_list"
+    template_name = "formingtask/formingtaskinstance_list.html"
     paginate_by = 10
-
-
-
-class PartDetailView(generic.DetailView):
-    model = Part
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        part_component_prep_tasks = ComponentPrepTaskInstance.objects.all()
-        part_stacking_tasks = StackingTaskInstance.objects.all()
-        
-        #Component Prep Tasks for each individual part
-        part = None
-        Completedict = {}
-        for task in ComponentPrepTaskInstance.objects.all():
-             if task.part != part:
-                 part = task.part
-                 if task.status != "c":
-                     Completedict[task.part] = "Not Complete"
-             else:
-                if task.status != "c":
-                     Completedict[task.part] = "Not Complete"
-                     
-        #Stacking Tasks for each individual part
-        partst = None
-        StackingCompletedict = {}
-        for task in StackingTaskInstance.objects.all():
-             if task.part != partst:
-                 partst = task.part
-                 if task.status != "c":
-                     StackingCompletedict[task.part] = "Not Complete"
-             else:
-                if task.status != "c":
-                     StackingCompletedict[task.part] = "Not Complete"
-        
-        context["component_prep_tasks_not_completed"] = Completedict
-        context["stacking_tasks_not_completed"] = StackingCompletedict
-        context["part_component_prep_tasks"] = part_component_prep_tasks
-        context["part_stacking_tasks"] = part_stacking_tasks
-        return context
+         context = super().get_context_data(**kwargs)
+         tasks_remaining = FormingTaskInstance.objects.exclude(status__exact="c").count()
+         num_tasks_not_started = FormingTaskInstance.objects.filter(status__exact="a").count()
+         context["num_tasks_not_started"] = num_tasks_not_started
+         context["tasks_remaining"] = tasks_remaining
+         return context 
+     
+class FormingTaskInstanceDetailView(generic.DetailView):
+    model = FormingTaskInstance
     
-    
-import datetime
-
-from django.contrib.auth.decorators import login_required, permission_required
-    
-class PartCreate(LoginRequiredMixin,CreateView):
-    model = Part 
-    fields = ['title', 'team', 'Component_Prep_tasks','Stacking_tasks', 'pub_date']
-    initial = {'pub_date': timezone.now}
-    success_url = reverse_lazy('parts')
-    
-class PartUpdate(LoginRequiredMixin,UpdateView):
-    model = Part 
-    fields = '__all__'
-    success_url = reverse_lazy('parts')
-    
-class PartDelete(LoginRequiredMixin,DeleteView):
-    model = Part 
-    success_url = reverse_lazy('parts')
-    
-
-class CPTaskStatusUpdate(LoginRequiredMixin,UpdateView):
-    model = ComponentPrepTaskInstance
+class FormingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
+    model = FormingTaskInstance
     fields = ['status'] 
-    success_url = reverse_lazy('cptasks')
+    success_url = reverse_lazy('formingtasks')
     
-class CPTaskDelete(LoginRequiredMixin,DeleteView):
-    model = ComponentPrepTaskInstance 
-    success_url = reverse_lazy('cptasks')
+
+    
+
+
