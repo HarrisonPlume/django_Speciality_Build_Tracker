@@ -61,3 +61,11 @@ urlpatterns += [
     path("StackingTask/<int:pk>/FinishTask", views.FinishStackTask, 
          name="finishstackingtask"),
   ]
+
+#Update forming task status
+urlpatterns += [
+    path("FormingTask/<int:pk>/StartTask", views.StartFormingTask, 
+         name="startformingtask"),
+    path("FormingTask/<int:pk>/FinishTask", views.FinishFormingTask, 
+         name="finishformingtask"),
+  ]

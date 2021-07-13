@@ -139,6 +139,27 @@ class Part(models.Model):
         """Returns the url to access a sepecfic author instance."""
         return reverse("part-detail", args=[str(self.id)])
     
+class Header_Plate_Task(models.Model):
+    """Model representing the required Header Plate Tasks"""
+    title = models.CharField(max_length = 100, help_text = "Enter the Name\
+                     of a header plate machining task")
+                     
+class HeaderPlateTaskInstance(models.Model):
+    """Model representing the multiple instances of a header plate task"""
+    task = models.CharField(max_length = 100, null = True)
+    
+# Create Sheet Metal Forming Tasks
+@receiver(m2m_changed, sender = Part.Forming_tasks.through)
+def CreateNewCPTaskInstance(sender, **kwargs):
+    obj = Part.objects.latest("pub_date")
+    Formingtask_list = obj.Forming_tasks.all()
+    for task in Formingtask_list:
+       try:
+           FormingTaskInstance.objects.get(task= task, part=obj)
+       except:
+           FormingTaskInstance.objects.create(task= task, part=obj, status="a")
+           
+# Create Component Prep Tasks  
 @receiver(m2m_changed, sender = Part.Component_Prep_tasks.through)
 def CreateNewCPTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
@@ -149,7 +170,7 @@ def CreateNewCPTaskInstance(sender, **kwargs):
        except:
            ComponentPrepTaskInstance.objects.create(task= task, part=obj, status="a")
 
-
+# Create Stacking Tasks
 @receiver(m2m_changed, sender = Part.Stacking_tasks.through)
 def CreateNewStackingTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")

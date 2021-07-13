@@ -22,11 +22,11 @@
     {% if formingtaskinstance.status == 'c' %}
     <p>Task Complete</p> 
     {% elif formingtaskinstance.status == 'h' %}
-    <p><a href="">Resume Task</a></p>
+    <p><a href="{% url 'startformingtask' pk=formingtaskinstance.pk %}">Resume Task</a></p>
     {% elif formingtaskinstance.status == 'a' %}
-    <p><a href="">Begin Task</a></p>
+    <p><a href="{% url 'startformingtask' pk=formingtaskinstance.pk %}">Begin Task</a></p>
     {% elif formingtaskinstance.status == 'p' %}
-    <p><a href="">Finish Task</a></p>
+    <p><a href="{% url 'finishformingtask' pk=formingtaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
   </div>
 {% endblock %}

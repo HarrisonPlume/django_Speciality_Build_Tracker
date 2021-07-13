@@ -50,7 +50,7 @@ class PartDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         part_component_prep_tasks = ComponentPrepTaskInstance.objects.all()
         part_stacking_tasks = StackingTaskInstance.objects.all()
-        
+        part_forming_tasks = FormingTaskInstance.objects.all()
         #Component Prep Tasks for each individual part
         part = None
         Completedict = {}
@@ -74,16 +74,29 @@ class PartDetailView(generic.DetailView):
              else:
                 if task.status != "c":
                      StackingCompletedict[task.part] = "Not Complete"
-        
+        #Stacking Tasks for each individual part
+        partfo = None
+        FormingCompletedict = {}
+        for task in FormingTaskInstance.objects.all():
+             if task.part != partfo:
+                 partfo = task.part
+                 if task.status != "c":
+                     FormingCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     FormingCompletedict[task.part] = "Not Complete"
         context["component_prep_tasks_not_completed"] = Completedict
         context["stacking_tasks_not_completed"] = StackingCompletedict
+        context["forming_tasks_not_completed"] = FormingCompletedict
         context["part_component_prep_tasks"] = part_component_prep_tasks
         context["part_stacking_tasks"] = part_stacking_tasks
+        context["part_forming_tasks"] = part_forming_tasks
         return context
 
 class PartCreate(LoginRequiredMixin,CreateView):
     model = Part 
-    fields = ['title', 'team', 'Component_Prep_tasks','Stacking_tasks', 'pub_date']
+    fields = ['title', 'team', 'Component_Prep_tasks','Stacking_tasks',
+              'Forming_tasks','pub_date']
     initial = {'pub_date': timezone.now}
     success_url = reverse_lazy('parts')
     
@@ -229,7 +242,17 @@ class FormingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     fields = ['status'] 
     success_url = reverse_lazy('formingtasks')
     
+def StartFormingTask(request, pk):
+    Task = FormingTaskInstance.objects.get(pk = pk)
+    Task.status = "p"
+    Task.save()
+    return HttpResponseRedirect(reverse('formingtasks'))
 
+def FinishFormingTask(request, pk):
+    Task = FormingTaskInstance.objects.get(pk = pk)
+    Task.status = "c"
+    Task.save()
+    return HttpResponseRedirect(reverse('formingtasks'))
     
 
 

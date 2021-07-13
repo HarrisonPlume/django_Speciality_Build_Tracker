@@ -13,6 +13,7 @@
 <div style="margin-left:20px;margin-top:20px">
 <h4>Current Component Prep Tasks</h4>
 <hr>
+{% if part in component_prep_tasks_not_completed %}
 {% for task in part_component_prep_tasks %}
 {% if task.part == part %}
 <li> <a href = "{% url 'cptask-detail' task.pk %}">{{task}}</a> 
@@ -22,13 +23,10 @@
 
 
 <br>
-
-{% if part in component_prep_tasks_not_completed %}
-{# Tasks are currently incomplete at this point #}
 </h5>
 {% else %}
 <h5 class = "text-success">
-Compnent Prep Tasks Complete
+Component Prep Tasks Complete
 </h5>
 {% endif %}
 
@@ -36,6 +34,7 @@ Compnent Prep Tasks Complete
 <br>
 <h4>Current Stacking Tasks</h4>
 <hr>
+{% if part in stacking_tasks_not_completed %}
 {% for task in part_stacking_tasks %}
 {% if task.part == part %}
 <li> <a href = "{% url 'stackingtask-detail' task.pk %}">{{task}}</a> 
@@ -53,10 +52,29 @@ Compnent Prep Tasks Complete
 {% endfor %}
 
 <br>
-{% if part in stacking_tasks_not_completed %}
+
 {# #}
 {% else %}
 <h5 class = "text-success"> Stacking Tasks Complete </h5>
+{% endif %}
+
+
+<br>
+<h4>Current Forming Tasks</h4>
+<hr>
+{% if part in forming_tasks_not_completed %}
+{% for task in part_forming_tasks %}
+<li><a href = "{% url 'formingtask-detail' task.pk %}">{{task}}</a>
+<span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
+      text-warning {% elif task.status == 'p' %}
+      text-info {% else %}text-body{% endif %}">
+      - {{task.get_status_display}} </span>
+</li>
+{% endfor %}
+{% else %}
+<h5 class = "text-success">
+Forming Tasks Complete
+</h5>
 {% endif %}
 </div>
 {% endblock %}
