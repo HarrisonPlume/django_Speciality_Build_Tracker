@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Pitching Tasks</h1>
+  <hr>
+  {% if pitchingtask_list %} 
+  <h4>Tasks Remaining: {{tasks_remaining}}</h4>
+  {% if user.is_authenticated %}
+  <hr>
+  <h5>Admin Panel</h5>
+  <div>Tasks not yet started: {{num_tasks_not_started}} </div>
+  <hr>
+  {% endif %}
+  <ul>
+    {% for newtask in pitchingtask_list %}
+      <li> 
+      <a href = "{{newtask.get_absolute_url}}">{{newtask.part}} 
+      ({{newtask.part.team}}) - {{newtask.task}}</a>
+      <span class ="{% if newtask.status == 'c' %}text-success 
+      {% elif newtask.status == 'h' %}text-warning 
+      {% elif newtask.status == 'p' %}text-info 
+      {% else %}text-body{% endif %}">
+       - {{ newtask.get_status_display }}</span>
+        </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no tasks currently listed.</p>
+  {% endif %} 
+{% endblock %}

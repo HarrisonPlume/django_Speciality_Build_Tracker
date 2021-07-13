@@ -62,7 +62,15 @@ urlpatterns += [
        name="hptask-delete"),
     ]
 
-
+#Pitching Task Url's
+urlpatterns += [
+  path("PitchingTasks/", views.PitchingTaskListView.as_view(), 
+       name="pitchingtasks"),
+  path("PitchingTask/<int:pk>/", views.PitchingTaskDetailView.as_view(), 
+       name="pitchingtask-detail"),
+  path("PitchingTask/<int:pk>/updatestatus/", views.PitchingTaskStatusUpdate.as_view(), 
+       name="pitchingtask-update-status"),
+    ]
 
 
 #Update Component prep task status

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Component_Prep_Task, ComponentPrepTaskInstance, Part, Team, Stacking_Task, StackingTaskInstance, Forming_Task, FormingTaskInstance, Header_Plate_Task, HeaderPlateTaskInstance
+from .models import Component_Prep_Task, ComponentPrepTaskInstance, Part, Team, Stacking_Task, StackingTaskInstance, Forming_Task, FormingTaskInstance, Header_Plate_Task, HeaderPlateTaskInstance, Pitching_Task, PitchingTaskInstance
 # Register your models here.
 
 class ComponentPrepTaskAdmin(admin.ModelAdmin):
@@ -15,3 +15,5 @@ admin.site.register(Header_Plate_Task)
 admin.site.register(HeaderPlateTaskInstance)
 admin.site.register(Part)
 admin.site.register(Team)
+admin.site.register(Pitching_Task)
+admin.site.register(PitchingTaskInstance)

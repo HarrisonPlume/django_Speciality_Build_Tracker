@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance
+from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance, PitchingTaskInstance
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
@@ -111,7 +111,7 @@ class PartDetailView(generic.DetailView):
 class PartCreate(LoginRequiredMixin,CreateView):
     model = Part 
     fields = ['title', 'team', 'Component_Prep_tasks','Stacking_tasks',
-              'Forming_tasks','Header_Plate_tasks','pub_date']
+              'Forming_tasks','Header_Plate_tasks','Pitching_tasks','pub_date']
     initial = {'pub_date': timezone.now}
     success_url = reverse_lazy('parts')
     
@@ -311,3 +311,26 @@ def FinishHeaderPlateTask(request, pk):
     Task.status = "c"
     Task.save()
     return HttpResponseRedirect(reverse('headerplatetasks'))
+
+#Pitching Task Views
+class PitchingTaskListView(generic.ListView):
+    model = PitchingTaskInstance
+    context_object_name = "pitchingtask_list"
+    template_name = "pitchingtask/pitchingtaskinstance_list.html"
+    paginate_by = 10
+    
+    def get_context_data(self, **kwargs):
+         context = super().get_context_data(**kwargs)
+         num_tasks_not_started = PitchingTaskInstance.objects.filter(status__exact="a").count()
+         tasks_remaining = PitchingTaskInstance.objects.exclude(status__exact="c").count()
+         context["num_tasks_not_started"] = num_tasks_not_started
+         context["tasks_remaining"] = tasks_remaining
+         return context
+
+class PitchingTaskDetailView(generic.DetailView):
+    model = PitchingTaskInstance
+    
+class PitchingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
+    model = PitchingTaskInstance
+    fields = ['status'] 
+    success_url = reverse_lazy('pitchingtasks')
