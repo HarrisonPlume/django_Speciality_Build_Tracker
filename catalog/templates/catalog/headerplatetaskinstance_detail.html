@@ -22,11 +22,11 @@
     {% if headerplatetaskinstance.status == 'c' %}
     <p>Task Complete</p> 
     {% elif headerplatetaskinstance.status == 'h' %}
-    <p><a href="">Resume Task</a></p>
+    <p><a href="{% url 'starthptask' pk=headerplatetaskinstance.pk %}">Resume Task</a></p>
     {% elif headerplatetaskinstance.status == 'a' %}
-    <p><a href="">Begin Task</a></p>
+    <p><a href="{% url 'starthptask' pk=headerplatetaskinstance.pk %}">Begin Task</a></p>
     {% elif headerplatetaskinstance.status == 'p' %}
-    <p><a href="">Finish Task</a></p>
+    <p><a href="{% url 'finishhptask' pk=headerplatetaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
   </div>
 {% endblock %}

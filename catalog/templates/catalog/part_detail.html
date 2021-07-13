@@ -76,5 +76,23 @@ Component Prep Tasks Complete
 Forming Tasks Complete
 </h5>
 {% endif %}
+
+<br>
+<h4>Current Header Plate Machining Tasks</h4>
+<hr>
+{% if part in HP_tasks_not_completed %}
+{% for task in part_header_plate_tasks %}
+<li><a href = "{% url 'hptask-detail' task.pk %}">{{task}}</a>
+<span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
+      text-warning {% elif task.status == 'p' %}
+      text-info {% else %}text-body{% endif %}">
+      - {{task.get_status_display}} </span>
+</li>
+{% endfor %}
+{% else %}
+<h5 class = "text-success">
+Header Plate Machining Tasks Complete
+</h5>
+{% endif %}
 </div>
 {% endblock %}

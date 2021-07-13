@@ -51,6 +51,7 @@ class PartDetailView(generic.DetailView):
         part_component_prep_tasks = ComponentPrepTaskInstance.objects.all()
         part_stacking_tasks = StackingTaskInstance.objects.all()
         part_forming_tasks = FormingTaskInstance.objects.all()
+        part_header_plate_tasks = HeaderPlateTaskInstance.objects.all()
         #Component Prep Tasks for each individual part
         part = None
         Completedict = {}
@@ -74,7 +75,7 @@ class PartDetailView(generic.DetailView):
              else:
                 if task.status != "c":
                      StackingCompletedict[task.part] = "Not Complete"
-        #Stacking Tasks for each individual part
+        #Forming Tasks for each individual part
         partfo = None
         FormingCompletedict = {}
         for task in FormingTaskInstance.objects.all():
@@ -85,12 +86,26 @@ class PartDetailView(generic.DetailView):
              else:
                 if task.status != "c":
                      FormingCompletedict[task.part] = "Not Complete"
+                     
+        #Hp Machining Tasks for each individual part
+        parthp = None
+        HPCompletedict = {}
+        for task in HeaderPlateTaskInstance.objects.all():
+             if task.part != parthp:
+                 parthp = task.part
+                 if task.status != "c":
+                     HPCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     HPCompletedict[task.part] = "Not Complete"
         context["component_prep_tasks_not_completed"] = Completedict
         context["stacking_tasks_not_completed"] = StackingCompletedict
         context["forming_tasks_not_completed"] = FormingCompletedict
+        context["HP_tasks_not_completed"] = HPCompletedict
         context["part_component_prep_tasks"] = part_component_prep_tasks
         context["part_stacking_tasks"] = part_stacking_tasks
         context["part_forming_tasks"] = part_forming_tasks
+        context["part_header_plate_tasks"] = part_header_plate_tasks
         return context
 
 class PartCreate(LoginRequiredMixin,CreateView):
@@ -284,3 +299,15 @@ class HeaderPlateTaskStatusUpdate(LoginRequiredMixin,UpdateView):
 class HeaderPlateTaskDelete(LoginRequiredMixin,DeleteView):
     model = HeaderPlateTaskInstance 
     success_url = reverse_lazy('headerplatetasks')
+    
+def StartHeaderPlateTask(request, pk):
+    Task = HeaderPlateTaskInstance.objects.get(pk = pk)
+    Task.status = "p"
+    Task.save()
+    return HttpResponseRedirect(reverse('headerplatetasks'))
+
+def FinishHeaderPlateTask(request, pk):
+    Task = HeaderPlateTaskInstance.objects.get(pk = pk)
+    Task.status = "c"
+    Task.save()
+    return HttpResponseRedirect(reverse('headerplatetasks'))

@@ -88,3 +88,11 @@ urlpatterns += [
     path("FormingTask/<int:pk>/FinishTask", views.FinishFormingTask, 
          name="finishformingtask"),
   ]
+
+#Update Header Plate task status
+urlpatterns += [
+    path("HPTask/<int:pk>/StartTask", views.StartHeaderPlateTask, 
+         name="starthptask"),
+    path("HPTask/<int:pk>/FinishTask", views.FinishHeaderPlateTask, 
+         name="finishhptask"),
+  ]
