@@ -34,3 +34,18 @@ urlpatterns += [
   path("StackingTask/<int:pk>/delete/", views.StackingTaskDelete.as_view(), 
          name = "stackingtask-delete"),
     ]
+
+#Update View Url's
+urlpatterns += [
+    path("CPTask/<int:pk>/StartTask", views.StartCPTask, 
+         name="startcptask"),
+    path("CPTask/<int:pk>/FinishTask", views.FinishCPTask, 
+       name="finishcptask"),
+  ]
+
+urlpatterns += [
+    path("StackingTask/<int:pk>/StartTask", views.StartStackTask, 
+         name="startstackingtask"),
+    path("StackingTask/<int:pk>/FinishTask", views.FinishStackTask, 
+         name="finishstackingtask"),
+  ]

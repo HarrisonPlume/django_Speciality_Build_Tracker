@@ -7,9 +7,32 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
 
 from catalog.forms import RenewBookForm
+
+def StartCPTask(request, pk):
+    Task = ComponentPrepTaskInstance.objects.get(pk = pk)
+    Task.status = "p"
+    Task.save()
+    return HttpResponseRedirect(reverse('cptasks'))
+
+def FinishCPTask(request, pk):
+    Task = ComponentPrepTaskInstance.objects.get(pk = pk)
+    Task.status = "c"
+    Task.save()
+    return HttpResponseRedirect(reverse('cptasks'))
+
+def StartStackTask(request, pk):
+    Task = StackingTaskInstance.objects.get(pk = pk)
+    Task.status = "p"
+    Task.save()
+    return HttpResponseRedirect(reverse('stackingtasks'))
+
+def FinishStackTask(request, pk):
+    Task = StackingTaskInstance.objects.get(pk = pk)
+    Task.status = "c"
+    Task.save()
+    return HttpResponseRedirect(reverse('stackingtasks'))
 
 def index(request):
     """View for the home page of the website"""
@@ -65,31 +88,38 @@ class StackingTaskListView(generic.ListView):
          context = super().get_context_data(**kwargs)
          num_tasks_not_started = StackingTaskInstance.objects.filter(status__exact="a").count()
          tasks_remaining = StackingTaskInstance.objects.exclude(status__exact="c").count()
-         component_prep_tasks = ComponentPrepTaskInstance.objects.all()
-         counter = 0
          part = None
          Completedict = {}
          for task in ComponentPrepTaskInstance.objects.all():
-             print(task)
              if task.part != part:
-                 if counter != 0:
-                     Completedict[task.part] = "Not Complete"
-                 counter = 0
                  part = task.part
                  if task.status != "c":
-                     counter += 1
+                     Completedict[task.part] = "Not Complete"
              else:
                 if task.status != "c":
-                     counter += 1
-         print(Completedict)
-
+                     Completedict[task.part] = "Not Complete"
+         context["component_prep_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
-         context["component_prep_tasks"] = component_prep_tasks
          return context
      
 class StackingTaskDetailView(generic.DetailView):
     model = StackingTaskInstance
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        part = None
+        Completedict = {}
+        for task in ComponentPrepTaskInstance.objects.all():
+            if task.part != part:
+                part = task.part
+                if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+            else:
+                if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+        context["component_prep_tasks_not_completed"] = Completedict
+        return context
     
 class StackingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = StackingTaskInstance
@@ -118,11 +148,34 @@ class PartDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         part_component_prep_tasks = ComponentPrepTaskInstance.objects.all()
         part_stacking_tasks = StackingTaskInstance.objects.all()
-        part_component_prep_tasks_complete = ComponentPrepTaskInstance.objects.exclude(status__exact="c").count()
-        part_stacking_tasks_complete = StackingTaskInstance.objects.exclude(status__exact="c").count()
-        context["part_component_prep_tasks_complete"] = part_component_prep_tasks_complete
+        
+        #Component Prep Tasks for each individual part
+        part = None
+        Completedict = {}
+        for task in ComponentPrepTaskInstance.objects.all():
+             if task.part != part:
+                 part = task.part
+                 if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+                     
+        #Stacking Tasks for each individual part
+        partst = None
+        StackingCompletedict = {}
+        for task in StackingTaskInstance.objects.all():
+             if task.part != partst:
+                 partst = task.part
+                 if task.status != "c":
+                     StackingCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     StackingCompletedict[task.part] = "Not Complete"
+        
+        context["component_prep_tasks_not_completed"] = Completedict
+        context["stacking_tasks_not_completed"] = StackingCompletedict
         context["part_component_prep_tasks"] = part_component_prep_tasks
-        context["part_stacking_tasks_complete"] = part_stacking_tasks_complete
         context["part_stacking_tasks"] = part_stacking_tasks
         return context
     
@@ -150,6 +203,7 @@ class PartDelete(LoginRequiredMixin,DeleteView):
 class CPTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = ComponentPrepTaskInstance
     fields = ['status'] 
+    success_url = reverse_lazy('cptasks')
     
 class CPTaskDelete(LoginRequiredMixin,DeleteView):
     model = ComponentPrepTaskInstance 

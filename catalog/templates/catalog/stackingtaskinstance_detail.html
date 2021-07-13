@@ -11,6 +11,13 @@
     {% elif stackingtaskinstance.status == 'p' %}text-info
     {% else %}text-body{% endif %}">
     {{stackingtaskinstance.get_status_display}}</span>
+    {% if stackingtaskinstance.status != "c" %}
+    {% if stackingtaskinstance.part in component_prep_tasks_not_completed %}
+    <span class = "text-danger">- Unavaliable</span>
+    {% else %}
+    <span class = "text-success">- Avaliable</span>
+    {% endif %}
+    {% endif %}
     {% if user.is_authenticated %} 
     -
     <a href = "{% url 'stackingtask-update-status' stackingtaskinstance.pk %}">
@@ -24,9 +31,9 @@
     {% elif stackingtaskinstance.status == 'h' %}
     <p><a href="">Resume Task</a></p>
     {% elif stackingtaskinstance.status == 'a' %}
-    <p><a href="">Begin Task</a></p>
+    <p><a href="{% url 'startstackingtask' pk=stackingtaskinstance.pk %}">Begin Task</a></p>
     {% elif stackingtaskinstance.status == 'p' %}
-    <p><a href="">Finish Task</a></p>
+    <p><a href="{% url 'finishstackingtask' pk=stackingtaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
   </div>
 {% endblock %}
