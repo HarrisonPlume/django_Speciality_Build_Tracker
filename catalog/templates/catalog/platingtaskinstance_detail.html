@@ -1,0 +1,43 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1><a href ="{% url 'part-detail' platinginstance.part.pk %}">{{platinginstance.part}} 
+  ({{platinginstance.part.team}}) Serial: {{platinginstance.part.serial}}</a> - 
+  {{platinginstance}}</h1>
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Status: 
+    <span class= "{% if platinginstance.status == 'c' %}text-success
+    {% elif platinginstance.status == 'h' %}text-warning
+    {% elif platinginstance.status == 'p' %}text-info
+    {% else %}text-body{% endif %}">
+    {{platinginstance.get_status_display}}</span>
+    {% if platinginstance.status != "c" %}
+    {% if platinginstance.part in deburr_tasks_not_completed %}
+    <span class = "text-danger"> (Unavaliable)</span>
+    {% else %}
+    <span class = "text-success"> (Avaliable)</span>
+    {% endif %}
+    {% endif %}
+    {% if user.is_authenticated %} 
+    -
+    <a href = "{% url 'platingtask-update-status' platinginstance.pk %}">
+     Edit status</a>, <a href="{% url 'platingtask-delete' platinginstance.pk %}">Delete Task</a>
+    {% endif %}
+    </h4>
+      <hr>
+     <h5>Current options</h5>
+    {% if platinginstance.part in deburr_tasks_not_completed %}
+    <p> Part is not ready for plating </p>
+    {% else %}
+    {% if platinginstance.status == 'c' %}
+    <p>Task Complete</p> 
+    {% elif platinginstance.status == 'h' %}
+    <p><a href="{% url 'startplatingtask' pk=platinginstance.pk %}">Resume Task</a></p>
+    {% elif platinginstance.status == 'a' %}
+    <p><a href="{% url 'startplatingtask' pk=platinginstance.pk %}">Begin Task</a></p>
+    {% elif platinginstance.status == 'p' %}
+    <p><a href="{% url 'finishplatingtask' pk=platinginstance.pk %}">Finish Task</a></p>
+    {% endif %}
+    {% endif %}
+  </div>
+{% endblock %}

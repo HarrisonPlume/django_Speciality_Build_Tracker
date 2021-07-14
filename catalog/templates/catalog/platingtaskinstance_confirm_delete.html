@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1>Delete Task: {{platinginstance.part}} 
+  ({{platinginstance.part.team}}) Serial: {{platinginstance.part.serial}} - 
+  {{platinginstance}}</h1>
+
+<p>Are you sure you want to delete the task: 
+{{platinginstance.part}} 
+  ({{platinginstance.part.team}}) - 
+  {{platinginstance}}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Yes, delete.">
+</form>
+
+{% endblock %}

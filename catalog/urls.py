@@ -125,3 +125,19 @@ urlpatterns += [
   path("DeburrTask/<int:pk>/FinishTask", views.FinishDeburrTask, 
        name="finishdeburrtask"),
     ]
+
+#Plating Task Url's
+urlpatterns += [
+  path("PlatingTasks/", views.PlatingTaskListView.as_view(), 
+       name="platingtasks"),
+  path("PlatingTask/<int:pk>/", views.PlatingTaskDetailView.as_view(), 
+       name="platingtask-detail"),
+  path("PlatingTask/<int:pk>/updatestatus/", views.PlatingTaskStatusUpdate.as_view(), 
+       name="platingtask-update-status"),
+  path("platingTask/<int:pk>/delete/", views.PlatingTaskDelete.as_view(), 
+       name="platingtask-delete"),
+  path("PlatingTask/<int:pk>/StartTask", views.StartPlatingTask, 
+       name="startplatingtask"),
+  path("PlatingTask/<int:pk>/FinishTask", views.FinishPlatingTask, 
+       name="finishplatingtask"),
+    ]

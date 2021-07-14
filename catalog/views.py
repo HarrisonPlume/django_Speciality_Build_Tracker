@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance, PitchingTaskInstance, WireCutTaskInstance, DeburrTaskInstance
+from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance, PitchingTaskInstance, WireCutTaskInstance, DeburrTaskInstance, PlatingTaskInstance
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
@@ -159,7 +159,7 @@ class PartCreate(LoginRequiredMixin,CreateView):
     model = Part 
     fields = ['title','serial', 'team', 'Component_Prep_tasks','Stacking_tasks',
               'Forming_tasks','Header_Plate_tasks','Pitching_tasks',
-              'Wire_Cut_tasks','Deburr_tasks','pub_date']
+              'Wire_Cut_tasks','Deburr_tasks','Plating_tasks','pub_date']
     initial = {'pub_date': timezone.now}
     success_url = reverse_lazy('parts')
     
@@ -567,3 +567,68 @@ def FinishDeburrTask(request, pk):
     Task.status = "c"
     Task.save()
     return HttpResponseRedirect(reverse('deburrtasks'))
+
+#Plating Task Views
+class PlatingTaskListView(generic.ListView):
+    model = PlatingTaskInstance
+    context_object_name = "platingtask_list"
+    template_name = "platingtask/platingtaskinstance_list.html"
+    paginate_by = 10
+    
+    def get_context_data(self, **kwargs):
+         context = super().get_context_data(**kwargs)
+         num_tasks_not_started = PlatingTaskInstance.objects.filter(status__exact="a").count()
+         tasks_remaining = PlatingTaskInstance.objects.exclude(status__exact="c").count()
+         part = None
+         Completedict = {}
+         for task in DeburrTaskInstance.objects.all():
+             if task.part != part:
+                 part = task.part
+                 if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+         context["deburr_tasks_not_completed"] = Completedict
+         context["num_tasks_not_started"] = num_tasks_not_started
+         context["tasks_remaining"] = tasks_remaining
+         return context
+
+class PlatingTaskDetailView(generic.DetailView):
+    model = PlatingTaskInstance
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        part = None
+        Completedict = {}
+        for task in DeburrTaskInstance.objects.all():
+            if task.part != part:
+                part = task.part
+                if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+            else:
+                if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+        context["deburr_tasks_not_completed"] = Completedict
+        return context
+    
+class PlatingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
+    model = PlatingTaskInstance
+    fields = ['status'] 
+    success_url = reverse_lazy('platingtasks')
+    
+class PlatingTaskDelete(LoginRequiredMixin,DeleteView):
+    model = PlatingTaskInstance
+    success_url = reverse_lazy('platingtasks')
+    
+def StartPlatingTask(request, pk):
+    Task = PlatingTaskInstance.objects.get(pk = pk)
+    Task.status = "p"
+    Task.save()
+    return HttpResponseRedirect(reverse('platingtasks'))
+
+def FinishPlatingTask(request, pk):
+    Task = PlatingTaskInstance.objects.get(pk = pk)
+    Task.status = "c"
+    Task.save()
+    return HttpResponseRedirect(reverse('platingtasks'))

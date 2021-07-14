@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Component_Prep_Task, ComponentPrepTaskInstance, Part, Team, Stacking_Task, StackingTaskInstance, Forming_Task, FormingTaskInstance, Header_Plate_Task, HeaderPlateTaskInstance, Pitching_Task, PitchingTaskInstance, Wire_Cut_Task, WireCutTaskInstance, Deburr_Task, DeburrTaskInstance
+from .models import Component_Prep_Task, ComponentPrepTaskInstance, Part, Team, Stacking_Task, StackingTaskInstance, Forming_Task, FormingTaskInstance, Header_Plate_Task, HeaderPlateTaskInstance, Pitching_Task, PitchingTaskInstance, Wire_Cut_Task, WireCutTaskInstance, Deburr_Task, DeburrTaskInstance, Plating_Task, PlatingTaskInstance
 # Register your models here.
 
 class ComponentPrepTaskAdmin(admin.ModelAdmin):
@@ -21,3 +21,5 @@ admin.site.register(Wire_Cut_Task)
 admin.site.register(WireCutTaskInstance)
 admin.site.register(Deburr_Task)
 admin.site.register(DeburrTaskInstance)
+admin.site.register(Plating_Task)
+admin.site.register(PlatingTaskInstance)
