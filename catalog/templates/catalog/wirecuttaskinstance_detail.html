@@ -1,0 +1,43 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1><a href ="{% url 'part-detail' wirecuttaskinstance.part.pk %}">{{wirecuttaskinstance.part}} 
+  ({{wirecuttaskinstance.part.team}})</a> - 
+  {{wirecuttaskinstance}}</h1>
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Status: 
+    <span class= "{% if wirecuttaskinstance.status == 'c' %}text-success
+    {% elif wirecuttaskinstance.status == 'h' %}text-warning
+    {% elif wirecuttaskinstance.status == 'p' %}text-info
+    {% else %}text-body{% endif %}">
+    {{wirecuttaskinstance.get_status_display}}</span>
+    {% if wirecuttaskinstance.status != "c" %}
+    {% if wirecuttaskinstance.part in stacking_tasks_not_completed %}
+    <span class = "text-danger">- Unavaliable</span>
+    {% else %}
+    <span class = "text-success">- Avaliable</span>
+    {% endif %}
+    {% endif %}
+    {% if user.is_authenticated %} 
+    -
+    <a href = "{% url 'wirecuttask-update-status' wirecuttaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'wirecuttask-delete' wirecuttaskinstance.pk %}">Delete Task</a>
+    {% endif %}
+    </h4>
+      <hr>
+     <h5>Current options</h5>
+    {% if wirecuttaskinstance.part in stacking_tasks_not_completed %}
+    <p> Stacking Tasks Incomplete </p>
+    {% else %}
+    {% if wirecuttaskinstance.status == 'c' %}
+    <p>Task Complete</p> 
+    {% elif wirecuttaskinstance.status == 'h' %}
+    <p><a href="{% url 'startwirecuttask' pk=wirecuttaskinstance.pk %}">Resume Task</a></p>
+    {% elif wirecuttaskinstance.status == 'a' %}
+    <p><a href="{% url 'startwirecuttask' pk=wirecuttaskinstance.pk %}">Begin Task</a></p>
+    {% elif wirecuttaskinstance.status == 'p' %}
+    <p><a href="{% url 'finishwirecuttask' pk=wirecuttaskinstance.pk %}">Finish Task</a></p>
+    {% endif %}
+    {% endif %}
+  </div>
+{% endblock %}

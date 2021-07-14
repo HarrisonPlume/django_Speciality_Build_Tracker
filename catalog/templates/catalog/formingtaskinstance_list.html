@@ -21,6 +21,11 @@
       {% elif newtask.status == 'p' %}text-info 
       {% else %}text-body{% endif %}">
        - {{ newtask.get_status_display }}</span>
+      {% if newtask.status == "a" %}
+      <span class = "text-success">
+       (Avaliable)
+      </span>
+      {% endif %}
         </li>
     {% endfor %}
   </ul>

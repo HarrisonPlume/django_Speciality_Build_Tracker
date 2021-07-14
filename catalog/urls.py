@@ -70,6 +70,28 @@ urlpatterns += [
        name="pitchingtask-detail"),
   path("PitchingTask/<int:pk>/updatestatus/", views.PitchingTaskStatusUpdate.as_view(), 
        name="pitchingtask-update-status"),
+  path("PitchingTask/<int:pk>/delete/", views.PitchingTaskDelete.as_view(), 
+       name="pitchingtask-delete"),
+  path("PitchingTask/<int:pk>/StartTask", views.StartPitchingTask, 
+       name="startpitchingtask"),
+  path("PitchingTask/<int:pk>/FinishTask", views.FinishPitchingTask, 
+       name="finishpitchingtask"),
+    ]
+
+#Wire Cut Task Url's
+urlpatterns += [
+  path("WireCutTasks/", views.WireCutTaskListView.as_view(), 
+       name="wirecuttasks"),
+  path("WireCutTask/<int:pk>/", views.WireCutTaskDetailView.as_view(), 
+       name="wirecuttask-detail"),
+  path("WireCutTask/<int:pk>/updatestatus/", views.WireCutTaskStatusUpdate.as_view(), 
+       name="wirecuttask-update-status"),
+  path("WireCutTask/<int:pk>/delete/", views.WireCutTaskDelete.as_view(), 
+       name="wirecuttask-delete"),
+  path("WireCutTask/<int:pk>/StartTask", views.StartWireCutTask, 
+       name="startwirecuttask"),
+  path("WireCutTask/<int:pk>/FinishTask", views.FinishWireCutTask, 
+       name="finishwirecuttask"),
     ]
 
 

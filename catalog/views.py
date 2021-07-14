@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance, PitchingTaskInstance
+from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance, PitchingTaskInstance, WireCutTaskInstance
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
@@ -52,6 +52,8 @@ class PartDetailView(generic.DetailView):
         part_stacking_tasks = StackingTaskInstance.objects.all()
         part_forming_tasks = FormingTaskInstance.objects.all()
         part_header_plate_tasks = HeaderPlateTaskInstance.objects.all()
+        part_pitching_tasks = PitchingTaskInstance.objects.all()
+        part_wire_cut_tasks = WireCutTaskInstance.objects.all()
         #Component Prep Tasks for each individual part
         part = None
         Completedict = {}
@@ -87,6 +89,30 @@ class PartDetailView(generic.DetailView):
                 if task.status != "c":
                      FormingCompletedict[task.part] = "Not Complete"
                      
+        #Wire Cut Tasks for each individual part
+        partwc = None
+        WCCompletedict = {}
+        for task in WireCutTaskInstance.objects.all():
+             if task.part != partwc:
+                 partwc = task.part
+                 if task.status != "c":
+                     WCCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     WCCompletedict[task.part] = "Not Complete" 
+                     
+        #Pitching Tasks for each individual part
+        partpt = None
+        PitchCompletedict = {}
+        for task in PitchingTaskInstance.objects.all():
+             if task.part != partpt:
+                 partpt = task.part
+                 if task.status != "c":
+                     PitchCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     PitchCompletedict[task.part] = "Not Complete" 
+                     
         #Hp Machining Tasks for each individual part
         parthp = None
         HPCompletedict = {}
@@ -102,16 +128,21 @@ class PartDetailView(generic.DetailView):
         context["stacking_tasks_not_completed"] = StackingCompletedict
         context["forming_tasks_not_completed"] = FormingCompletedict
         context["HP_tasks_not_completed"] = HPCompletedict
+        context["pitching_tasks_not_completed"] = PitchCompletedict
+        context["wire_cut_tasks_not_completed"] = WCCompletedict
         context["part_component_prep_tasks"] = part_component_prep_tasks
         context["part_stacking_tasks"] = part_stacking_tasks
         context["part_forming_tasks"] = part_forming_tasks
+        context["part_wire_cut_tasks"] = part_wire_cut_tasks
+        context["part_pitching_tasks"] = part_pitching_tasks
         context["part_header_plate_tasks"] = part_header_plate_tasks
         return context
 
 class PartCreate(LoginRequiredMixin,CreateView):
     model = Part 
     fields = ['title', 'team', 'Component_Prep_tasks','Stacking_tasks',
-              'Forming_tasks','Header_Plate_tasks','Pitching_tasks','pub_date']
+              'Forming_tasks','Header_Plate_tasks','Pitching_tasks',
+              'Wire_Cut_tasks','pub_date']
     initial = {'pub_date': timezone.now}
     success_url = reverse_lazy('parts')
     
@@ -284,6 +315,17 @@ class HeaderPlateTaskInstanceListView(generic.ListView):
          context = super().get_context_data(**kwargs)
          tasks_remaining = HeaderPlateTaskInstance.objects.exclude(status__exact="c").count()
          num_tasks_not_started = HeaderPlateTaskInstance.objects.filter(status__exact="a").count()
+         part = None
+         Completedict = {}
+         for task in PitchingTaskInstance.objects.all():
+             if task.part != part:
+                 part = task.part
+                 if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+             else:
+                 if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+         context["pitching_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
          return context 
@@ -323,6 +365,17 @@ class PitchingTaskListView(generic.ListView):
          context = super().get_context_data(**kwargs)
          num_tasks_not_started = PitchingTaskInstance.objects.filter(status__exact="a").count()
          tasks_remaining = PitchingTaskInstance.objects.exclude(status__exact="c").count()
+         part = None
+         Completedict = {}
+         for task in WireCutTaskInstance.objects.all():
+             if task.part != part:
+                 part = task.part
+                 if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+             else:
+                 if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+         context["wire_cut_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
          return context
@@ -330,7 +383,104 @@ class PitchingTaskListView(generic.ListView):
 class PitchingTaskDetailView(generic.DetailView):
     model = PitchingTaskInstance
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        part = None
+        Completedict = {}
+        for task in WireCutTaskInstance.objects.all():
+            if task.part != part:
+                part = task.part
+                if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+            else:
+                if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+        context["wire_cut_tasks_not_completed"] = Completedict
+        return context
+    
 class PitchingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = PitchingTaskInstance
     fields = ['status'] 
     success_url = reverse_lazy('pitchingtasks')
+    
+class PitchingTaskDelete(LoginRequiredMixin,DeleteView):
+    model = PitchingTaskInstance 
+    success_url = reverse_lazy('pitchingtasks')
+    
+def StartPitchingTask(request, pk):
+    Task = PitchingTaskInstance.objects.get(pk = pk)
+    Task.status = "p"
+    Task.save()
+    return HttpResponseRedirect(reverse('pitchingtasks'))
+
+def FinishPitchingTask(request, pk):
+    Task = PitchingTaskInstance.objects.get(pk = pk)
+    Task.status = "c"
+    Task.save()
+    return HttpResponseRedirect(reverse('pitchingtasks'))
+
+
+#Wire Cut Task Views
+class WireCutTaskListView(generic.ListView):
+    model = WireCutTaskInstance
+    context_object_name = "wirecuttask_list"
+    template_name = "wirecuttask/wirecuttaskinstance_list.html"
+    paginate_by = 10
+    
+    def get_context_data(self, **kwargs):
+         context = super().get_context_data(**kwargs)
+         num_tasks_not_started = WireCutTaskInstance.objects.filter(status__exact="a").count()
+         tasks_remaining = WireCutTaskInstance.objects.exclude(status__exact="c").count()
+         part = None
+         Completedict = {}
+         for task in StackingTaskInstance.objects.all():
+             if task.part != part:
+                 part = task.part
+                 if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+         context["stacking_tasks_not_completed"] = Completedict
+         context["num_tasks_not_started"] = num_tasks_not_started
+         context["tasks_remaining"] = tasks_remaining
+         return context
+
+class WireCutTaskDetailView(generic.DetailView):
+    model = WireCutTaskInstance
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        part = None
+        Completedict = {}
+        for task in StackingTaskInstance.objects.all():
+            if task.part != part:
+                part = task.part
+                if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+            else:
+                if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+        context["stacking_tasks_not_completed"] = Completedict
+        return context
+    
+class WireCutTaskStatusUpdate(LoginRequiredMixin,UpdateView):
+    model = WireCutTaskInstance
+    fields = ['status'] 
+    success_url = reverse_lazy('wirecuttasks')
+    
+class WireCutTaskDelete(LoginRequiredMixin,DeleteView):
+    model = WireCutTaskInstance
+    success_url = reverse_lazy('wirecuttasks')
+    
+def StartWireCutTask(request, pk):
+    Task = WireCutTaskInstance.objects.get(pk = pk)
+    Task.status = "p"
+    Task.save()
+    return HttpResponseRedirect(reverse('wirecuttasks'))
+
+def FinishWireCutTask(request, pk):
+    Task = WireCutTaskInstance.objects.get(pk = pk)
+    Task.status = "c"
+    Task.save()
+    return HttpResponseRedirect(reverse('wirecuttasks'))

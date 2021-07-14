@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>{{part}} ({{part.team}})</h1>
+<h1>{{part}} ({{part.team}}) - Serial: </h1>
 {% if user.is_authenticated %}
 <hr>
 <h5>Admin Panel</h5>
@@ -17,12 +17,17 @@
 {% for task in part_component_prep_tasks %}
 {% if task.part == part %}
 <li> <a href = "{% url 'cptask-detail' task.pk %}">{{task}}</a> 
-      <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}text-warning {% elif task.status == 'p' %}text-info {% else %}text-body{% endif %}">- {{task.get_status_display}} </span> </li>
+      <span class ="{% if task.status == 'c' %}text-success
+       {% elif task.status == 'h' %}text-warning 
+       {% elif task.status == 'p' %}text-info {% else %}
+       text-body{% endif %}">
+       - {{task.get_status_display}} </span> 
+{% if task.status == "a" %}
+<span class = "text-success"> (Avaliable) </span>{% endif %}
+</li>
 {% endif %}
 {% endfor %}
 
-
-<br>
 </h5>
 {% else %}
 <h5 class = "text-success">
@@ -30,46 +35,21 @@ Component Prep Tasks Complete
 </h5>
 {% endif %}
 
-
-<br>
-<h4>Current Stacking Tasks</h4>
-<hr>
-{% if part in stacking_tasks_not_completed %}
-{% for task in part_stacking_tasks %}
-{% if task.part == part %}
-<li> <a href = "{% url 'stackingtask-detail' task.pk %}">{{task}}</a> 
-      <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
-      text-warning {% elif task.status == 'p' %}
-      text-info {% else %}text-body{% endif %}">
-      - {{task.get_status_display}} </span>
-      {% if task.status != "c" %}
-      {% if part in component_prep_tasks_not_completed %} 
-      <span class = "text-danger">- Not Avaliable </span>
-      {% else %}<span class = "text-success">- Avaliable </span>{% endif %}
-      {% endif %}
-       </li>
-{% endif %}
-{% endfor %}
-
-<br>
-
-{# #}
-{% else %}
-<h5 class = "text-success"> Stacking Tasks Complete </h5>
-{% endif %}
-
-
 <br>
 <h4>Current Forming Tasks</h4>
 <hr>
 {% if part in forming_tasks_not_completed %}
 {% for task in part_forming_tasks %}
+{% if task.part == part %}
 <li><a href = "{% url 'formingtask-detail' task.pk %}">{{task}}</a>
 <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
       text-warning {% elif task.status == 'p' %}
       text-info {% else %}text-body{% endif %}">
       - {{task.get_status_display}} </span>
+{% if task.status == "a" %}
+<span class = "text-success"> (Avaliable) </span>{% endif %}
 </li>
+{% endif %}
 {% endfor %}
 {% else %}
 <h5 class = "text-success">
@@ -78,21 +58,119 @@ Forming Tasks Complete
 {% endif %}
 
 <br>
+<h4>Current Stacking Tasks</h4>
+<hr>
+{% if part in stacking_tasks_not_completed %}
+
+{% for task in part_stacking_tasks %}
+{% if task.part == part %}
+<li>    {% if task.part in component_prep_tasks_not_completed %}
+      {{task}}
+      <span class = "text-danger">
+       (Not Avaliable)
+      </span>
+      {% else %}
+      <a href = "{% url 'stackingtask-detail' task.pk %}">{{task}}</a> 
+      <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
+      text-warning {% elif task.status == 'p' %}
+      text-info {% else %}text-body{% endif %}">
+      - {{task.get_status_display}} </span>
+      {% if task.status == "a" %}
+        <span class = "text-success"> (Avaliable) </span>{% endif %}
+      {% endif %}
+       </li>
+{% endif %}
+{% endfor %}
+
+{% else %}
+<h5 class = "text-success"> Stacking Tasks Complete </h5>
+{% endif %}
+
+<br>
+<h4>Current Wire Cut Tasks</h4>
+<hr>
+{% if part in wire_cut_tasks_not_completed %}
+
+{% for task in part_wire_cut_tasks %}
+{% if task.part == part %}
+<li>    {% if task.part in stacking_tasks_not_completed %}
+      {{task}}
+      <span class = "text-danger">
+       (Not Avaliable)
+      </span>
+      {% else %}
+      <a href = "{% url 'wirecuttask-detail' task.pk %}">{{task}}</a> 
+      <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
+      text-warning {% elif task.status == 'p' %}
+      text-info {% else %}text-body{% endif %}">
+      - {{task.get_status_display}} </span>
+      {% if task.status == "a" %}
+        <span class = "text-success"> (Avaliable) </span>{% endif %}
+      {% endif %}
+       </li>
+{% endif %}
+{% endfor %}
+
+{% else %}
+<h5 class = "text-success"> Wire Cut Tasks Complete </h5>
+{% endif %}
+
+<br>
+<h4>Current Pitching Tasks</h4>
+<hr>
+{% if part in pitching_tasks_not_completed %}
+{% for task in part_pitching_tasks %}
+{% if task.part == part %}
+<li>    {% if task.part in wire_cut_tasks_not_completed %}
+      {{task}}
+      <span class = "text-danger">
+       (Not Avaliable)
+      </span>
+      {% else %}
+      <a href = "{% url 'pitchingtask-detail' task.pk %}">{{task}}</a> 
+      <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
+      text-warning {% elif task.status == 'p' %}
+      text-info {% else %}text-body{% endif %}">
+      - {{task.get_status_display}} </span>
+      {% if task.status == "a" %}
+        <span class = "text-success"> (Avaliable) </span>{% endif %}
+      {% endif %}
+       </li>
+{% endif %}
+{% endfor %}
+
+{% else %}
+<h5 class = "text-success"> Pitching Tasks Complete </h5>
+{% endif %}
+
+<br>
 <h4>Current Header Plate Machining Tasks</h4>
 <hr>
 {% if part in HP_tasks_not_completed %}
 {% for task in part_header_plate_tasks %}
-<li><a href = "{% url 'hptask-detail' task.pk %}">{{task}}</a>
-<span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
+{% if task.part == part %}
+<li>    {% if task.part in pitching_tasks_not_completed %}
+      {{task}}
+      <span class = "text-danger">
+       (Not Avaliable)
+      </span>
+      {% else %}
+      <a href = "{% url 'hptask-detail' task.pk %}">{{task}}</a> 
+      <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
       text-warning {% elif task.status == 'p' %}
       text-info {% else %}text-body{% endif %}">
       - {{task.get_status_display}} </span>
-</li>
+      {% if task.status == "a" %}
+        <span class = "text-success"> (Avaliable) </span>{% endif %}
+      {% endif %}
+       </li>
+{% endif %}
 {% endfor %}
+
 {% else %}
-<h5 class = "text-success">
-Header Plate Machining Tasks Complete
-</h5>
+<h5 class = "text-success"> Header Plate Machining Tasks Complete </h5>
 {% endif %}
 </div>
+<br>
+<br>
 {% endblock %}

@@ -13,14 +13,27 @@
   {% endif %}
   <ul>
     {% for newtask in pitchingtask_list %}
-      <li> 
+     <li> 
+      {% if newtask.part in wire_cut_tasks_not_completed %}
+      {{newtask.part}} ({{newtask.part.team}}) Serial: - {{newtask.task}}
+      <span class = "text-danger">
+       (Not Avaliable)
+      </span>
+      {% else %}
       <a href = "{{newtask.get_absolute_url}}">{{newtask.part}} 
       ({{newtask.part.team}}) - {{newtask.task}}</a>
+
       <span class ="{% if newtask.status == 'c' %}text-success 
       {% elif newtask.status == 'h' %}text-warning 
       {% elif newtask.status == 'p' %}text-info 
       {% else %}text-body{% endif %}">
        - {{ newtask.get_status_display }}</span>
+       {% if newtask.status == "a" %}
+      <span class = "text-success">
+       (Avaliable)
+      </span>
+      {% endif %}
+      {% endif %}
         </li>
     {% endfor %}
   </ul>

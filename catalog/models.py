@@ -7,6 +7,41 @@ from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from django.utils import timezone
 
+class Wire_Cut_Task(models.Model):
+    """
+    Model for the required sheet metal forming tasks on the press:
+    """
+    title = models.CharField(max_length = 100, null = True)
+    
+    def __str__(self):
+        """String for Representing the model objetc (on admin site)"""
+        return self.title
+    
+class WireCutTaskInstance(models.Model):
+    """
+    Model for representing multiple sheet metal forming tasks required to be
+    completed
+    """
+    task = models.CharField(max_length = 100, null = True)
+    part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
+    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("c", "Complete"),
+                   ("p", "In Progress"), ("f", "Failed"))
+    status = models.CharField(max_length = 1, choices = TASK_STATUS, 
+                              blank = False, default = "a",
+                              help_text = "Set task completion status")
+    
+    class Meta:
+        ordering = ['status']
+
+    def __str__(self):
+        """String for Representing the model object (on admin site)"""
+        return self.task
+    
+    def get_absolute_url(self):
+        """Returns the url to access a detail record for this task."""
+        return reverse('wirecuttask-detail', args = [str(self.id)])
+
+
 class Pitching_Task(models.Model):
     """
     Model for the required sheet metal forming tasks on the press:
@@ -169,7 +204,12 @@ class Part(models.Model):
     Header_Plate_tasks = models.ManyToManyField("Header_Plate_Task", help_text = "\
                                                 Select The nessessary header \
                                                     plate tasks")
-    Pitching_tasks = models.ManyToManyField(Pitching_Task)
+    Pitching_tasks = models.ManyToManyField(Pitching_Task, help_text = "\
+                                            Select the nessessary pitching \
+                                                tasks")
+    Wire_Cut_tasks = models.ManyToManyField(Wire_Cut_Task, help_text = "\
+                                            Select the nessessary wire cut\
+                                                tasks")
     pub_date = models.DateTimeField("time published", default = timezone.now)
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""
@@ -263,5 +303,15 @@ def CreateNewPitchingTaskInstance(sender, **kwargs):
         try:
             PitchingTaskInstance.objects.get(task = task, part = obj)
         except:
-            print("Its a create problem")
             PitchingTaskInstance.objects.create(task = task, part = obj, status = "a")
+            
+# Create WireCut Tasks
+@receiver(m2m_changed, sender = Part.Wire_Cut_tasks.through)
+def CreateNewWireCutTaskInstance(sender, **kwargs):
+    obj = Part.objects.latest("pub_date")
+    WireCuttask_list = obj.Wire_Cut_tasks.all()
+    for task in WireCuttask_list:
+        try:
+            WireCutTaskInstance.objects.get(task = task, part = obj)
+        except:
+            WireCutTaskInstance.objects.create(task = task, part = obj, status = "a")
