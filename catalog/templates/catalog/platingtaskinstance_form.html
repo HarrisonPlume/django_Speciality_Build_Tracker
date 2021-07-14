@@ -1,10 +1,10 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<h1>Update Task Status: {{platinginstance.part}} 
-({{platinginstance.part.team}}) 
-Serial: {{platinginstance.part.serial}} 
-- {{platinginstance.task}} </h1>
+<h1>Update Task Status: {{platingtaskinstance.part}} 
+({{platingtaskinstance.part.team}}) 
+Serial: {{platingtaskinstance.part.serial}} 
+- {{platingtaskinstance.task}} </h1>
     <hr>
   <form action="" method="post">
     {% csrf_token %}

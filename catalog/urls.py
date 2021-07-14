@@ -136,8 +136,8 @@ urlpatterns += [
        name="platingtask-update-status"),
   path("platingTask/<int:pk>/delete/", views.PlatingTaskDelete.as_view(), 
        name="platingtask-delete"),
-  path("PlatingTask/<int:pk>/StartTask", views.StartPlatingTask, 
+  path("PlatingTask/<int:pk>/StartTask/", views.StartPlatingTask, 
        name="startplatingtask"),
-  path("PlatingTask/<int:pk>/FinishTask", views.FinishPlatingTask, 
+  path("PlatingTask/<int:pk>/FinishTask/", views.FinishPlatingTask, 
        name="finishplatingtask"),
     ]

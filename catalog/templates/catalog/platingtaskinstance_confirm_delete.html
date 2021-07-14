@@ -2,14 +2,14 @@
 
 {% block content %}
 
-<h1>Delete Task: {{platinginstance.part}} 
-  ({{platinginstance.part.team}}) Serial: {{platinginstance.part.serial}} - 
-  {{platinginstance}}</h1>
+<h1>Delete Task: {{platingtaskinstance.part}} 
+  ({{platingtaskinstance.part.team}}) Serial: {{platingtaskinstance.part.serial}} - 
+  {{platingtaskinstance}}</h1>
 
 <p>Are you sure you want to delete the task: 
-{{platinginstance.part}} 
-  ({{platinginstance.part.team}}) - 
-  {{platinginstance}}?</p>
+{{platingtaskinstance.part}} 
+  ({{platingtaskinstance.part.team}}) - 
+  {{platingtaskinstance}}?</p>
 
 <form action="" method="POST">
   {% csrf_token %}

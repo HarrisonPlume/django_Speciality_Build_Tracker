@@ -34,6 +34,10 @@ def index(request):
     #Render the HTML template index.html with the data in the context vairable
     return render(request, "index.html", context = context)
 
+
+def FinalChecks(request):
+    """View for finalising the core and peforming final checks"""
+
 # Part Classes
 class PartListView(generic.ListView):
     model = Part
@@ -55,6 +59,7 @@ class PartDetailView(generic.DetailView):
         part_pitching_tasks = PitchingTaskInstance.objects.all()
         part_wire_cut_tasks = WireCutTaskInstance.objects.all()
         part_deburr_tasks = DeburrTaskInstance.objects.all()
+        part_plating_tasks = PlatingTaskInstance.objects.all()
         #Component Prep Tasks for each individual part
         part = None
         Completedict = {}
@@ -137,6 +142,18 @@ class PartDetailView(generic.DetailView):
              else:
                 if task.status != "c":
                      DeburrCompletedict[task.part] = "Not Complete"
+                     
+        #Plating Tasks for each individual part
+        partpl = None
+        PlatingCompletedict = {}
+        for task in PlatingTaskInstance.objects.all():
+             if task.part != partpl:
+                 partpl = task.part
+                 if task.status != "c":
+                     PlatingCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     PlatingCompletedict[task.part] = "Not Complete"
         context["component_prep_tasks_not_completed"] = Completedict
         context["stacking_tasks_not_completed"] = StackingCompletedict
         context["forming_tasks_not_completed"] = FormingCompletedict
@@ -144,6 +161,7 @@ class PartDetailView(generic.DetailView):
         context["pitching_tasks_not_completed"] = PitchCompletedict
         context["wire_cut_tasks_not_completed"] = WCCompletedict
         context["deburr_tasks_not_completed"] = DeburrCompletedict
+        context["plating_tasks_not_completed"] = PlatingCompletedict
         
         context["part_component_prep_tasks"] = part_component_prep_tasks
         context["part_stacking_tasks"] = part_stacking_tasks
@@ -152,6 +170,7 @@ class PartDetailView(generic.DetailView):
         context["part_pitching_tasks"] = part_pitching_tasks
         context["part_header_plate_tasks"] = part_header_plate_tasks
         context["part_deburr_tasks"] = part_deburr_tasks
+        context["part_plating_tasks"] = part_plating_tasks
         
         return context
 
