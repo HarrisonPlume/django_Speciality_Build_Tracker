@@ -10,6 +10,10 @@ urlpatterns = [
          name = "cptask-update-status"),
     path("CPTask/<int:pk>/delete/", views.CPTaskDelete.as_view(), 
          name = "cptask-delete"),
+    path("CPTask/<int:pk>/StartTask", views.StartCPTask, 
+         name="startcptask"),
+    path("CPTask/<int:pk>/FinishTask", views.FinishCPTask, 
+       name="finishcptask"),
     ]
 # part url's
 urlpatterns += [
@@ -34,6 +38,10 @@ urlpatterns += [
        name = "stackingtask-update-status"),
   path("StackingTask/<int:pk>/delete/", views.StackingTaskDelete.as_view(), 
          name = "stackingtask-delete"),
+  path("StackingTask/<int:pk>/StartTask", views.StartStackTask, 
+         name="startstackingtask"),
+  path("StackingTask/<int:pk>/FinishTask", views.FinishStackTask, 
+         name="finishstackingtask"),
     ]
 
 #Forming Task Url's
@@ -46,6 +54,10 @@ urlpatterns += [
        name="formingtask-update-status"),
   path("FormingTask/<int:pk>/delete/", views.FormingTaskDelete.as_view(), 
        name="formingtask-delete"),
+  path("FormingTask/<int:pk>/StartTask", views.StartFormingTask, 
+         name="startformingtask"),
+  path("FormingTask/<int:pk>/FinishTask", views.FinishFormingTask, 
+         name="finishformingtask"),
     ]
 
 
@@ -60,6 +72,10 @@ urlpatterns += [
        name="hptask-update-status"),
   path("HPTask/<int:pk>/delete/", views.HeaderPlateTaskDelete.as_view(), 
        name="hptask-delete"),
+  path("HPTask/<int:pk>/StartTask", views.StartHeaderPlateTask, 
+         name="starthptask"),
+  path("HPTask/<int:pk>/FinishTask", views.FinishHeaderPlateTask, 
+         name="finishhptask"),
     ]
 
 #Pitching Task Url's
@@ -94,35 +110,18 @@ urlpatterns += [
        name="finishwirecuttask"),
     ]
 
-
-#Update Component prep task status
+#deburr Task Url's
 urlpatterns += [
-    path("CPTask/<int:pk>/StartTask", views.StartCPTask, 
-         name="startcptask"),
-    path("CPTask/<int:pk>/FinishTask", views.FinishCPTask, 
-       name="finishcptask"),
-  ]
-
-#Update stacking task status
-urlpatterns += [
-    path("StackingTask/<int:pk>/StartTask", views.StartStackTask, 
-         name="startstackingtask"),
-    path("StackingTask/<int:pk>/FinishTask", views.FinishStackTask, 
-         name="finishstackingtask"),
-  ]
-
-#Update forming task status
-urlpatterns += [
-    path("FormingTask/<int:pk>/StartTask", views.StartFormingTask, 
-         name="startformingtask"),
-    path("FormingTask/<int:pk>/FinishTask", views.FinishFormingTask, 
-         name="finishformingtask"),
-  ]
-
-#Update Header Plate task status
-urlpatterns += [
-    path("HPTask/<int:pk>/StartTask", views.StartHeaderPlateTask, 
-         name="starthptask"),
-    path("HPTask/<int:pk>/FinishTask", views.FinishHeaderPlateTask, 
-         name="finishhptask"),
-  ]
+  path("DeburrTasks/", views.DeburrTaskListView.as_view(), 
+       name="deburrtasks"),
+  path("DeburrTask/<int:pk>/", views.DeburrTaskDetailView.as_view(), 
+       name="deburrtask-detail"),
+  path("DeburrTask/<int:pk>/updatestatus/", views.DeburrTaskStatusUpdate.as_view(), 
+       name="deburrtask-update-status"),
+  path("DeburrTask/<int:pk>/delete/", views.DeburrTaskDelete.as_view(), 
+       name="deburrtask-delete"),
+  path("DeburrTask/<int:pk>/StartTask", views.StartDeburrTask, 
+       name="startdeburrtask"),
+  path("DeburrTask/<int:pk>/FinishTask", views.FinishDeburrTask, 
+       name="finishdeburrtask"),
+    ]

@@ -1,0 +1,43 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1><a href ="{% url 'part-detail' deburrtaskinstance.part.pk %}">{{deburrtaskinstance.part}} 
+  ({{deburrtaskinstance.part.team}}) Serial: {{deburrtaskinstance.part.serial}}</a> - 
+  {{deburrtaskinstance}}</h1>
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Status: 
+    <span class= "{% if deburrtaskinstance.status == 'c' %}text-success
+    {% elif deburrtaskinstance.status == 'h' %}text-warning
+    {% elif deburrtaskinstance.status == 'p' %}text-info
+    {% else %}text-body{% endif %}">
+    {{deburrtaskinstance.get_status_display}}</span>
+    {% if deburrtaskinstance.status != "c" %}
+    {% if deburrtaskinstance.part in header_plate_tasks_not_completed %}
+    <span class = "text-danger"> (Unavaliable)</span>
+    {% else %}
+    <span class = "text-success"> (Avaliable)</span>
+    {% endif %}
+    {% endif %}
+    {% if user.is_authenticated %} 
+    -
+    <a href = "{% url 'deburrtask-update-status' deburrtaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'deburrtask-delete' deburrtaskinstance.pk %}">Delete Task</a>
+    {% endif %}
+    </h4>
+      <hr>
+     <h5>Current options</h5>
+    {% if deburrtaskinstance.part in header_plate_tasks_not_completed %}
+    <p> Pitching and Header Plate Machining tasks incomplete </p>
+    {% else %}
+    {% if deburrtaskinstance.status == 'c' %}
+    <p>Task Complete</p> 
+    {% elif deburrtaskinstance.status == 'h' %}
+    <p><a href="{% url 'startdeburrtask' pk=deburrtaskinstance.pk %}">Resume Task</a></p>
+    {% elif deburrtaskinstance.status == 'a' %}
+    <p><a href="{% url 'startdeburrtask' pk=deburrtaskinstance.pk %}">Begin Task</a></p>
+    {% elif deburrtaskinstance.status == 'p' %}
+    <p><a href="{% url 'finishdeburrtask' pk=deburrtaskinstance.pk %}">Finish Task</a></p>
+    {% endif %}
+    {% endif %}
+  </div>
+{% endblock %}

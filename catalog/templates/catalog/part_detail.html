@@ -170,6 +170,34 @@ Forming Tasks Complete
 {% else %}
 <h5 class = "text-success"> Header Plate Machining Tasks Complete </h5>
 {% endif %}
+
+<br>
+<h4>Current Deburr Tasks</h4>
+<hr>
+{% if part in deburr_tasks_not_completed %}
+{% for task in part_deburr_tasks %}
+{% if task.part == part %}
+<li>    {% if task.part in HP_tasks_not_completed %}
+      {{task}}
+      <span class = "text-danger">
+       (Not Avaliable)
+      </span>
+      {% else %}
+      <a href = "{% url 'deburrtask-detail' task.pk %}">{{task}}</a> 
+      <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
+      text-warning {% elif task.status == 'p' %}
+      text-info {% else %}text-body{% endif %}">
+      - {{task.get_status_display}} </span>
+      {% if task.status == "a" %}
+        <span class = "text-success"> (Avaliable) </span>{% endif %}
+      {% endif %}
+       </li>
+{% endif %}
+{% endfor %}
+
+{% else %}
+<h5 class = "text-success"> Header Plate Machining Tasks Complete </h5>
+{% endif %}
 </div>
 <br>
 <br>

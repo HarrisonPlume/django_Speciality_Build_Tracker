@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance, PitchingTaskInstance, WireCutTaskInstance
+from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance, PitchingTaskInstance, WireCutTaskInstance, DeburrTaskInstance
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
@@ -54,6 +54,7 @@ class PartDetailView(generic.DetailView):
         part_header_plate_tasks = HeaderPlateTaskInstance.objects.all()
         part_pitching_tasks = PitchingTaskInstance.objects.all()
         part_wire_cut_tasks = WireCutTaskInstance.objects.all()
+        part_deburr_tasks = DeburrTaskInstance.objects.all()
         #Component Prep Tasks for each individual part
         part = None
         Completedict = {}
@@ -124,25 +125,41 @@ class PartDetailView(generic.DetailView):
              else:
                 if task.status != "c":
                      HPCompletedict[task.part] = "Not Complete"
+                     
+        #Deburr Tasks for each individual part
+        partdb = None
+        DeburrCompletedict = {}
+        for task in DeburrTaskInstance.objects.all():
+             if task.part != partdb:
+                 partdb = task.part
+                 if task.status != "c":
+                     DeburrCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     DeburrCompletedict[task.part] = "Not Complete"
         context["component_prep_tasks_not_completed"] = Completedict
         context["stacking_tasks_not_completed"] = StackingCompletedict
         context["forming_tasks_not_completed"] = FormingCompletedict
         context["HP_tasks_not_completed"] = HPCompletedict
         context["pitching_tasks_not_completed"] = PitchCompletedict
         context["wire_cut_tasks_not_completed"] = WCCompletedict
+        context["deburr_tasks_not_completed"] = DeburrCompletedict
+        
         context["part_component_prep_tasks"] = part_component_prep_tasks
         context["part_stacking_tasks"] = part_stacking_tasks
         context["part_forming_tasks"] = part_forming_tasks
         context["part_wire_cut_tasks"] = part_wire_cut_tasks
         context["part_pitching_tasks"] = part_pitching_tasks
         context["part_header_plate_tasks"] = part_header_plate_tasks
+        context["part_deburr_tasks"] = part_deburr_tasks
+        
         return context
 
 class PartCreate(LoginRequiredMixin,CreateView):
     model = Part 
     fields = ['title','serial', 'team', 'Component_Prep_tasks','Stacking_tasks',
               'Forming_tasks','Header_Plate_tasks','Pitching_tasks',
-              'Wire_Cut_tasks','pub_date']
+              'Wire_Cut_tasks','Deburr_tasks','pub_date']
     initial = {'pub_date': timezone.now}
     success_url = reverse_lazy('parts')
     
@@ -484,3 +501,69 @@ def FinishWireCutTask(request, pk):
     Task.status = "c"
     Task.save()
     return HttpResponseRedirect(reverse('wirecuttasks'))
+
+
+#Deburr Task Views
+class DeburrTaskListView(generic.ListView):
+    model = DeburrTaskInstance
+    context_object_name = "deburrtask_list"
+    template_name = "deburrtask/deburrtaskinstance_list.html"
+    paginate_by = 10
+    
+    def get_context_data(self, **kwargs):
+         context = super().get_context_data(**kwargs)
+         num_tasks_not_started = DeburrTaskInstance.objects.filter(status__exact="a").count()
+         tasks_remaining = DeburrTaskInstance.objects.exclude(status__exact="c").count()
+         part = None
+         Completedict = {}
+         for task in HeaderPlateTaskInstance.objects.all():
+             if task.part != part:
+                 part = task.part
+                 if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+             else:
+                if task.status != "c":
+                     Completedict[task.part] = "Not Complete"
+         context["header_plate_tasks_not_completed"] = Completedict
+         context["num_tasks_not_started"] = num_tasks_not_started
+         context["tasks_remaining"] = tasks_remaining
+         return context
+
+class DeburrTaskDetailView(generic.DetailView):
+    model = DeburrTaskInstance
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        part = None
+        Completedict = {}
+        for task in HeaderPlateTaskInstance.objects.all():
+            if task.part != part:
+                part = task.part
+                if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+            else:
+                if task.status != "c":
+                    Completedict[task.part] = "Not Complete"
+        context["header_plate_tasks_not_completed"] = Completedict
+        return context
+    
+class DeburrTaskStatusUpdate(LoginRequiredMixin,UpdateView):
+    model = DeburrTaskInstance
+    fields = ['status'] 
+    success_url = reverse_lazy('deburrtasks')
+    
+class DeburrTaskDelete(LoginRequiredMixin,DeleteView):
+    model = DeburrTaskInstance
+    success_url = reverse_lazy('deburrtasks')
+    
+def StartDeburrTask(request, pk):
+    Task = DeburrTaskInstance.objects.get(pk = pk)
+    Task.status = "p"
+    Task.save()
+    return HttpResponseRedirect(reverse('deburrtasks'))
+
+def FinishDeburrTask(request, pk):
+    Task = DeburrTaskInstance.objects.get(pk = pk)
+    Task.status = "c"
+    Task.save()
+    return HttpResponseRedirect(reverse('deburrtasks'))

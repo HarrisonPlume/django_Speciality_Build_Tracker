@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1>Delete Task: {{deburrtaskinstance.part}} 
+  ({{deburrtaskinstance.part.team}}) 
+  Serial: {{deburrtaskinstance.part.serial}} 
+  - {{deburrtaskinstance}}</h1>
+
+<p>Are you sure you want to delete the task: 
+{{deburrtaskinstance.part}} 
+  ({{deburrtaskinstance.part.team}}) 
+  Serial: {{deburrtaskinstance.part.serial}} 
+  - {{deburrtaskinstance}}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Yes, delete.">
+</form>
+
+{% endblock %}
