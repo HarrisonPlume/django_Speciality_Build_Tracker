@@ -140,7 +140,7 @@ class PartDetailView(generic.DetailView):
 
 class PartCreate(LoginRequiredMixin,CreateView):
     model = Part 
-    fields = ['title', 'team', 'Component_Prep_tasks','Stacking_tasks',
+    fields = ['title','serial', 'team', 'Component_Prep_tasks','Stacking_tasks',
               'Forming_tasks','Header_Plate_tasks','Pitching_tasks',
               'Wire_Cut_tasks','pub_date']
     initial = {'pub_date': timezone.now}
@@ -160,7 +160,7 @@ class CpTaskListView(generic.ListView):
     model = ComponentPrepTaskInstance
     context_object_name = "cptask_list"
     template_name = "cptask_list.html"
-    paginate_by = 30
+    paginate_by = 20
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

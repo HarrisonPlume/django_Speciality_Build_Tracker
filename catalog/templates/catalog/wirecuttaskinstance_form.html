@@ -2,7 +2,9 @@
 
 {% block content %}
 <h1>Update Task Status: {{wirecuttaskinstance.part}} 
-({{wirecuttaskinstance.part.team}}) - {{wirecuttaskinstance.task}} </h1>
+({{wirecuttaskinstance.part.team}}) 
+Serial: {{wirecuttaskinstance.part.serial}} 
+- {{wirecuttaskinstance.task}} </h1>
     <hr>
   <form action="" method="post">
     {% csrf_token %}

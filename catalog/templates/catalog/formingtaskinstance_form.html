@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Update Task Status: {{formingtaskinstance.part}} 
-({{formingtaskinstance.part.team}}) - {{formingtaskinstance.task}} </h1>
+({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}} - {{formingtaskinstance.task}} </h1>
     <hr>
   <form action="" method="post">
     {% csrf_token %}

@@ -2,7 +2,9 @@
 
 {% block content %}
 <h1>Update Task Status: {{stackingtaskinstance.part}} 
-({{stackingtaskinstance.part.team}}) - {{stackingtaskinstance.task}} </h1>
+({{stackingtaskinstance.part.team}}) 
+Serial: {{stackingtaskinstance.part.serial}} 
+- {{stackingtaskinstance.task}} </h1>
     <hr>
   <form action="" method="post">
     {% csrf_token %}

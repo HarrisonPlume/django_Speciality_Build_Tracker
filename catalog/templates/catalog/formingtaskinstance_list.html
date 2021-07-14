@@ -15,7 +15,7 @@
     {% for newtask in formingtask_list %}
       <li> 
       <a href = "{{newtask.get_absolute_url}}">{{newtask.part}} 
-      ({{newtask.part.team}}) - {{newtask.task}}</a>
+      ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
       <span class ="{% if newtask.status == 'c' %}text-success 
       {% elif newtask.status == 'h' %}text-warning 
       {% elif newtask.status == 'p' %}text-info 

@@ -4,7 +4,7 @@
 
 <h1>Delete part</h1>
 
-<p>Are you sure you want to delete the part: {{ part }} - ({{part.team}})?</p>
+<p>Are you sure you want to delete the part: {{ part }} - ({{part.team}}) Serial: {{ part.serial }}?</p>
 
 <form action="" method="POST">
   {% csrf_token %}

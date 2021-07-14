@@ -3,12 +3,14 @@
 {% block content %}
 
 <h1>Delete Task: {{headerplatetaskinstance.part}} 
-  ({{headerplatetaskinstance.part.team}}) - 
+  ({{headerplatetaskinstance.part.team}}) 
+  Serial: {{headerplatetaskinstance.part.serial}}  - 
   {{headerplatetaskinstance}}</h1>
 
 <p>Are you sure you want to delete the task: 
 {{headerplatetaskinstance.part}} 
-  ({{headerplatetaskinstance.part.team}}) - 
+  ({{headerplatetaskinstance.part.team}})
+  Serial: {{headerplatetaskinstance.part.serial}}- 
   {{headerplatetaskinstance}}?</p>
 
 <form action="" method="POST">

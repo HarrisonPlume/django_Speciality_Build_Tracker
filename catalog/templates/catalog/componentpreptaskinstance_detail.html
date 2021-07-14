@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1><a href ="{% url 'part-detail' componentpreptaskinstance.part.pk %}">{{componentpreptaskinstance.part}} 
-  ({{componentpreptaskinstance.part.team}})</a> - 
+  ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}}</a> - 
   {{componentpreptaskinstance}}</h1>
   <div style="margin-left:20px;margin-top:20px">
     <h4>Status: 

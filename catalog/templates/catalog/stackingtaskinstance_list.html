@@ -15,13 +15,15 @@
     {% for newtask in stackingtask_list %}
       <li> 
       {% if newtask.part in component_prep_tasks_not_completed %}
-      {{newtask.part}} ({{newtask.part.team}}) - {{newtask.task}}
+      {{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}}
+       - {{newtask.task}}
       <span class = "text-danger">
        (Not Avaliable)
       </span>
       {% else %}
       <a href = "{{newtask.get_absolute_url}}">{{newtask.part}} 
-      ({{newtask.part.team}}) - {{newtask.task}}</a>
+      ({{newtask.part.team}}) Serial: {{newtask.part.serial}}
+       - {{newtask.task}}</a>
 
       <span class ="{% if newtask.status == 'c' %}text-success 
       {% elif newtask.status == 'h' %}text-warning 

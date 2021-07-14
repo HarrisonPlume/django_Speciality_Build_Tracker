@@ -193,6 +193,7 @@ class Team(models.Model):
 class Part(models.Model):
     """ Model represents a Part to be completed"""
     title = models.CharField(max_length = 100)
+    serial = models.IntegerField(null = True)
     team = models.ForeignKey(Team, on_delete = models.RESTRICT, null = True)
     Component_Prep_tasks = models.ManyToManyField(Component_Prep_Task, help_text = "Select \
                                      the component prep tasks \
@@ -218,6 +219,9 @@ class Part(models.Model):
     def get_absolute_url(self):
         """Returns the url to access a sepecfic author instance."""
         return reverse("part-detail", args=[str(self.id)])
+    
+    class Meta:
+        ordering = ['title','serial']
     
 class Header_Plate_Task(models.Model):
     """Model representing the required Header Plate Tasks"""

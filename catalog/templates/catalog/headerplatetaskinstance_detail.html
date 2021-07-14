@@ -2,7 +2,8 @@
 
 {% block content %}
   <h1><a href ="{% url 'part-detail' headerplatetaskinstance.part.pk %}">{{headerplatetaskinstance.part}} 
-  ({{headerplatetaskinstance.part.team}})</a> - 
+  ({{headerplatetaskinstance.part.team}}) 
+  Serial: {{headerplatetaskinstance.part.serial}}</a> - 
   {{headerplatetaskinstance}}</h1>
   <div style="margin-left:20px;margin-top:20px">
     <h4>Status: 

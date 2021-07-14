@@ -3,13 +3,15 @@
 {% block content %}
 
 <h1>Delete Task: {{wirecuttaskinstance.part}} 
-  ({{wirecuttaskinstance.part.team}}) - 
-  {{wirecuttaskinstance}}</h1>
+  ({{wirecuttaskinstance.part.team}}) 
+  Serial: {{wirecuttaskinstance.part.serial}} 
+  - {{wirecuttaskinstance}}</h1>
 
 <p>Are you sure you want to delete the task: 
 {{wirecuttaskinstance.part}} 
-  ({{wirecuttaskinstance.part.team}}) - 
-  {{wirecuttaskinstance}}?</p>
+  ({{wirecuttaskinstance.part.team}}) 
+  Serial: {{wirecuttaskinstance.part.serial}} 
+  - {{wirecuttaskinstance}}?</p>
 
 <form action="" method="POST">
   {% csrf_token %}

@@ -3,13 +3,15 @@
 {% block content %}
 
 <h1>Delete Task: {{stackingtaskinstance.part}} 
-  ({{stackingtaskinstance.part.team}}) - 
+  ({{stackingtaskinstance.part.team}}) 
+  Serial: {{stackingtaskinstance.part.serial}}- 
   {{stackingtaskinstance}}</h1>
 
 <p>Are you sure you want to delete the task: 
 {{stackingtaskinstance.part}} 
-  ({{stackingtaskinstance.part.team}}) - 
-  {{stackingtaskinstance}}?</p>
+  ({{stackingtaskinstance.part.team}}) 
+  Serial: {{stackingtaskinstance.part.serial}} 
+   - {{stackingtaskinstance}}?</p>
 
 <form action="" method="POST">
   {% csrf_token %}

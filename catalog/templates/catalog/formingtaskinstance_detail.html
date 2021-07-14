@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1><a href ="{% url 'part-detail' formingtaskinstance.part.pk %}">{{formingtaskinstance.part}} 
-  ({{formingtaskinstance.part.team}})</a> - 
+  ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}}</a> - 
   {{formingtaskinstance}}</h1>
   <div style="margin-left:20px;margin-top:20px">
     <h4>Status: 

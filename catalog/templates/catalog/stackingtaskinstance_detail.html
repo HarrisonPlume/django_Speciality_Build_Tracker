@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1><a href = "{% url 'part-detail' stackingtaskinstance.part.pk %}">{{stackingtaskinstance.part}} 
-  ({{stackingtaskinstance.part.team}})</a> - 
+  ({{stackingtaskinstance.part.team}})</a> Serial: {{stackingtaskinstance.part.serial}}  - 
   {{stackingtaskinstance}}</h1>
   <div style="margin-left:20px;margin-top:20px">
     <h4>Status: 

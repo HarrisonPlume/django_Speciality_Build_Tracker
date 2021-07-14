@@ -12,7 +12,8 @@
   <ul>
     {% for part in part_list %}
       <li>
-        <a href="{{ part.get_absolute_url }}">{{ part.title }} ({{part.team}})</a>
+        <a href="{{ part.get_absolute_url }}">{{ part.title }} ({{part.team}})
+        Serial: {{part.serial}}</a>
       </li>
     {% endfor %}
   </ul>
