@@ -2,10 +2,11 @@ from django.views import generic
 from django.shortcuts import render, get_object_or_404
 from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance, PitchingTaskInstance, WireCutTaskInstance, DeburrTaskInstance, PlatingTaskInstance
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.template.defaulttags import register
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from catalog.forms import RenewBookForm
@@ -34,9 +35,42 @@ def index(request):
     #Render the HTML template index.html with the data in the context vairable
     return render(request, "index.html", context = context)
 
-
+@login_required
 def FinalChecks(request):
     """View for finalising the core and peforming final checks"""
+    Parts =Part.objects.all()
+    CompleteDict = {}
+    for part in Parts:
+        for task in ComponentPrepTaskInstance.objects.all():
+            if task.status != "c":
+                CompleteDict[task.part.title]= task.task
+        for task in StackingTaskInstance.objects.all():
+            if task.status != "c":
+                CompleteDict[task.part.title]= task.task
+        for task in WireCutTaskInstance.objects.all():
+            if task.status != "c":
+                CompleteDict[task.part.title]= task.task
+        for task in PitchingTaskInstance.objects.all():
+            if task.status != "c":
+                CompleteDict[task.part.title]= task.task
+        for task in HeaderPlateTaskInstance.objects.all():
+            if task.status != "c":
+                CompleteDict[task.part.title]= task.task
+        for task in DeburrTaskInstance.objects.all():
+            if task.status != "c":
+                CompleteDict[task.part.title]= task.task
+        for task in PlatingTaskInstance.objects.all():
+            if task.status != "c":
+                CompleteDict[task.part.title]= task.task
+    print(CompleteDict)
+    context = {"Parts": Parts,
+               "Check_Tasks_Completed": CompleteDict,
+               }
+    
+    return render(request, "final_checks.html", context = context)
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
 
 # Part Classes
 class PartListView(generic.ListView):
@@ -651,3 +685,9 @@ def FinishPlatingTask(request, pk):
     Task.status = "c"
     Task.save()
     return HttpResponseRedirect(reverse('platingtasks'))
+
+#Complete Core 
+class PartComplete(LoginRequiredMixin,DeleteView):
+    model = Part 
+    template_name = "catalog/part_confirm_complete.html"
+    success_url = reverse_lazy('index')

@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1>Sign off part {{ part }} - ({{part.team}}) Serial: {{ part.serial }}</h1>
+
+<p>Are you sure you want to sign off the part: {{ part }} - ({{part.team}}) Serial: {{ part.serial }}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Sign Off Core.">
+</form>
+
+{% endblock %}

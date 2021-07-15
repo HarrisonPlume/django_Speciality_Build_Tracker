@@ -1,0 +1,22 @@
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Final checks and core sign off</h1>
+  <br>
+  <h2>Core List</h2>
+    <hr>
+    {% for part in Parts %}
+    {% if part.title in Check_Tasks_Completed %}
+    <li>{{part.title}} ({{part.team}}) Serial: {{part.serial}} -  
+    <strong>Core Incomplete</strong><br>
+     <strong>Incomplete Task:</strong>
+     {{Check_Tasks_Completed|get_item:part.title}}</li>
+    {% else %}
+    <li>{{part.title}} ({{part.team}}) Serial: {{part.serial}} 
+    <span class = "text-success"> (All Tasks Completed)</span> 
+    <a href = "{% url 'part-complete' part.pk %}"> Sign off Core</a></li>
+    {% endif %}
+    {% endfor %}
+        
+{% endblock %}

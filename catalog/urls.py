@@ -3,6 +3,7 @@ from . import views
 #component prep url's
 urlpatterns = [
     path("", views.index, name = "index"),
+    path("FinalChecks/", views.FinalChecks, name = "finalchecks"),
     path("CPTasks/", views.CpTaskListView.as_view(), name="cptasks"),
     path("CPTask/<int:pk>/", views.CPTaskDetailView.as_view(), 
          name = "cptask-detail"),
@@ -141,3 +142,8 @@ urlpatterns += [
   path("PlatingTask/<int:pk>/FinishTask/", views.FinishPlatingTask, 
        name="finishplatingtask"),
     ]
+
+urlpatterns += [
+    path('part/<int:pk>/complete/', views.PartComplete.as_view(), 
+         name='part-complete'),
+]
