@@ -8,7 +8,12 @@
   <h2>Current Tasks</h2>
     <div> <a href="{% url 'parts' %}"> Parts in progress:</a> {{ num_parts }}</div>
     <hr>
-    <li>Tasks Outstanding: {{ tasks_remaning}}</li>
     <li> <a href="{% url 'cptasks' %}"> Component Prep Tasks:</a> {{ num_CpTasks }} </li>
     <li> <a href="{% url 'stackingtasks' %}"> Stacking Tasks:</a> {{ num_Stacking_Tasks }} </li>
+    <li> <a href="{% url 'formingtasks' %}"> Forming Tasks:</a> {{ num_Forming_Tasks }} </li>
+    <li> <a href="{% url 'wirecuttasks' %}"> Wire Cut Tasks:</a> {{ num_Wire_Cut_Tasks }} </li>
+    <li> <a href="{% url 'pitchingtasks' %}"> Pitching Tasks:</a> {{ num_Pitching_Tasks }} </li>
+    <li> <a href="{% url 'headerplatetasks' %}"> Header Plate Machining Tasks:</a> {{ num_HP_Tasks }} </li>
+    <li> <a href="{% url 'deburrtasks' %}"> Deburring Tasks:</a> {{ num_Deburr_Tasks }} </li>
+    <li> <a href="{% url 'platingtasks' %}"> Plating Tasks:</a> {{ num_Plating_Tasks }} </li>
 {% endblock %}

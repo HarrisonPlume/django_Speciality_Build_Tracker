@@ -15,21 +15,27 @@ def index(request):
     """View for the home page of the website"""
     
     #Generate counts for soe of the main objetcs
-    num_CpTasks = ComponentPrepTaskInstance.objects.all().count()
-    num_Stacking_Tasks = StackingTaskInstance.objects.all().count()
-    
-    #avalible tasks remaining
-    tasks_remaning = ComponentPrepTaskInstance.objects.exclude(status__exact="c").count()
-    
-    #all() is implied by default
+    num_CpTasks = ComponentPrepTaskInstance.objects.exclude(status__exact="c").count()
+    num_Forming_Tasks = FormingTaskInstance.objects.exclude(status__exact="c").count()
+    num_Stacking_Tasks = StackingTaskInstance.objects.exclude(status__exact="c").count()
+    num_Wire_Cut_Tasks = WireCutTaskInstance.objects.exclude(status__exact="c").count()
+    num_Pitching_Tasks = PitchingTaskInstance.objects.exclude(status__exact="c").count()
+    num_HP_Tasks = HeaderPlateTaskInstance.objects.exclude(status__exact="c").count()
+    num_Deburr_Tasks = DeburrTaskInstance.objects.exclude(status__exact="c").count()
+    num_Plating_Tasks = PlatingTaskInstance.objects.exclude(status__exact ="c").count()
     num_parts = Part.objects.all().count()
     
     #Number of site visits by the current user    
     context = {
         "num_CpTasks": num_CpTasks,
         "num_parts": num_parts,  
-        "tasks_remaning":tasks_remaning,
         "num_Stacking_Tasks": num_Stacking_Tasks,
+        "num_Forming_Tasks": num_Forming_Tasks,
+        "num_Wire_Cut_Tasks": num_Wire_Cut_Tasks,
+        "num_Pitching_Tasks" : num_Pitching_Tasks,
+        "num_HP_Tasks" : num_HP_Tasks,
+        "num_Deburr_Tasks" : num_Deburr_Tasks,
+        "num_Plating_Tasks" : num_Plating_Tasks,
         }
     
     #Render the HTML template index.html with the data in the context vairable
@@ -62,7 +68,6 @@ def FinalChecks(request):
         for task in PlatingTaskInstance.objects.all():
             if task.status != "c":
                 CompleteDict[task.part.title]= task.task
-    print(CompleteDict)
     context = {"Parts": Parts,
                "Check_Tasks_Completed": CompleteDict,
                }
