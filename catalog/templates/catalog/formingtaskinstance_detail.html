@@ -1,32 +1,63 @@
-{% extends "base_generic.html" %}
+<html>
+<head>
+<style>
 
+a.ex3 {color: black;}
+
+</style>
+</head>
+<body>
+{% extends "base_generic.html" %}
+{% load static %}
 {% block content %}
   <h1><a href ="{% url 'part-detail' formingtaskinstance.part.pk %}">{{formingtaskinstance.part}} 
   ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}}</a> - 
   {{formingtaskinstance}}</h1>
   <div style="margin-left:20px;margin-top:20px">
-    <h4>Status: 
-    <span class= "{% if formingtaskinstance.status == 'c' %}text-success
-    {% elif formingtaskinstance.status == 'h' %}text-warning
-    {% elif formingtaskinstance.status == 'p' %}text-info
-    {% else %}text-body{% endif %}">
-    {{formingtaskinstance.get_status_display}}</span>
+    <h4>Status: </h4>
+{% if formingtaskinstance.status == "z" %}
+    <span title="Task Complete">
+      <div class = "text-success">{{formingtaskinstance.part}} ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}} - {{formingtaskinstance.task}}</div>
+       <img src="{% static 'catalog/tick.png' %}" alt="Complete">
+       </span>
+    {% elif formingtaskinstance.status == "b" %}
+    <span title="Task in progress">
+      <div class = "text-info">{{formingtaskinstance.part}} ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}} - {{formingtaskinstance.task}}</div>
+       <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress">
+       </span>
+    {% elif formingtaskinstance.status == "h" %}
+    <span title="Task on hold">
+       <div class = "text-warning">{{formingtaskinstance.part}} ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}} - {{formingtaskinstance.task}}</div>
+       <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold">
+       </span>
+       {% elif formingtaskinstance.status == "a" %}
+       <span title="Task not yet started">
+        <div class = "ex3">{{formingtaskinstance.part}} ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}} - {{formingtaskinstance.task}}</div>
+      <span class = "text-success">
+      (Avaliable)
+      </span>
+      </span>
+      {% else %}
+      <span title="Task Failed">
+       <div  class = "text-danger" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</div>
+       </span>
+      {% endif %}
+    {{formingtaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
     -
     <a href = "{% url 'formingtask-update-status' formingtaskinstance.pk %}">
      Edit status</a>, <a href="{% url 'formingtask-delete' formingtaskinstance.pk %}">Delete Task</a>
     {% endif %}
-    </h4>
+    
       <hr>
      <h5>Current options</h5>
-    {% if formingtaskinstance.status == 'c' %}
+    {% if formingtaskinstance.status == 'z' %}
     <p>Task Complete</p> 
     {% elif formingtaskinstance.status == 'h' %}
     <p><a href="{% url 'startformingtask' pk=formingtaskinstance.pk %}">Resume Task</a></p>
     {% elif formingtaskinstance.status == 'a' %}
     <p><a href="{% url 'startformingtask' pk=formingtaskinstance.pk %}">Begin Task</a></p>
-    {% elif formingtaskinstance.status == 'p' %}
+    {% elif formingtaskinstance.status == 'b' %}
     <p><a href="{% url 'finishformingtask' pk=formingtaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
-  </div>
 {% endblock %}

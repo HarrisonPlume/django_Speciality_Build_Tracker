@@ -8,21 +8,23 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.template.defaulttags import register
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-
+from django.views.generic import ListView
+from django_tables2 import SingleTableView
+from .tables import PartTable
 from catalog.forms import RenewBookForm
 
 def index(request):
     """View for the home page of the website"""
     
     #Generate counts for soe of the main objetcs
-    num_CpTasks = ComponentPrepTaskInstance.objects.exclude(status__exact="c").count()
-    num_Forming_Tasks = FormingTaskInstance.objects.exclude(status__exact="c").count()
-    num_Stacking_Tasks = StackingTaskInstance.objects.exclude(status__exact="c").count()
-    num_Wire_Cut_Tasks = WireCutTaskInstance.objects.exclude(status__exact="c").count()
-    num_Pitching_Tasks = PitchingTaskInstance.objects.exclude(status__exact="c").count()
-    num_HP_Tasks = HeaderPlateTaskInstance.objects.exclude(status__exact="c").count()
-    num_Deburr_Tasks = DeburrTaskInstance.objects.exclude(status__exact="c").count()
-    num_Plating_Tasks = PlatingTaskInstance.objects.exclude(status__exact ="c").count()
+    num_CpTasks = ComponentPrepTaskInstance.objects.exclude(status__exact="z").count()
+    num_Forming_Tasks = FormingTaskInstance.objects.exclude(status__exact="z").count()
+    num_Stacking_Tasks = StackingTaskInstance.objects.exclude(status__exact="z").count()
+    num_Wire_Cut_Tasks = WireCutTaskInstance.objects.exclude(status__exact="z").count()
+    num_Pitching_Tasks = PitchingTaskInstance.objects.exclude(status__exact="z").count()
+    num_HP_Tasks = HeaderPlateTaskInstance.objects.exclude(status__exact="z").count()
+    num_Deburr_Tasks = DeburrTaskInstance.objects.exclude(status__exact="z").count()
+    num_Plating_Tasks = PlatingTaskInstance.objects.exclude(status__exact ="z").count()
     num_parts = Part.objects.all().count()
     
     #Number of site visits by the current user    
@@ -41,6 +43,139 @@ def index(request):
     #Render the HTML template index.html with the data in the context vairable
     return render(request, "index.html", context = context)
 
+
+class PartDashboardView(generic.ListView):
+    model = Part
+    context_object_name = "part_list"
+    table_class = PartTable
+    template_name = 'part_table.html'
+    paginate_by = 10
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        part_component_prep_tasks = ComponentPrepTaskInstance.objects.all()
+        part_stacking_tasks = StackingTaskInstance.objects.all()
+        part_forming_tasks = FormingTaskInstance.objects.all()
+        part_header_plate_tasks = HeaderPlateTaskInstance.objects.all()
+        part_pitching_tasks = PitchingTaskInstance.objects.all()
+        part_wire_cut_tasks = WireCutTaskInstance.objects.all()
+        part_deburr_tasks = DeburrTaskInstance.objects.all()
+        part_plating_tasks = PlatingTaskInstance.objects.all()
+        #Component Prep Tasks for each individual part
+        part = None
+        Completedict = {}
+        for task in ComponentPrepTaskInstance.objects.all():
+             if task.part != part:
+                 part = task.part
+                 if task.status != "z":
+                     Completedict[task.part] = "Not Complete"
+             else:
+                if task.status != "z":
+                     Completedict[task.part] = "Not Complete"
+                     
+        #Stacking Tasks for each individual part
+        partst = None
+        StackingCompletedict = {}
+        for task in StackingTaskInstance.objects.all():
+             if task.part != partst:
+                 partst = task.part
+                 if task.status != "z":
+                     StackingCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "z":
+                     StackingCompletedict[task.part] = "Not Complete"
+        #Forming Tasks for each individual part
+        partfo = None
+        FormingCompletedict = {}
+        for task in FormingTaskInstance.objects.all():
+             if task.part != partfo:
+                 partfo = task.part
+                 if task.status != "z":
+                     FormingCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "z":
+                     FormingCompletedict[task.part] = "Not Complete"
+                     
+        #Wire Cut Tasks for each individual part
+        partwc = None
+        WCCompletedict = {}
+        for task in WireCutTaskInstance.objects.all():
+             if task.part != partwc:
+                 partwc = task.part
+                 if task.status != "z":
+                     WCCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "z":
+                     WCCompletedict[task.part] = "Not Complete" 
+                     
+        #Pitching Tasks for each individual part
+        partpt = None
+        PitchCompletedict = {}
+        for task in PitchingTaskInstance.objects.all():
+             if task.part != partpt:
+                 partpt = task.part
+                 if task.status != "z":
+                     PitchCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "z":
+                     PitchCompletedict[task.part] = "Not Complete" 
+                     
+        #Hp Machining Tasks for each individual part
+        parthp = None
+        HPCompletedict = {}
+        for task in HeaderPlateTaskInstance.objects.all():
+             if task.part != parthp:
+                 parthp = task.part
+                 if task.status != "z":
+                     HPCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "z":
+                     HPCompletedict[task.part] = "Not Complete"
+                     
+        #Deburr Tasks for each individual part
+        partdb = None
+        DeburrCompletedict = {}
+        for task in DeburrTaskInstance.objects.all():
+             if task.part != partdb:
+                 partdb = task.part
+                 if task.status != "z":
+                     DeburrCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "z":
+                     DeburrCompletedict[task.part] = "Not Complete"
+                     
+        #Plating Tasks for each individual part
+        partpl = None
+        PlatingCompletedict = {}
+        for task in PlatingTaskInstance.objects.all():
+             if task.part != partpl:
+                 partpl = task.part
+                 if task.status != "z":
+                     PlatingCompletedict[task.part] = "Not Complete"
+             else:
+                if task.status != "z":
+                     PlatingCompletedict[task.part] = "Not Complete"
+        context["component_prep_tasks_not_completed"] = Completedict
+        context["stacking_tasks_not_completed"] = StackingCompletedict
+        context["forming_tasks_not_completed"] = FormingCompletedict
+        context["HP_tasks_not_completed"] = HPCompletedict
+        context["pitching_tasks_not_completed"] = PitchCompletedict
+        context["wire_cut_tasks_not_completed"] = WCCompletedict
+        context["deburr_tasks_not_completed"] = DeburrCompletedict
+        context["plating_tasks_not_completed"] = PlatingCompletedict
+        
+        context["part_component_prep_tasks"] = part_component_prep_tasks
+        context["part_stacking_tasks"] = part_stacking_tasks
+        context["part_forming_tasks"] = part_forming_tasks
+        context["part_wire_cut_tasks"] = part_wire_cut_tasks
+        context["part_pitching_tasks"] = part_pitching_tasks
+        context["part_header_plate_tasks"] = part_header_plate_tasks
+        context["part_deburr_tasks"] = part_deburr_tasks
+        context["part_plating_tasks"] = part_plating_tasks
+        
+        return context
+        
+
 @login_required
 def FinalChecks(request):
     """View for finalising the core and peforming final checks"""
@@ -48,25 +183,25 @@ def FinalChecks(request):
     CompleteDict = {}
     for part in Parts:
         for task in ComponentPrepTaskInstance.objects.all():
-            if task.status != "c":
+            if task.status != "z":
                 CompleteDict[task.part.title]= task.task
         for task in StackingTaskInstance.objects.all():
-            if task.status != "c":
+            if task.status != "z":
                 CompleteDict[task.part.title]= task.task
         for task in WireCutTaskInstance.objects.all():
-            if task.status != "c":
+            if task.status != "z":
                 CompleteDict[task.part.title]= task.task
         for task in PitchingTaskInstance.objects.all():
-            if task.status != "c":
+            if task.status != "z":
                 CompleteDict[task.part.title]= task.task
         for task in HeaderPlateTaskInstance.objects.all():
-            if task.status != "c":
+            if task.status != "z":
                 CompleteDict[task.part.title]= task.task
         for task in DeburrTaskInstance.objects.all():
-            if task.status != "c":
+            if task.status != "z":
                 CompleteDict[task.part.title]= task.task
         for task in PlatingTaskInstance.objects.all():
-            if task.status != "c":
+            if task.status != "z":
                 CompleteDict[task.part.title]= task.task
     context = {"Parts": Parts,
                "Check_Tasks_Completed": CompleteDict,
@@ -105,10 +240,10 @@ class PartDetailView(generic.DetailView):
         for task in ComponentPrepTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      Completedict[task.part] = "Not Complete"
                      
         #Stacking Tasks for each individual part
@@ -117,10 +252,10 @@ class PartDetailView(generic.DetailView):
         for task in StackingTaskInstance.objects.all():
              if task.part != partst:
                  partst = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      StackingCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      StackingCompletedict[task.part] = "Not Complete"
         #Forming Tasks for each individual part
         partfo = None
@@ -128,10 +263,10 @@ class PartDetailView(generic.DetailView):
         for task in FormingTaskInstance.objects.all():
              if task.part != partfo:
                  partfo = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      FormingCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      FormingCompletedict[task.part] = "Not Complete"
                      
         #Wire Cut Tasks for each individual part
@@ -140,10 +275,10 @@ class PartDetailView(generic.DetailView):
         for task in WireCutTaskInstance.objects.all():
              if task.part != partwc:
                  partwc = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      WCCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      WCCompletedict[task.part] = "Not Complete" 
                      
         #Pitching Tasks for each individual part
@@ -152,10 +287,10 @@ class PartDetailView(generic.DetailView):
         for task in PitchingTaskInstance.objects.all():
              if task.part != partpt:
                  partpt = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      PitchCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      PitchCompletedict[task.part] = "Not Complete" 
                      
         #Hp Machining Tasks for each individual part
@@ -164,10 +299,10 @@ class PartDetailView(generic.DetailView):
         for task in HeaderPlateTaskInstance.objects.all():
              if task.part != parthp:
                  parthp = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      HPCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      HPCompletedict[task.part] = "Not Complete"
                      
         #Deburr Tasks for each individual part
@@ -176,10 +311,10 @@ class PartDetailView(generic.DetailView):
         for task in DeburrTaskInstance.objects.all():
              if task.part != partdb:
                  partdb = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      DeburrCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      DeburrCompletedict[task.part] = "Not Complete"
                      
         #Plating Tasks for each individual part
@@ -188,10 +323,10 @@ class PartDetailView(generic.DetailView):
         for task in PlatingTaskInstance.objects.all():
              if task.part != partpl:
                  partpl = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      PlatingCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      PlatingCompletedict[task.part] = "Not Complete"
         context["component_prep_tasks_not_completed"] = Completedict
         context["stacking_tasks_not_completed"] = StackingCompletedict
@@ -240,8 +375,8 @@ class CpTaskListView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         num_tasks_not_started = ComponentPrepTaskInstance.objects.filter(status__exact="a").count()
-        tasks_remaining = ComponentPrepTaskInstance.objects.exclude(status__exact="c").count()
-        tasks_complete = ComponentPrepTaskInstance.objects.filter(status__exact="c").count()
+        tasks_remaining = ComponentPrepTaskInstance.objects.exclude(status__exact="z").count()
+        tasks_complete = ComponentPrepTaskInstance.objects.filter(status__exact="z").count()
         tasks_on_hold = ComponentPrepTaskInstance.objects.filter(status__exact="h").count()
         context["num_tasks_not_started"] = num_tasks_not_started
         context["tasks_remaining"] = tasks_remaining
@@ -263,13 +398,13 @@ class CPTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartCPTask(request, pk):
     Task = ComponentPrepTaskInstance.objects.get(pk = pk)
-    Task.status = "p"
+    Task.status = "b"
     Task.save()
     return HttpResponseRedirect(reverse('cptasks'))
 
 def FinishCPTask(request, pk):
     Task = ComponentPrepTaskInstance.objects.get(pk = pk)
-    Task.status = "c"
+    Task.status = "z"
     Task.save()
     return HttpResponseRedirect(reverse('cptasks'))
   
@@ -283,16 +418,16 @@ class StackingTaskListView(generic.ListView):
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
          num_tasks_not_started = StackingTaskInstance.objects.filter(status__exact="a").count()
-         tasks_remaining = StackingTaskInstance.objects.exclude(status__exact="c").count()
+         tasks_remaining = StackingTaskInstance.objects.exclude(status__exact="z").count()
          part = None
          Completedict = {}
          for task in ComponentPrepTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      Completedict[task.part] = "Not Complete"
          context["component_prep_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -309,10 +444,10 @@ class StackingTaskDetailView(generic.DetailView):
         for task in ComponentPrepTaskInstance.objects.all():
             if task.part != part:
                 part = task.part
-                if task.status != "c":
+                if task.status != "z":
                     Completedict[task.part] = "Not Complete"
             else:
-                if task.status != "c":
+                if task.status != "z":
                     Completedict[task.part] = "Not Complete"
         context["component_prep_tasks_not_completed"] = Completedict
         return context
@@ -328,13 +463,13 @@ class StackingTaskDelete(LoginRequiredMixin,DeleteView):
 
 def StartStackTask(request, pk):
     Task = StackingTaskInstance.objects.get(pk = pk)
-    Task.status = "p"
+    Task.status = "b"
     Task.save()
     return HttpResponseRedirect(reverse('stackingtasks'))
 
 def FinishStackTask(request, pk):
     Task = StackingTaskInstance.objects.get(pk = pk)
-    Task.status = "c"
+    Task.status = "z"
     Task.save()
     return HttpResponseRedirect(reverse('stackingtasks'))    
     
@@ -349,7 +484,7 @@ class FormingTaskInstanceListView(generic.ListView):
     
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
-         tasks_remaining = FormingTaskInstance.objects.exclude(status__exact="c").count()
+         tasks_remaining = FormingTaskInstance.objects.exclude(status__exact="z").count()
          num_tasks_not_started = FormingTaskInstance.objects.filter(status__exact="a").count()
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
@@ -369,13 +504,13 @@ class FormingTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartFormingTask(request, pk):
     Task = FormingTaskInstance.objects.get(pk = pk)
-    Task.status = "p"
+    Task.status = "b"
     Task.save()
     return HttpResponseRedirect(reverse('formingtasks'))
 
 def FinishFormingTask(request, pk):
     Task = FormingTaskInstance.objects.get(pk = pk)
-    Task.status = "c"
+    Task.status = "z"
     Task.save()
     return HttpResponseRedirect(reverse('formingtasks'))
     
@@ -388,17 +523,17 @@ class HeaderPlateTaskInstanceListView(generic.ListView):
     
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
-         tasks_remaining = HeaderPlateTaskInstance.objects.exclude(status__exact="c").count()
+         tasks_remaining = HeaderPlateTaskInstance.objects.exclude(status__exact="z").count()
          num_tasks_not_started = HeaderPlateTaskInstance.objects.filter(status__exact="a").count()
          part = None
          Completedict = {}
          for task in PitchingTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
              else:
-                 if task.status != "c":
+                 if task.status != "z":
                     Completedict[task.part] = "Not Complete"
          context["pitching_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -419,13 +554,13 @@ class HeaderPlateTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartHeaderPlateTask(request, pk):
     Task = HeaderPlateTaskInstance.objects.get(pk = pk)
-    Task.status = "p"
+    Task.status = "b"
     Task.save()
     return HttpResponseRedirect(reverse('headerplatetasks'))
 
 def FinishHeaderPlateTask(request, pk):
     Task = HeaderPlateTaskInstance.objects.get(pk = pk)
-    Task.status = "c"
+    Task.status = "z"
     Task.save()
     return HttpResponseRedirect(reverse('headerplatetasks'))
 
@@ -439,16 +574,16 @@ class PitchingTaskListView(generic.ListView):
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
          num_tasks_not_started = PitchingTaskInstance.objects.filter(status__exact="a").count()
-         tasks_remaining = PitchingTaskInstance.objects.exclude(status__exact="c").count()
+         tasks_remaining = PitchingTaskInstance.objects.exclude(status__exact="z").count()
          part = None
          Completedict = {}
          for task in WireCutTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
              else:
-                 if task.status != "c":
+                 if task.status != "z":
                     Completedict[task.part] = "Not Complete"
          context["wire_cut_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -465,10 +600,10 @@ class PitchingTaskDetailView(generic.DetailView):
         for task in WireCutTaskInstance.objects.all():
             if task.part != part:
                 part = task.part
-                if task.status != "c":
+                if task.status != "z":
                     Completedict[task.part] = "Not Complete"
             else:
-                if task.status != "c":
+                if task.status != "z":
                     Completedict[task.part] = "Not Complete"
         context["wire_cut_tasks_not_completed"] = Completedict
         return context
@@ -484,13 +619,13 @@ class PitchingTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartPitchingTask(request, pk):
     Task = PitchingTaskInstance.objects.get(pk = pk)
-    Task.status = "p"
+    Task.status = "b"
     Task.save()
     return HttpResponseRedirect(reverse('pitchingtasks'))
 
 def FinishPitchingTask(request, pk):
     Task = PitchingTaskInstance.objects.get(pk = pk)
-    Task.status = "c"
+    Task.status = "z"
     Task.save()
     return HttpResponseRedirect(reverse('pitchingtasks'))
 
@@ -505,16 +640,16 @@ class WireCutTaskListView(generic.ListView):
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
          num_tasks_not_started = WireCutTaskInstance.objects.filter(status__exact="a").count()
-         tasks_remaining = WireCutTaskInstance.objects.exclude(status__exact="c").count()
+         tasks_remaining = WireCutTaskInstance.objects.exclude(status__exact="z").count()
          part = None
          Completedict = {}
          for task in StackingTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      Completedict[task.part] = "Not Complete"
          context["stacking_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -531,10 +666,10 @@ class WireCutTaskDetailView(generic.DetailView):
         for task in StackingTaskInstance.objects.all():
             if task.part != part:
                 part = task.part
-                if task.status != "c":
+                if task.status != "z":
                     Completedict[task.part] = "Not Complete"
             else:
-                if task.status != "c":
+                if task.status != "z":
                     Completedict[task.part] = "Not Complete"
         context["stacking_tasks_not_completed"] = Completedict
         return context
@@ -550,13 +685,13 @@ class WireCutTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartWireCutTask(request, pk):
     Task = WireCutTaskInstance.objects.get(pk = pk)
-    Task.status = "p"
+    Task.status = "b"
     Task.save()
     return HttpResponseRedirect(reverse('wirecuttasks'))
 
 def FinishWireCutTask(request, pk):
     Task = WireCutTaskInstance.objects.get(pk = pk)
-    Task.status = "c"
+    Task.status = "z"
     Task.save()
     return HttpResponseRedirect(reverse('wirecuttasks'))
 
@@ -571,16 +706,16 @@ class DeburrTaskListView(generic.ListView):
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
          num_tasks_not_started = DeburrTaskInstance.objects.filter(status__exact="a").count()
-         tasks_remaining = DeburrTaskInstance.objects.exclude(status__exact="c").count()
+         tasks_remaining = DeburrTaskInstance.objects.exclude(status__exact="z").count()
          part = None
          Completedict = {}
          for task in HeaderPlateTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      Completedict[task.part] = "Not Complete"
          context["header_plate_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -597,10 +732,10 @@ class DeburrTaskDetailView(generic.DetailView):
         for task in HeaderPlateTaskInstance.objects.all():
             if task.part != part:
                 part = task.part
-                if task.status != "c":
+                if task.status != "z":
                     Completedict[task.part] = "Not Complete"
             else:
-                if task.status != "c":
+                if task.status != "z":
                     Completedict[task.part] = "Not Complete"
         context["header_plate_tasks_not_completed"] = Completedict
         return context
@@ -616,13 +751,13 @@ class DeburrTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartDeburrTask(request, pk):
     Task = DeburrTaskInstance.objects.get(pk = pk)
-    Task.status = "p"
+    Task.status = "b"
     Task.save()
     return HttpResponseRedirect(reverse('deburrtasks'))
 
 def FinishDeburrTask(request, pk):
     Task = DeburrTaskInstance.objects.get(pk = pk)
-    Task.status = "c"
+    Task.status = "z"
     Task.save()
     return HttpResponseRedirect(reverse('deburrtasks'))
 
@@ -636,16 +771,16 @@ class PlatingTaskListView(generic.ListView):
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
          num_tasks_not_started = PlatingTaskInstance.objects.filter(status__exact="a").count()
-         tasks_remaining = PlatingTaskInstance.objects.exclude(status__exact="c").count()
+         tasks_remaining = PlatingTaskInstance.objects.exclude(status__exact="z").count()
          part = None
          Completedict = {}
          for task in DeburrTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "c":
+                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
              else:
-                if task.status != "c":
+                if task.status != "z":
                      Completedict[task.part] = "Not Complete"
          context["deburr_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -662,10 +797,10 @@ class PlatingTaskDetailView(generic.DetailView):
         for task in DeburrTaskInstance.objects.all():
             if task.part != part:
                 part = task.part
-                if task.status != "c":
+                if task.status != "z":
                     Completedict[task.part] = "Not Complete"
             else:
-                if task.status != "c":
+                if task.status != "z":
                     Completedict[task.part] = "Not Complete"
         context["deburr_tasks_not_completed"] = Completedict
         return context
@@ -681,13 +816,13 @@ class PlatingTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartPlatingTask(request, pk):
     Task = PlatingTaskInstance.objects.get(pk = pk)
-    Task.status = "p"
+    Task.status = "b"
     Task.save()
     return HttpResponseRedirect(reverse('platingtasks'))
 
 def FinishPlatingTask(request, pk):
     Task = PlatingTaskInstance.objects.get(pk = pk)
-    Task.status = "c"
+    Task.status = "z"
     Task.save()
     return HttpResponseRedirect(reverse('platingtasks'))
 

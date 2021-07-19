@@ -2,6 +2,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+
   <p>Speciality Build Traking DataBase<p>
   <p>Any bugs please report to <a href = "{% url 'cptasks' %}">harrison@pwr.com.au</a></p>
   
@@ -16,4 +17,5 @@
     <li> <a href="{% url 'headerplatetasks' %}"> Header Plate Machining Tasks:</a> {{ num_HP_Tasks }} </li>
     <li> <a href="{% url 'deburrtasks' %}"> Deburring Tasks:</a> {{ num_Deburr_Tasks }} </li>
     <li> <a href="{% url 'platingtasks' %}"> Plating Tasks:</a> {{ num_Plating_Tasks }} </li>
+    
 {% endblock %}

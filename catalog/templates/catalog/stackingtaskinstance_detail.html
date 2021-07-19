@@ -1,43 +1,64 @@
+<html>
+<head>
+<style>
+div.ex3 {color: black;}
+</style>
 {% extends "base_generic.html" %}
-
+{% load static %}
+</head>
+<body>
 {% block content %}
-  <h1><a href = "{% url 'part-detail' stackingtaskinstance.part.pk %}">{{stackingtaskinstance.part}} 
-  ({{stackingtaskinstance.part.team}})</a> Serial: {{stackingtaskinstance.part.serial}}  - 
+  <h1><a href ="{% url 'part-detail' stackingtaskinstance.part.pk %}">{{stackingtaskinstance.part}} 
+  ({{stackingtaskinstance.part.team}}) Serial: {{stackingtaskinstance.part.serial}}</a> - 
   {{stackingtaskinstance}}</h1>
-  <div style="margin-left:20px;margin-top:20px">
-    <h4>Status: 
-    <span class= "{% if stackingtaskinstance.status == 'c' %}text-success
-    {% elif stackingtaskinstance.status == 'h' %}text-warning
-    {% elif stackingtaskinstance.status == 'p' %}text-info
-    {% else %}text-body{% endif %}">
-    {{stackingtaskinstance.get_status_display}}</span>
-    {% if stackingtaskinstance.status != "c" %}
-    {% if stackingtaskinstance.part in component_prep_tasks_not_completed %}
-    <span class = "text-danger">- Unavaliable</span>
-    {% else %}
-    <span class = "text-success">- Avaliable</span>
-    {% endif %}
-    {% endif %}
+    <h4>Status: </h4>
+   {% if stackingtaskinstance.status == "z" %}
+    <span title="Task Complete">
+      <div class = "text-success">{{stackingtaskinstance.part}} ({{stackingtaskinstance.part.team}}) Serial: {{stackingtaskinstance.part.serial}} - {{stackingtaskinstance.task}}</div>
+       <img src="{% static 'catalog/tick.png' %}" alt="Complete">
+       </span>
+    {% elif stackingtaskinstance.status == "b" %}
+    <span title="Task in progress">
+      <div class = "text-info">{{stackingtaskinstance.part}} ({{stackingtaskinstance.part.team}}) Serial: {{stackingtaskinstance.part.serial}} - {{stackingtaskinstance.task}}</div>
+       <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress">
+       </span>
+    {% elif stackingtaskinstance.status == "h" %}
+    <span title="Task on hold">
+       <div class = "text-warning">{{stackingtaskinstance.part}} ({{stackingtaskinstance.part.team}}) Serial: {{stackingtaskinstance.part.serial}} - {{stackingtaskinstance.task}}</div>
+       <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold">
+       </span>
+       {% elif stackingtaskinstance.status == "a" %}
+       <span title="Task not yet started">
+        <div class = "ex3">{{stackingtaskinstance.part}} ({{stackingtaskinstance.part.team}}) Serial: {{stackingtaskinstance.part.serial}} - {{stackingtaskinstance.task}}</div>
+      <span class = "text-success">
+      (Avaliable)
+      </span>
+      </span>
+      {% else %}
+      <span title="Task Failed">
+       <div  class = "text-danger" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</div>
+       </span>
+      {% endif %}
+    {{stackingtaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
     -
     <a href = "{% url 'stackingtask-update-status' stackingtaskinstance.pk %}">
      Edit status</a>, <a href="{% url 'stackingtask-delete' stackingtaskinstance.pk %}">Delete Task</a>
     {% endif %}
-    </h4>
+    
       <hr>
      <h5>Current options</h5>
     {% if stackingtaskinstance.part in component_prep_tasks_not_completed %}
     <p> Component Prep Tasks Incomplete </p>
     {% else %}
-    {% if stackingtaskinstance.status == 'c' %}
+    {% if stackingtaskinstance.status == 'z' %}
     <p>Task Complete</p> 
     {% elif stackingtaskinstance.status == 'h' %}
     <p><a href="{% url 'startstackingtask' pk=stackingtaskinstance.pk %}">Resume Task</a></p>
     {% elif stackingtaskinstance.status == 'a' %}
     <p><a href="{% url 'startstackingtask' pk=stackingtaskinstance.pk %}">Begin Task</a></p>
-    {% elif stackingtaskinstance.status == 'p' %}
+    {% elif stackingtaskinstance.status == 'b' %}
     <p><a href="{% url 'finishstackingtask' pk=stackingtaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
     {% endif %}
-  </div>
 {% endblock %}

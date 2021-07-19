@@ -1,32 +1,63 @@
+<html>
+<head>
+<style>
+div.ex3 {color: black;}
+</style>
 {% extends "base_generic.html" %}
-
+{% load static %}
+</head>
+<body>
 {% block content %}
   <h1><a href ="{% url 'part-detail' componentpreptaskinstance.part.pk %}">{{componentpreptaskinstance.part}} 
   ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}}</a> - 
   {{componentpreptaskinstance}}</h1>
-  <div style="margin-left:20px;margin-top:20px">
-    <h4>Status: 
-    <span class= "{% if componentpreptaskinstance.status == 'c' %}text-success
-    {% elif componentpreptaskinstance.status == 'h' %}text-warning
-    {% elif componentpreptaskinstance.status == 'p' %}text-info
-    {% else %}text-body{% endif %}">
-    {{componentpreptaskinstance.get_status_display}}</span>
+    <h4>Status: </h4>
+   {% if componentpreptaskinstance.status == "z" %}
+    <span title="Task Complete">
+      <div class = "text-success">{{componentpreptaskinstance.part}} ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}} - {{componentpreptaskinstance.task}}</div>
+       <img src="{% static 'catalog/tick.png' %}" alt="Complete">
+       </span>
+    {% elif componentpreptaskinstance.status == "b" %}
+    <span title="Task in progress">
+      <div class = "text-info">{{componentpreptaskinstance.part}} ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}} - {{componentpreptaskinstance.task}}</div>
+       <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress">
+       </span>
+    {% elif componentpreptaskinstance.status == "h" %}
+    <span title="Task on hold">
+       <div class = "text-warning">{{componentpreptaskinstance.part}} ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}} - {{componentpreptaskinstance.task}}</div>
+       <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold">
+       </span>
+       {% elif componentpreptaskinstance.status == "a" %}
+       <span title="Task not yet started">
+        <div class = "ex3">{{componentpreptaskinstance.part}} ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}} - {{componentpreptaskinstance.task}}</div>
+      <span class = "text-success">
+      (Avaliable)
+      </span>
+      </span>
+      {% else %}
+      <span title="Task Failed">
+       <div  class = "text-danger" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</div>
+       </span>
+      {% endif %}
+    {{componentpreptaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
     -
     <a href = "{% url 'cptask-update-status' componentpreptaskinstance.pk %}">
      Edit status</a>, <a href="{% url 'cptask-delete' componentpreptaskinstance.pk %}">Delete Task</a>
     {% endif %}
-    </h4>
+    
       <hr>
      <h5>Current options</h5>
-    {% if componentpreptaskinstance.status == 'c' %}
+    {% if componentpreptaskinstance.status == 'z' %}
     <p>Task Complete</p> 
     {% elif componentpreptaskinstance.status == 'h' %}
     <p><a href="{% url 'startcptask' pk=componentpreptaskinstance.pk %}">Resume Task</a></p>
     {% elif componentpreptaskinstance.status == 'a' %}
     <p><a href="{% url 'startcptask' pk=componentpreptaskinstance.pk %}">Begin Task</a></p>
-    {% elif componentpreptaskinstance.status == 'p' %}
+    {% elif componentpreptaskinstance.status == 'b' %}
     <p><a href="{% url 'finishcptask' pk=componentpreptaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
-  </div>
 {% endblock %}
+
+</body>
+</html>

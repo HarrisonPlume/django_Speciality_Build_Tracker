@@ -1,5 +1,14 @@
-{% extends "base_generic.html" %}
+<html>
+<head>
+<style>
 
+a.ex3 {color: black;}
+
+</style>
+</head>
+<body>
+{% extends "base_generic.html" %}
+{% load static %}
 {% block content %}
   <h1>Wire Cut Tasks</h1>
   <hr>
@@ -11,35 +20,48 @@
   <div>Tasks not yet started: {{num_tasks_not_started}} </div>
   <hr>
   {% endif %}
-  <ul>
     {% for newtask in wirecuttask_list %}
-      <li> 
       {% if newtask.part in stacking_tasks_not_completed %}
-      {{newtask.part}} ({{newtask.part.team}})
-      Serial: {{newtask.part.serial}} - {{newtask.task}}
-      <span class = "text-danger">
-       (Not Avaliable)
+      <span title = "Task Unavalible">
+      <li><span class = "text-danger" title = "Task Unavalible">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}
+      <img src="{% static 'catalog/prohibition.png' %}" alt="Complete">
+      </span>
+      </li>
+  {% else %}
+    <li>
+    {% if newtask.status == "z" %}
+    <span title="Task Complete">
+      <a  class = "text-success" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
+       <img src="{% static 'catalog/tick.png' %}" alt="Complete">
+       </span>
+    {% elif newtask.status == "b" %}
+    <span title="Task in progress">
+      <a  class = "text-info" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
+       <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress">
+       </span>
+    {% elif newtask.status == "h" %}
+    <span title="Task on hold">
+      <a  class = "text-warning" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
+       <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold">
+       </span>
+       {% elif newtask.status == "a" %}
+       <span title="Task not yet started">
+       <a  class = "ex3" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
+      <span class = "text-success">
+      (Avaliable)
+      </span>
       </span>
       {% else %}
-      <a href = "{{newtask.get_absolute_url}}">{{newtask.part}} 
-      ({{newtask.part.team}}) Serial: {{newtask.part.serial}}
-      - {{newtask.task}}</a>
-
-      <span class ="{% if newtask.status == 'c' %}text-success 
-      {% elif newtask.status == 'h' %}text-warning 
-      {% elif newtask.status == 'p' %}text-info 
-      {% else %}text-body{% endif %}">
-       - {{ newtask.get_status_display }}</span>
-       {% if newtask.status == "a" %}
-      <span class = "text-success">
-       (Avaliable)
-      </span>
+      <span title="Task Failed">
+       <a  class = "text-danger" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
+       </span>
       {% endif %}
-      {% endif %}
-        </li>
+    </li>
+    {% endif %}
     {% endfor %}
-  </ul>
   {% else %}
     <p>There are no tasks currently listed.</p>
   {% endif %} 
 {% endblock %}
+</body>
+</html>

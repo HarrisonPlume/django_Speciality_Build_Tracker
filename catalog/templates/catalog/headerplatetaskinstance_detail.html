@@ -1,32 +1,63 @@
+<html>
+<head>
+<style>
+div.ex3 {color: black;}
+</style>
 {% extends "base_generic.html" %}
-
+{% load static %}
+</head>
+<body>
 {% block content %}
   <h1><a href ="{% url 'part-detail' headerplatetaskinstance.part.pk %}">{{headerplatetaskinstance.part}} 
   ({{headerplatetaskinstance.part.team}}) 
   Serial: {{headerplatetaskinstance.part.serial}}</a> - 
   {{headerplatetaskinstance}}</h1>
   <div style="margin-left:20px;margin-top:20px">
-    <h4>Status: 
-    <span class= "{% if headerplatetaskinstance.status == 'c' %}text-success
-    {% elif headerplatetaskinstance.status == 'h' %}text-warning
-    {% elif headerplatetaskinstance.status == 'p' %}text-info
-    {% else %}text-body{% endif %}">
-    {{headerplatetaskinstance.get_status_display}}</span>
+    <h4>Status: </h4>
+   {% if headerplatetaskinstance.status == "z" %}
+    <span title="Task Complete">
+      <div class = "text-success">{{headerplatetaskinstance.part}} ({{headerplatetaskinstance.part.team}}) Serial: {{headerplatetaskinstance.part.serial}} - {{headerplatetaskinstance.task}}</div>
+       <img src="{% static 'catalog/tick.png' %}" alt="Complete">
+       </span>
+    {% elif headerplatetaskinstance.status == "b" %}
+    <span title="Task in progress">
+      <div class = "text-info">{{headerplatetaskinstance.part}} ({{headerplatetaskinstance.part.team}}) Serial: {{headerplatetaskinstance.part.serial}} - {{headerplatetaskinstance.task}}</div>
+       <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress">
+       </span>
+    {% elif headerplatetaskinstance.status == "h" %}
+    <span title="Task on hold">
+       <div class = "text-warning">{{headerplatetaskinstance.part}} ({{headerplatetaskinstance.part.team}}) Serial: {{headerplatetaskinstance.part.serial}} - {{headerplatetaskinstance.task}}</div>
+       <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold">
+       </span>
+       {% elif headerplatetaskinstance.status == "a" %}
+       <span title="Task not yet started">
+        <div class = "ex3">{{headerplatetaskinstance.part}} ({{headerplatetaskinstance.part.team}}) Serial: {{headerplatetaskinstance.part.serial}} - {{headerplatetaskinstance.task}}</div>
+      <span class = "text-success">
+      (Avaliable)
+      </span>
+      </span>
+      {% else %}
+      <span title="Task Failed">
+       <div  class = "text-danger" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</div>
+       </span>
+      {% endif %}
+    {{headerplatetaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
     -
     <a href = "{% url 'hptask-update-status' headerplatetaskinstance.pk %}">
      Edit status</a>, <a href="{% url 'hptask-delete' headerplatetaskinstance.pk %}">Delete Task</a>
     {% endif %}
-    </h4>
+    
+    
       <hr>
      <h5>Current options</h5>
-    {% if headerplatetaskinstance.status == 'c' %}
+    {% if headerplatetaskinstance.status == 'z' %}
     <p>Task Complete</p> 
     {% elif headerplatetaskinstance.status == 'h' %}
     <p><a href="{% url 'starthptask' pk=headerplatetaskinstance.pk %}">Resume Task</a></p>
     {% elif headerplatetaskinstance.status == 'a' %}
     <p><a href="{% url 'starthptask' pk=headerplatetaskinstance.pk %}">Begin Task</a></p>
-    {% elif headerplatetaskinstance.status == 'p' %}
+    {% elif headerplatetaskinstance.status == 'b' %}
     <p><a href="{% url 'finishhptask' pk=headerplatetaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
   </div>

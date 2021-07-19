@@ -146,4 +146,6 @@ urlpatterns += [
 urlpatterns += [
     path('part/<int:pk>/complete/', views.PartComplete.as_view(), 
          name='part-complete'),
+    path('parts/dashboard/', views.PartDashboardView.as_view(), 
+         name='part-dashboard'),
 ]

@@ -10,34 +10,60 @@
   <!-- Add additional CSS in static file -->
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <style>
+
+a.ex1:visited, a.ex1:link {color: black;padding-right: 30px;
+  padding-left: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  width :245px;
+  display:inline-block;}
+  
+div.ex2 {color: black; padding-left: 6px;}
+  
+a.ex1:hover, a.ex1:active {background-color: lightgrey;}
+</style>
 </head>
 <body>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-1.1">
       {% block sidebar %}
         <ul class="sidebar-nav">
-          <h6><a href="{% url 'index' %}">Home</a></h6>
+          <h6><a class = "ex1" href="{% url 'index' %}">Home</a></h6>
           <hr>
           {% if user.is_authenticated %}
-          <li>User: {{ user.get_username }}</li>
+          <div class = "ex2"> User: {{ user.get_username }}</div>
   
-          <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+          <a class = "ex1"href="{% url 'logout'%}?next={{request.path}}">Logout</a>
           {% else %}
-          <li><a href="{% url 'login'%}?next={{request.path}}">Staff Login</a></li>
+          <a class = "ex1" href="{% url 'login'%}?next={{request.path}}">Staff Login</a>
           {% endif %}
+          
+          
           <hr>
-          <h6><a href="{% url 'parts' %}">Current Parts in progress</a></h6>
+          <h6><a class = "ex1" href="{% url 'part-dashboard' %}">Current Parts in progress</a></h6>
           <hr>
-          <li><a href="{% url 'cptasks' %}">Component Prep Tasks</a></li>
-          <li><a href = "{% url 'formingtasks' %}">Sheet Metal Forming Tasks</a></li>
-          <li><a href="{% url 'stackingtasks' %}">Stacking Tasks</a></li>
-          <li><a href = "{% url 'wirecuttasks' %}">WireCut Tasks</a></li>
-          <li><a href = "{% url 'pitchingtasks' %}">Pitching Tasks</a></li>
-          <li><a href = "{% url 'headerplatetasks' %}">Header Plate Machining Tasks</a></li>
-          <li><a href = "{% url 'deburrtasks' %}">Deburr Tasks</a></li>
-          <li><a href = "{% url 'platingtasks' %}">Plating Tasks</a></li>
-          <li><a href = "{% url 'finalchecks' %}">Final Checks</a></li>
+          
+          
+          <a class = "ex1" href="{% url 'cptasks' %}">Component Prep Tasks</a>
+          <br>
+          <a class = "ex1" href="{% url 'formingtasks' %}">Sheet Metal Forming Tasks</a>
+          <br>
+          <a class = "ex1" href="{% url 'stackingtasks' %}">Stacking Tasks</a>
+          <br>         
+          <a class = "ex1" href="{% url 'wirecuttasks' %}">WireCut Tasks</a>
+          <br>  
+          <a class = "ex1" href="{% url 'pitchingtasks' %}">Pitching Tasks</a>
+          <br>  
+          <a class = "ex1" href="{% url 'headerplatetasks' %}">Header Plate Machining Tasks</a>
+          <br> 
+          <a class = "ex1" href="{% url 'deburrtasks' %}">Deburr Tasks</a>
+          <br> 
+          <a class = "ex1" href="{% url 'platingtasks' %}">Plating Tasks</a>
+          <br> 
+          <a class = "ex1" href="{% url 'finalchecks' %}">Final Checks</a>
+          <br>
           
           
 

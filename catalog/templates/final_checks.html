@@ -1,6 +1,6 @@
 
 {% extends "base_generic.html" %}
-
+{% load static %}
 {% block content %}
   <h1>Final checks and core sign off</h1>
   <br>
@@ -14,7 +14,7 @@
      {{Check_Tasks_Completed|get_item:part.title}}</li>
     {% else %}
     <li>{{part.title}} ({{part.team}}) Serial: {{part.serial}} 
-    <span class = "text-success"> (All Tasks Completed)</span> 
+    <span class = "text-success"> (All Tasks Completed) <img src="{% static 'catalog/tick.png' %}" alt="Complete"></span> 
     <a href = "{% url 'part-complete' part.pk %}"> Sign off Core</a></li>
     {% endif %}
     {% endfor %}

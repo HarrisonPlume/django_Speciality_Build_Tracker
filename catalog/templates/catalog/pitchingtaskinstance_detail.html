@@ -1,42 +1,65 @@
+<html>
+<head>
+<style>
+div.ex3 {color: black;}
+</style>
 {% extends "base_generic.html" %}
-
+{% load static %}
+</head>
+<body>
 {% block content %}
   <h1><a href ="{% url 'part-detail' pitchingtaskinstance.part.pk %}">{{pitchingtaskinstance.part}} 
   ({{pitchingtaskinstance.part.team}}) 
   Serial: {{pitchingtaskinstance.part.serial}}</a> - 
   {{pitchingtaskinstance}}</h1>
   <div style="margin-left:20px;margin-top:20px">
-    <h4>Status: 
-    <span class= "{% if pitchingtaskinstance.status == 'c' %}text-success
-    {% elif pitchingtaskinstance.status == 'h' %}text-warning
-    {% elif pitchingtaskinstance.status == 'p' %}text-info
-    {% else %}text-body{% endif %}">
-    {{pitchingtaskinstance.get_status_display}}</span>
-    {% if pitchingtaskinstance.status != "c" %}
-    {% if pitchingtaskinstance.part in wire_cut_tasks_not_completed %}
-    <span class = "text-danger">- Unavaliable</span>
-    {% else %}
-    <span class = "text-success">- Avaliable</span>
-    {% endif %}
-    {% endif %}
+    <h4>Status: </h4>
+   {% if pitchingtaskinstance.status == "z" %}
+    <span title="Task Complete">
+      <div class = "text-success">{{pitchingtaskinstance.part}} ({{pitchingtaskinstance.part.team}}) Serial: {{pitchingtaskinstance.part.serial}} - {{pitchingtaskinstance.task}}</div>
+       <img src="{% static 'catalog/tick.png' %}" alt="Complete">
+       </span>
+    {% elif pitchingtaskinstance.status == "b" %}
+    <span title="Task in progress">
+      <div class = "text-info">{{pitchingtaskinstance.part}} ({{pitchingtaskinstance.part.team}}) Serial: {{pitchingtaskinstance.part.serial}} - {{pitchingtaskinstance.task}}</div>
+       <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress">
+       </span>
+    {% elif pitchingtaskinstance.status == "h" %}
+    <span title="Task on hold">
+       <div class = "text-warning">{{pitchingtaskinstance.part}} ({{pitchingtaskinstance.part.team}}) Serial: {{pitchingtaskinstance.part.serial}} - {{pitchingtaskinstance.task}}</div>
+       <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold">
+       </span>
+       {% elif pitchingtaskinstance.status == "a" %}
+       <span title="Task not yet started">
+        <div class = "ex3">{{pitchingtaskinstance.part}} ({{pitchingtaskinstance.part.team}}) Serial: {{pitchingtaskinstance.part.serial}} - {{pitchingtaskinstance.task}}</div>
+      <span class = "text-success">
+      (Avaliable)
+      </span>
+      </span>
+      {% else %}
+      <span title="Task Failed">
+       <div  class = "text-danger" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</div>
+       </span>
+      {% endif %}
+    {{pitchingtaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
     -
     <a href = "{% url 'pitchingtask-update-status' pitchingtaskinstance.pk %}">
      Edit status</a>, <a href="{% url 'pitchingtask-delete' pitchingtaskinstance.pk %}">Delete Task</a>
     {% endif %}
-    </h4>
+    
       <hr>
      <h5>Current options</h5>
     {% if pitchingtaskinstance.part in wire_cut_tasks_not_completed %}
     <p> Wire Cut Tasks Incomplete </p>
     {% else %}
-    {% if pitchingtaskinstance.status == 'c' %}
+    {% if pitchingtaskinstance.status == 'z' %}
     <p>Task Complete</p> 
     {% elif pitchingtaskinstance.status == 'h' %}
     <p><a href="{% url 'startpitchingtask' pk=pitchingtaskinstance.pk %}">Resume Task</a></p>
     {% elif pitchingtaskinstance.status == 'a' %}
     <p><a href="{% url 'startpitchingtask' pk=pitchingtaskinstance.pk %}">Begin Task</a></p>
-    {% elif pitchingtaskinstance.status == 'p' %}
+    {% elif pitchingtaskinstance.status == 'b' %}
     <p><a href="{% url 'finishpitchingtask' pk=pitchingtaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
     {% endif %}
