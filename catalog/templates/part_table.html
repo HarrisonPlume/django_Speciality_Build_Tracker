@@ -15,6 +15,7 @@ table, th, td {
 a.ex3 {color: black;
 font-weight: bold;
 }
+a.ex2{color: black;}
 </style>
 </head>
     <h1> Current Parts</h1>
@@ -42,7 +43,7 @@ font-weight: bold;
         </tr>
         {% for part in part_list %}
         <tr>
-        <td><a href = "{{ part.get_absolute_url }}">{{part}}</a></td>
+        <td><a class = "ex2" href = "{{ part.get_absolute_url }}">{{part}}</a></td>
         <td>{{part.team}}  </td>
         <td>{{part.serial}}  </td>
         

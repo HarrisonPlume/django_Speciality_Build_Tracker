@@ -26,7 +26,7 @@ class DeburrTaskInstance(models.Model):
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
     TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"), ("f", "Failed"))
+                   ("b", "In Progress"))
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
@@ -60,7 +60,7 @@ class PlatingTaskInstance(models.Model):
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
     TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"), ("f", "Failed"))
+                   ("b", "In Progress"))
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
@@ -94,7 +94,7 @@ class WireCutTaskInstance(models.Model):
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
     TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"), ("f", "Failed"))
+                   ("b", "In Progress"))
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
@@ -129,7 +129,7 @@ class PitchingTaskInstance(models.Model):
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
     TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"), ("f", "Failed"))
+                   ("b", "In Progress"))
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
@@ -165,7 +165,7 @@ class FormingTaskInstance(models.Model):
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
     TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"), ("f", "Failed"))
+                   ("b", "In Progress"))
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
@@ -199,7 +199,7 @@ class StackingTaskInstance(models.Model):
     task = models.CharField(max_length= 100, null = True)
     part = models.ForeignKey("Part",on_delete=models.CASCADE, null=True)
     TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"), ("f", "Failed"))
+                   ("b", "In Progress"))
     
     status = models.CharField(max_length = 1, choices= TASK_STATUS, 
                               blank = False, default = "a", help_text = "Set \
@@ -233,7 +233,7 @@ class ComponentPrepTaskInstance(models.Model):
     task = models.CharField(max_length= 100, null = True)
     part = models.ForeignKey("Part",on_delete=models.CASCADE, null=True)
     TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"), ("f", "Failed"))
+                   ("b", "In Progress"))
     
     status = models.CharField(max_length = 1, choices= TASK_STATUS, 
                               blank = False, default = "a", help_text = "Set \
@@ -313,7 +313,7 @@ class HeaderPlateTaskInstance(models.Model):
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete = models.CASCADE,null = True)
     TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"), ("f", "Failed"))
+                   ("b", "In Progress"))
     
     status = models.CharField(max_length = 1, choices= TASK_STATUS, 
                               blank = False, default = "a", help_text = "Set \
