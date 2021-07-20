@@ -1,22 +1,50 @@
 import datetime
-
+from .models import Part, Component_Prep_Task, Team, Stacking_Task, Forming_Task, Header_Plate_Task, Pitching_Task, Wire_Cut_Task, Deburr_Task, Plating_Task
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 
-class RenewBookForm(forms.Form):
-    renewal_date = forms.DateField(help_text="Enter a date between now and 4 weeks (default 3).")
 
-    def clean_renewal_date(self):
-        data = self.cleaned_data['renewal_date']
 
-        # Check if a date is not in the past.
-        if data < datetime.date.today():
-            raise ValidationError(_('Invalid date - renewal in past'))
-
-        # Check if a date is in the allowed range (+4 weeks from today).
-        if data > datetime.date.today() + datetime.timedelta(weeks=4):
-            raise ValidationError(_('Invalid date - renewal more than 4 weeks ahead'))
-
-        # Remember to always return the cleaned data.
-        return data
+class PartForm(forms.ModelForm):
+    title = forms.CharField(max_length=15, label="Part Number")
+    serial = forms.CharField(max_length=20,label="Serials To Create")
+    team = forms.ModelChoiceField(queryset=Team.objects.all(), label = "Team")
+    Component_Prep_tasks = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
+                                                          queryset=Component_Prep_Task.objects.all(),
+                                                          label = "Component Prep Tasks",
+                                                          required = True)
+    Stacking_tasks = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
+                                                          queryset=Stacking_Task.objects.all(),
+                                                          label = "Stacking Tasks",
+                                                          required = True)
+    Forming_tasks = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
+                                                          queryset=Forming_Task.objects.all(),
+                                                          label = "Header Plate Forming Tasks",
+                                                          required = True)
+    Header_Plate_tasks = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
+                                                          queryset=Header_Plate_Task.objects.all(),
+                                                          label = "Header Plate Machining Tasks",
+                                                          required = True)
+    Pitching_tasks = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
+                                                          queryset=Pitching_Task.objects.all(),
+                                                          label = "Pitching Tasks",
+                                                          required = True)
+    Wire_Cut_tasks = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
+                                                          queryset=Wire_Cut_Task.objects.all(),
+                                                          label = "Wire Cut Tasks",
+                                                          required = True)
+    Deburr_tasks = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
+                                                          queryset=Deburr_Task.objects.all(),
+                                                          label = "Deburring Tasks",
+                                                          required = True)
+    Plating_tasks = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
+                                                          queryset=Plating_Task.objects.all(),
+                                                          label = "Plating Tasks",
+                                                          required = True)
+    
+    class Meta:
+        model = Part
+        fields = ("title","serial","team","Component_Prep_tasks",
+                  "Stacking_tasks", "Forming_tasks", "Header_Plate_tasks",
+                  "Pitching_tasks", "Wire_Cut_tasks", "Deburr_tasks",
+                  "Plating_tasks")

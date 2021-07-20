@@ -1,5 +1,4 @@
 {% extends "base_generic.html" %}
-{% load render_table from django_tables2 %}
 {% block content %}
 {% load static %}
 <head>
@@ -23,7 +22,7 @@ a.ex2{color: black;}
     {% if user.is_authenticated %}
       <hr>
       <h5>Admin Panel</h5>
-      <p><a href = "{% url 'part-create' %}">Create new part</a></p>
+      <p><a class = "ex3" href = "{% url 'part-create' %}">Create new part</a></p>
       <hr>
       {% endif %}
       {% if part_list %}

@@ -1,12 +1,28 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<h1>Create/Update Part</h1>
+<style>
+table, th, td {
+  border-collapse: collapse;
+  border: 2px solid rgb(230,230,230);
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+a.ex3 {color: black;
+font-weight: bold;
+}
+a.ex2{color: black;}
+</style>
+<h1>Update Part</h1>
+<br>
   <form action="" method="post">
     {% csrf_token %}
     <table>
     {{ form.as_table }}
     </table>
+    <br>
     <input type="submit" value="Submit">
   </form>
 {% endblock %}

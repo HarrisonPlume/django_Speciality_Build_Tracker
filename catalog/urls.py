@@ -21,7 +21,7 @@ urlpatterns += [
     path("parts/", views.PartListView.as_view(), name = "parts"),
     path("part/<int:pk>/", views.PartDetailView.as_view(), 
          name = "part-detail"),
-    path('part/create/', views.PartCreate.as_view(), name='part-create'),
+    path('part/create/', views.PartCreate, name='part-create'),
     path('part/<int:pk>/update/', views.PartUpdate.as_view(), 
          name='part-update'),
     path('part/<int:pk>/delete/', views.PartDelete.as_view(), 

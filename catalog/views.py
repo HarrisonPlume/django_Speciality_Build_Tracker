@@ -11,7 +11,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .tables import PartTable
-from catalog.forms import RenewBookForm
+from catalog.forms import PartForm
+from django import forms
+from django.utils import timezone
+import datetime
 
 def index(request):
     """View for the home page of the website"""
@@ -50,7 +53,6 @@ class PartDashboardView(generic.ListView):
     table_class = PartTable
     template_name = 'part_table.html'
     paginate_by = 10
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         part_component_prep_tasks = ComponentPrepTaskInstance.objects.all()
@@ -221,9 +223,9 @@ class PartListView(generic.ListView):
 
 
 
+
 class PartDetailView(generic.DetailView):
     model = Part
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         part_component_prep_tasks = ComponentPrepTaskInstance.objects.all()
@@ -347,23 +349,52 @@ class PartDetailView(generic.DetailView):
         context["part_plating_tasks"] = part_plating_tasks
         
         return context
-
-class PartCreate(LoginRequiredMixin,CreateView):
+    
+@login_required
+def PartCreate(request):
     model = Part 
-    fields = ['title','serial', 'team', 'Component_Prep_tasks','Stacking_tasks',
-              'Forming_tasks','Header_Plate_tasks','Pitching_tasks',
-              'Wire_Cut_tasks','Deburr_tasks','Plating_tasks','pub_date']
-    initial = {'pub_date': timezone.now}
-    success_url = reverse_lazy('parts')
+    if request.method == 'POST':
+        form = PartForm(request.POST or None)
+        if form.is_valid():
+            part = form.save(commit=False)
+            part.poster = request.user
+            Component_Prep_tasks = form.cleaned_data.get("Component_Prep_tasks")    
+            Stacking_tasks = form.cleaned_data.get("Stacking_tasks") 
+            Forming_tasks = form.cleaned_data.get("Forming_tasks") 
+            Header_Plate_tasks = form.cleaned_data.get("Header_Plate_tasks") 
+            Pitching_tasks = form.cleaned_data.get("Pitching_tasks") 
+            Wire_Cut_tasks = form.cleaned_data.get("Wire_Cut_tasks")
+            Deburr_tasks = form.cleaned_data.get("Deburr_tasks")
+            Plating_tasks = form.cleaned_data.get("Plating_tasks")
+            part.save()
+            part.Component_Prep_tasks.set(Component_Prep_tasks)
+            part.Stacking_tasks.set(Stacking_tasks)
+            part.Forming_tasks.set(Forming_tasks)
+            part.Header_Plate_tasks.set(Header_Plate_tasks)
+            part.Pitching_tasks.set(Pitching_tasks)
+            part.Wire_Cut_tasks.set(Wire_Cut_tasks)
+            part.Deburr_tasks.set(Deburr_tasks)
+            part.Plating_tasks.set(Plating_tasks)
+            part.save()
+            return HttpResponseRedirect(reverse('part-dashboard'))
+    else:
+        form = PartForm()
+    
+    return render(request, "catalog/part_form.html", {"form": form})
+        
+
+    
     
 class PartUpdate(LoginRequiredMixin,UpdateView):
     model = Part 
     fields = '__all__'
-    success_url = reverse_lazy('parts')
+    success_url = reverse_lazy('part-dashboard')
+            
+        
     
 class PartDelete(LoginRequiredMixin,DeleteView):
     model = Part 
-    success_url = reverse_lazy('parts')
+    success_url = reverse_lazy('part-dashboard')
 
 #Component Prep Classes
 class CpTaskListView(generic.ListView):

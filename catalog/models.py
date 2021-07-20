@@ -7,6 +7,7 @@ from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from django.utils import timezone
 from django.db.models import Case, When, Value
+import time
 
 class Deburr_Task(models.Model):
     """
@@ -263,7 +264,7 @@ class Team(models.Model):
 class Part(models.Model):
     """ Model represents a Part to be completed"""
     title = models.CharField(max_length = 100)
-    serial = models.IntegerField(null = True)
+    serial = models.CharField(max_length = 20,null = True)
     team = models.ForeignKey(Team, on_delete = models.RESTRICT, null = True)
     Component_Prep_tasks = models.ManyToManyField(Component_Prep_Task, help_text = "Select \
                                      the component prep tasks \
@@ -287,7 +288,7 @@ class Part(models.Model):
     Plating_tasks = models.ManyToManyField(Plating_Task, help_text = "\
                                             Select the nessessary plating\
                                                 tasks")
-    pub_date = models.DateTimeField("time published", default = timezone.now)
+    pub_date = models.DateTimeField("time published", auto_now=True)
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""
         return self.title
@@ -341,6 +342,22 @@ def CreateNewFormingTaskInstance(sender, **kwargs):
        except:
            FormingTaskInstance.objects.create(task= task, part=obj, status="a")
            
+    #Delete excess tasks if requested on update
+    RequestedTaskList = Formingtask_list
+    CurrentTaskList = FormingTaskInstance.objects.filter(part=obj)
+    list1 = []
+    list2 = []
+    for task in CurrentTaskList.values_list():
+        list1.append(task[1])
+    for task in RequestedTaskList.values_list():
+        list2.append(task[1])
+    for task in list1:
+        if task in list2:
+            pass
+        else:
+            FormingTaskInstance.objects.filter(task= task, part = obj).delete()
+            
+            
 # Create Component Prep Tasks  
 @receiver(m2m_changed, sender = Part.Component_Prep_tasks.through)
 def CreateNewCPTaskInstance(sender, **kwargs):
@@ -351,6 +368,23 @@ def CreateNewCPTaskInstance(sender, **kwargs):
            ComponentPrepTaskInstance.objects.get(task= task, part=obj)
        except:
            ComponentPrepTaskInstance.objects.create(task= task, part=obj, status="a")
+           
+    #Delete excess tasks if requested on update
+    RequestedTaskList = CPtask_list
+    CurrentTaskList = ComponentPrepTaskInstance.objects.filter(part=obj)
+    list1 = []
+    list2 = []
+    for task in CurrentTaskList.values_list():
+        list1.append(task[1])
+    for task in RequestedTaskList.values_list():
+        list2.append(task[1])
+    for task in list1:
+        if task in list2:
+            pass
+        else:
+            ComponentPrepTaskInstance.objects.filter(task= task, part = obj).delete()
+            
+        
 
 # Create Stacking Tasks
 @receiver(m2m_changed, sender = Part.Stacking_tasks.through)
@@ -363,6 +397,21 @@ def CreateNewStackingTaskInstance(sender, **kwargs):
         except:
             StackingTaskInstance.objects.create(task = task, part = obj, status = "a")
             
+    #Delete excess tasks if requested on update
+    RequestedTaskList = Stacktask_list
+    CurrentTaskList = StackingTaskInstance.objects.filter(part=obj)
+    list1 = []
+    list2 = []
+    for task in CurrentTaskList.values_list():
+        list1.append(task[1])
+    for task in RequestedTaskList.values_list():
+        list2.append(task[1])
+    for task in list1:
+        if task in list2:
+            pass
+        else:
+            StackingTaskInstance.objects.filter(task= task, part = obj).delete()
+            
 # Create Header Plate Machining Tasks
 @receiver(m2m_changed, sender = Part.Header_Plate_tasks.through)
 def CreateNewHeaderPlateTaskInstance(sender, **kwargs):
@@ -373,6 +422,21 @@ def CreateNewHeaderPlateTaskInstance(sender, **kwargs):
             HeaderPlateTaskInstance.objects.get(task = task, part = obj)
         except:
             HeaderPlateTaskInstance.objects.create(task = task, part = obj, status = "a")
+    
+    #Delete excess tasks if requested on update
+    RequestedTaskList = HPtask_list
+    CurrentTaskList = HeaderPlateTaskInstance.objects.filter(part=obj)
+    list1 = []
+    list2 = []
+    for task in CurrentTaskList.values_list():
+        list1.append(task[1])
+    for task in RequestedTaskList.values_list():
+        list2.append(task[1])
+    for task in list1:
+        if task in list2:
+            pass
+        else:
+            HeaderPlateTaskInstance.objects.filter(task= task, part = obj).delete()
             
 # Create Pitching Tasks
 @receiver(m2m_changed, sender = Part.Pitching_tasks.through)
@@ -384,6 +448,21 @@ def CreateNewPitchingTaskInstance(sender, **kwargs):
             PitchingTaskInstance.objects.get(task = task, part = obj)
         except:
             PitchingTaskInstance.objects.create(task = task, part = obj, status = "a")
+    
+    #Delete excess tasks if requested on update
+    RequestedTaskList = Pitchingtask_list
+    CurrentTaskList = PitchingTaskInstance.objects.filter(part=obj)
+    list1 = []
+    list2 = []
+    for task in CurrentTaskList.values_list():
+        list1.append(task[1])
+    for task in RequestedTaskList.values_list():
+        list2.append(task[1])
+    for task in list1:
+        if task in list2:
+            pass
+        else:
+            PitchingTaskInstance.objects.filter(task= task, part = obj).delete()
             
 # Create WireCut Tasks
 @receiver(m2m_changed, sender = Part.Wire_Cut_tasks.through)
@@ -396,6 +475,21 @@ def CreateNewWireCutTaskInstance(sender, **kwargs):
         except:
             WireCutTaskInstance.objects.create(task = task, part = obj, status = "a")
             
+    #Delete excess tasks if requested on update
+    RequestedTaskList = WireCuttask_list
+    CurrentTaskList = WireCutTaskInstance.objects.filter(part=obj)
+    list1 = []
+    list2 = []
+    for task in CurrentTaskList.values_list():
+        list1.append(task[1])
+    for task in RequestedTaskList.values_list():
+        list2.append(task[1])
+    for task in list1:
+        if task in list2:
+            pass
+        else:
+            WireCutTaskInstance.objects.filter(task= task, part = obj).delete()
+            
 # Create Deburr Tasks
 @receiver(m2m_changed, sender = Part.Deburr_tasks.through)
 def CreateNewDeburrTaskInstance(sender, **kwargs):
@@ -407,6 +501,21 @@ def CreateNewDeburrTaskInstance(sender, **kwargs):
         except:
             DeburrTaskInstance.objects.create(task = task, part = obj, status = "a")
             
+    #Delete excess tasks if requested on update
+    RequestedTaskList = Deburrtask_list
+    CurrentTaskList = DeburrTaskInstance.objects.filter(part=obj)
+    list1 = []
+    list2 = []
+    for task in CurrentTaskList.values_list():
+        list1.append(task[1])
+    for task in RequestedTaskList.values_list():
+        list2.append(task[1])
+    for task in list1:
+        if task in list2:
+            pass
+        else:
+            DeburrTaskInstance.objects.filter(task= task, part = obj).delete()       
+            
 # Create Plating Tasks
 @receiver(m2m_changed, sender = Part.Plating_tasks.through)
 def CreateNewPlatingTaskInstance(sender, **kwargs):
@@ -417,3 +526,18 @@ def CreateNewPlatingTaskInstance(sender, **kwargs):
             PlatingTaskInstance.objects.get(task = task, part = obj)
         except:
             PlatingTaskInstance.objects.create(task = task, part = obj, status = "a")
+            
+    #Delete excess tasks if requested on update
+    RequestedTaskList = Platingtask_list
+    CurrentTaskList = PlatingTaskInstance.objects.filter(part=obj)
+    list1 = []
+    list2 = []
+    for task in CurrentTaskList.values_list():
+        list1.append(task[1])
+    for task in RequestedTaskList.values_list():
+        list2.append(task[1])
+    for task in list1:
+        if task in list2:
+            pass
+        else:
+            PlatingTaskInstance.objects.filter(task= task, part = obj).delete()  
