@@ -44,7 +44,7 @@ div.ex3 {color: black;}
     <hr>
     <h5> Admin Pannel </h5>
     <a href = "{% url 'stackingtask-update-status' stackingtaskinstance.pk %}">
-     Edit status</a>, <a href="{% url 'cptask-delete' stackingtaskinstance.pk %}">Delete Task</a>
+     Edit status</a>, <a href="{% url 'stackingtask-delete' stackingtaskinstance.pk %}">Delete Task</a>
      
      <div>Task Created: {{stackingtaskinstance.createtime}}</div>
      {% if stackingtaskinstance.starttime == None %}

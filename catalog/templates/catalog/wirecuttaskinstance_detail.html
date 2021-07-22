@@ -44,8 +44,8 @@ div.ex3 {color: black;}
     {% if user.is_authenticated %} 
         <hr>
     <h5> Admin Pannel </h5>
-    <a href = "{% url 'cptask-update-status' wirecuttaskinstance.pk %}">
-     Edit status</a>, <a href="{% url 'cptask-delete' wirecuttaskinstance.pk %}">Delete Task</a>
+    <a href = "{% url 'wirecuttask-update-status' wirecuttaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'wirecuttask-delete' wirecuttaskinstance.pk %}">Delete Task</a>
      
      <div>Task Created: {{wirecuttaskinstance.createtime}}</div>
      {% if wirecuttaskinstance.starttime == None %}
