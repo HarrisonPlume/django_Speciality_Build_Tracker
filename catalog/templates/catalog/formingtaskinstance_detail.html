@@ -44,9 +44,24 @@ a.ex3 {color: black;}
       {% endif %}
     {{formingtaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
-    -
-    <a href = "{% url 'formingtask-update-status' formingtaskinstance.pk %}">
-     Edit status</a>, <a href="{% url 'formingtask-delete' formingtaskinstance.pk %}">Delete Task</a>
+    <hr>
+    <h5> Admin Pannel </h5>
+    <a href = "{% url 'cptask-update-status' formingtaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'cptask-delete' formingtaskinstance.pk %}">Delete Task</a>
+     
+     <div>Task Created: {{formingtaskinstance.createtime}}</div>
+     {% if formingtaskinstance.starttime == None %}
+     <div>Task Not Yet Started</div>
+     {% else %}
+     <div>Task Started: {{formingtaskinstance.starttime}}</div>
+     <div>Time untill Task was started: {{formingtaskinstance.timetostart}}</div>
+     
+     {% endif %}
+     {% if formingtaskinstance.finishtime == None %}
+     {% else %}
+     <div>Task Finished: {{formingtaskinstance.finishtime}}</div>
+     <div> Time Taken: {{formingtaskinstance.timetaken}}</div>
+     {% endif %}
     {% endif %}
     
       <hr>

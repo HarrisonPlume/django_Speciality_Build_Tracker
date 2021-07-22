@@ -42,9 +42,24 @@ div.ex3 {color: black;}
       {% endif %}
     {{deburrtaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
-    -
-    <a href = "{% url 'deburrtask-update-status' deburrtaskinstance.pk %}">
-     Edit status</a>, <a href="{% url 'deburrtask-delete' deburrtaskinstance.pk %}">Delete Task</a>
+    <hr>
+    <h5> Admin Pannel </h5>
+    <a href = "{% url 'cptask-update-status' deburrtaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'cptask-delete' deburrtaskinstance.pk %}">Delete Task</a>
+     
+     <div>Task Created: {{deburrtaskinstance.createtime}}</div>
+     {% if deburrtaskinstance.starttime == None %}
+     <div>Task Not Yet Started</div>
+     {% else %}
+     <div>Task Started: {{deburrtaskinstance.starttime}}</div>
+     <div>Time untill Task was started: {{deburrtaskinstance.timetostart}}</div>
+     
+     {% endif %}
+     {% if deburrtaskinstance.finishtime == None %}
+     {% else %}
+     <div>Task Finished: {{deburrtaskinstance.finishtime}}</div>
+     <div> Time Taken: {{deburrtaskinstance.timetaken}}</div>
+     {% endif %}
     {% endif %}
     
       <hr>

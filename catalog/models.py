@@ -32,7 +32,18 @@ class DeburrTaskInstance(models.Model):
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
-    
+    #Create Time String and decimal fields
+    createtime = models.CharField(max_length = 50, null = True, blank = True)
+    createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
+    #Start Time String and decimal fields
+    starttime = models.CharField(max_length = 50, null = True, blank = True)
+    starttimenum = models.DecimalField(decimal_places=2,max_digits=14,null=True, blank = True)
+    #Time to start string feild
+    timetostart = models.CharField(max_length = 50,null=True, blank = True)
+    #Finish Time String field
+    finishtime = models.CharField(max_length = 50, null = True, blank = True)
+    #Time taken str field
+    timetaken = models.CharField(max_length = 50,null=True, blank = True)
     class Meta:
         ordering = ['status']
 
@@ -66,7 +77,18 @@ class PlatingTaskInstance(models.Model):
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
-    
+    #Create Time String and decimal fields
+    createtime = models.CharField(max_length = 50, null = True, blank = True)
+    createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
+    #Start Time String and decimal fields
+    starttime = models.CharField(max_length = 50, null = True, blank = True)
+    starttimenum = models.DecimalField(decimal_places=2,max_digits=14,null=True, blank = True)
+    #Time to start string feild
+    timetostart = models.CharField(max_length = 50,null=True, blank = True)
+    #Finish Time String field
+    finishtime = models.CharField(max_length = 50, null = True, blank = True)
+    #Time taken str field
+    timetaken = models.CharField(max_length = 50,null=True, blank = True)    
     class Meta:
         ordering = ['status']
 
@@ -191,6 +213,18 @@ class FormingTaskInstance(models.Model):
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
+    #Create Time String and decimal fields
+    createtime = models.CharField(max_length = 50, null = True, blank = True)
+    createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
+    #Start Time String and decimal fields
+    starttime = models.CharField(max_length = 50, null = True, blank = True)
+    starttimenum = models.DecimalField(decimal_places=2,max_digits=14,null=True, blank = True)
+    #Time to start string feild
+    timetostart = models.CharField(max_length = 50,null=True, blank = True)
+    #Finish Time String field
+    finishtime = models.CharField(max_length = 50, null = True, blank = True)
+    #Time taken str field
+    timetaken = models.CharField(max_length = 50,null=True, blank = True)
     
     class Meta:
         ordering = ['status']
@@ -399,11 +433,13 @@ def CreateParts():
 def CreateNewFormingTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Formingtask_list = obj.Forming_tasks.all()
+    Created_Time = datetime.datetime.now()
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
     for task in Formingtask_list:
        try:
            FormingTaskInstance.objects.get(task= task, part=obj)
        except:
-           FormingTaskInstance.objects.create(task= task, part=obj, status="a")
+           FormingTaskInstance.objects.create(task= task, part=obj, status="a", createtime = Created_Time, createtimenum = time.time())
            
     #Delete excess tasks if requested on update
     RequestedTaskList = Formingtask_list
@@ -568,11 +604,13 @@ def CreateNewWireCutTaskInstance(sender, **kwargs):
 def CreateNewDeburrTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Deburrtask_list = obj.Deburr_tasks.all()
+    Created_Time = datetime.datetime.now()
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
     for task in Deburrtask_list:
         try:
             DeburrTaskInstance.objects.get(task = task, part = obj)
         except:
-            DeburrTaskInstance.objects.create(task = task, part = obj, status = "a")
+            DeburrTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
             
     #Delete excess tasks if requested on update
     RequestedTaskList = Deburrtask_list
@@ -594,11 +632,13 @@ def CreateNewDeburrTaskInstance(sender, **kwargs):
 def CreateNewPlatingTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Platingtask_list = obj.Plating_tasks.all()
+    Created_Time = datetime.datetime.now()
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
     for task in Platingtask_list:
         try:
             PlatingTaskInstance.objects.get(task = task, part = obj)
         except:
-            PlatingTaskInstance.objects.create(task = task, part = obj, status = "a")
+            PlatingTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
             
     #Delete excess tasks if requested on update
     RequestedTaskList = Platingtask_list

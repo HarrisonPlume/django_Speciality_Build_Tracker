@@ -598,13 +598,41 @@ class FormingTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartFormingTask(request, pk):
     Task = FormingTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
     Task.status = "b"
+    Task.starttime = str_Time
+    Task.starttimenum = time.time()
+    start = float(Task.createtimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetostartstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetostart = str(timetostartstr)
     Task.save()
     return HttpResponseRedirect(reverse('formingtasks'))
 
 def FinishFormingTask(request, pk):
     Task = FormingTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
+    Task.finishtime = str_Time
     Task.status = "z"
+    Task.finishtimenum = time.time()
+    start = float(Task.starttimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetakenstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetaken = str(timetakenstr)
     Task.save()
     return HttpResponseRedirect(reverse('formingtasks'))
     
@@ -929,13 +957,41 @@ class DeburrTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartDeburrTask(request, pk):
     Task = DeburrTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
     Task.status = "b"
+    Task.starttime = str_Time
+    Task.starttimenum = time.time()
+    start = float(Task.createtimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetostartstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetostart = str(timetostartstr)
     Task.save()
     return HttpResponseRedirect(reverse('deburrtasks'))
 
 def FinishDeburrTask(request, pk):
     Task = DeburrTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
+    Task.finishtime = str_Time
     Task.status = "z"
+    Task.finishtimenum = time.time()
+    start = float(Task.starttimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetakenstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetaken = str(timetakenstr)
     Task.save()
     return HttpResponseRedirect(reverse('deburrtasks'))
 
@@ -994,13 +1050,41 @@ class PlatingTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartPlatingTask(request, pk):
     Task = PlatingTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
     Task.status = "b"
+    Task.starttime = str_Time
+    Task.starttimenum = time.time()
+    start = float(Task.createtimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetostartstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetostart = str(timetostartstr)
     Task.save()
     return HttpResponseRedirect(reverse('platingtasks'))
 
 def FinishPlatingTask(request, pk):
     Task = PlatingTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
+    Task.finishtime = str_Time
     Task.status = "z"
+    Task.finishtimenum = time.time()
+    start = float(Task.starttimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetakenstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetaken = str(timetakenstr)
     Task.save()
     return HttpResponseRedirect(reverse('platingtasks'))
 

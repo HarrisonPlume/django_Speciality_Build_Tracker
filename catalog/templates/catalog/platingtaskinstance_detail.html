@@ -42,9 +42,24 @@ div.ex3 {color: black;}
       {% endif %}
     {{platingtaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
-    -
-    <a href = "{% url 'platingtask-update-status' platingtaskinstance.pk %}">
-     Edit status</a>, <a href="{% url 'platingtask-delete' platingtaskinstance.pk %}">Delete Task</a>
+    <hr>
+    <h5> Admin Pannel </h5>
+    <a href = "{% url 'cptask-update-status' platingtaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'cptask-delete' platingtaskinstance.pk %}">Delete Task</a>
+     
+     <div>Task Created: {{platingtaskinstance.createtime}}</div>
+     {% if platingtaskinstance.starttime == None %}
+     <div>Task Not Yet Started</div>
+     {% else %}
+     <div>Task Started: {{platingtaskinstance.starttime}}</div>
+     <div>Time untill Task was started: {{platingtaskinstance.timetostart}}</div>
+     
+     {% endif %}
+     {% if platingtaskinstance.finishtime == None %}
+     {% else %}
+     <div>Task Finished: {{platingtaskinstance.finishtime}}</div>
+     <div> Time Taken: {{platingtaskinstance.timetaken}}</div>
+     {% endif %}
     {% endif %}
     
       <hr>
