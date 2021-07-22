@@ -66,6 +66,10 @@ a.ex1:hover, a.ex1:active {background-color: lightgrey;}
           <br> 
           <a class = "ex1" href="{% url 'finalchecks' %}">Final Checks</a>
           <br>
+          {% if user.is_authenticated %}
+          <hr>
+          <a class = "ex1" href = "{% url 'corearchive' %}"> Core Archive</a>
+          {% endif %}
           
           
 

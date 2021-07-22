@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path("", views.index, name = "index"),
     path("FinalChecks/", views.FinalChecks, name = "finalchecks"),
+    path("CoreArchive/", views.CoreArchive, name = "corearchive"),
     path("CPTasks/", views.CpTaskListView.as_view(), name="cptasks"),
     path("CPTask/<int:pk>/", views.CPTaskDetailView.as_view(), 
          name = "cptask-detail"),

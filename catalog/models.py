@@ -3,11 +3,12 @@ from django.urls import reverse # generate urls' by reversing url patterns
 import uuid #Required for unique book instances
 from django.contrib.auth.models import User
 from datetime import date
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.db.models import Case, When, Value
 import time
+import datetime
 
 class Deburr_Task(models.Model):
     """
@@ -99,7 +100,17 @@ class WireCutTaskInstance(models.Model):
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
-    
+    createtime = models.CharField(max_length = 50, null = True, blank = True)
+    createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
+    #Start Time String and decimal fields
+    starttime = models.CharField(max_length = 50, null = True, blank = True)
+    starttimenum = models.DecimalField(decimal_places=2,max_digits=14,null=True, blank = True)
+    #Time to start string feild
+    timetostart = models.CharField(max_length = 50,null=True, blank = True)
+    #Finish Time String field
+    finishtime = models.CharField(max_length = 50, null = True, blank = True)
+    #Time taken str field
+    timetaken = models.CharField(max_length = 50,null=True, blank = True)
     class Meta:
         ordering = ['status']
 
@@ -134,7 +145,17 @@ class PitchingTaskInstance(models.Model):
     status = models.CharField(max_length = 1, choices = TASK_STATUS, 
                               blank = False, default = "a",
                               help_text = "Set task completion status")
-    
+    createtime = models.CharField(max_length = 50, null = True, blank = True)
+    createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
+    #Start Time String and decimal fields
+    starttime = models.CharField(max_length = 50, null = True, blank = True)
+    starttimenum = models.DecimalField(decimal_places=2,max_digits=14,null=True, blank = True)
+    #Time to start string feild
+    timetostart = models.CharField(max_length = 50,null=True, blank = True)
+    #Finish Time String field
+    finishtime = models.CharField(max_length = 50, null = True, blank = True)
+    #Time taken str field
+    timetaken = models.CharField(max_length = 50,null=True, blank = True)    
     class Meta:
         ordering = ['status']
 
@@ -205,6 +226,17 @@ class StackingTaskInstance(models.Model):
     status = models.CharField(max_length = 1, choices= TASK_STATUS, 
                               blank = False, default = "a", help_text = "Set \
                                   task completion status")
+    createtime = models.CharField(max_length = 50, null = True, blank = True)
+    createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
+    #Start Time String and decimal fields
+    starttime = models.CharField(max_length = 50, null = True, blank = True)
+    starttimenum = models.DecimalField(decimal_places=2,max_digits=14,null=True, blank = True)
+    #Time to start string feild
+    timetostart = models.CharField(max_length = 50,null=True, blank = True)
+    #Finish Time String field
+    finishtime = models.CharField(max_length = 50, null = True, blank = True)
+    #Time taken str field
+    timetaken = models.CharField(max_length = 50,null=True, blank = True)
     class Meta:
         ordering = ['status']
         
@@ -239,6 +271,18 @@ class ComponentPrepTaskInstance(models.Model):
     status = models.CharField(max_length = 1, choices= TASK_STATUS, 
                               blank = False, default = "a", help_text = "Set \
                                   task completion status")
+    #Create Time String and decimal fields
+    createtime = models.CharField(max_length = 50, null = True, blank = True)
+    createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
+    #Start Time String and decimal fields
+    starttime = models.CharField(max_length = 50, null = True, blank = True)
+    starttimenum = models.DecimalField(decimal_places=2,max_digits=14,null=True, blank = True)
+    #Time to start string feild
+    timetostart = models.CharField(max_length = 50,null=True, blank = True)
+    #Finish Time String field
+    finishtime = models.CharField(max_length = 50, null = True, blank = True)
+    #Time taken str field
+    timetaken = models.CharField(max_length = 50,null=True, blank = True)
     class Meta:
         ordering = ['status']
         
@@ -319,6 +363,18 @@ class HeaderPlateTaskInstance(models.Model):
     status = models.CharField(max_length = 1, choices= TASK_STATUS, 
                               blank = False, default = "a", help_text = "Set \
                                   task completion status")
+    #Create Time String and decimal fields
+    createtime = models.CharField(max_length = 50, null = True, blank = True)
+    createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
+    #Start Time String and decimal fields
+    starttime = models.CharField(max_length = 50, null = True, blank = True)
+    starttimenum = models.DecimalField(decimal_places=2,max_digits=14,null=True, blank = True)
+    #Time to start string feild
+    timetostart = models.CharField(max_length = 50,null=True, blank = True)
+    #Finish Time String field
+    finishtime = models.CharField(max_length = 50, null = True, blank = True)
+    #Time taken str field
+    timetaken = models.CharField(max_length = 50,null=True, blank = True)
     class Meta:
         ordering = ['status']
         
@@ -330,6 +386,13 @@ class HeaderPlateTaskInstance(models.Model):
         """Returns the url to access a detail record for this task."""
         return reverse('hptask-detail', args = [str(self.id)])                          
                         
+    
+def CreateParts():
+    """
+    Function takes the input setials and creates multiple parts 
+
+
+    """
     
 # Create Sheet Metal Forming Tasks
 @receiver(m2m_changed, sender = Part.Forming_tasks.through)
@@ -363,11 +426,13 @@ def CreateNewFormingTaskInstance(sender, **kwargs):
 def CreateNewCPTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     CPtask_list = obj.Component_Prep_tasks.all()
+    Created_Time = datetime.datetime.now()
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
     for task in CPtask_list:
        try:
            ComponentPrepTaskInstance.objects.get(task= task, part=obj)
        except:
-           ComponentPrepTaskInstance.objects.create(task= task, part=obj, status="a")
+           ComponentPrepTaskInstance.objects.create(task= task, part=obj, status="a", createtime = Created_Time, createtimenum = time.time())
            
     #Delete excess tasks if requested on update
     RequestedTaskList = CPtask_list
@@ -391,11 +456,13 @@ def CreateNewCPTaskInstance(sender, **kwargs):
 def CreateNewStackingTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Stacktask_list = obj.Stacking_tasks.all()
+    Created_Time = datetime.datetime.now()
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
     for task in Stacktask_list:
         try:
             StackingTaskInstance.objects.get(task = task, part = obj)
         except:
-            StackingTaskInstance.objects.create(task = task, part = obj, status = "a")
+            StackingTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
             
     #Delete excess tasks if requested on update
     RequestedTaskList = Stacktask_list
@@ -417,11 +484,13 @@ def CreateNewStackingTaskInstance(sender, **kwargs):
 def CreateNewHeaderPlateTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     HPtask_list = obj.Header_Plate_tasks.all()
+    Created_Time = datetime.datetime.now()
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
     for task in HPtask_list:
         try:
             HeaderPlateTaskInstance.objects.get(task = task, part = obj)
         except:
-            HeaderPlateTaskInstance.objects.create(task = task, part = obj, status = "a")
+            HeaderPlateTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
     
     #Delete excess tasks if requested on update
     RequestedTaskList = HPtask_list
@@ -443,11 +512,13 @@ def CreateNewHeaderPlateTaskInstance(sender, **kwargs):
 def CreateNewPitchingTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Pitchingtask_list = obj.Pitching_tasks.all()
+    Created_Time = datetime.datetime.now()
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
     for task in Pitchingtask_list:
         try:
             PitchingTaskInstance.objects.get(task = task, part = obj)
         except:
-            PitchingTaskInstance.objects.create(task = task, part = obj, status = "a")
+            PitchingTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
     
     #Delete excess tasks if requested on update
     RequestedTaskList = Pitchingtask_list
@@ -469,11 +540,13 @@ def CreateNewPitchingTaskInstance(sender, **kwargs):
 def CreateNewWireCutTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     WireCuttask_list = obj.Wire_Cut_tasks.all()
+    Created_Time = datetime.datetime.now()
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
     for task in WireCuttask_list:
         try:
             WireCutTaskInstance.objects.get(task = task, part = obj)
         except:
-            WireCutTaskInstance.objects.create(task = task, part = obj, status = "a")
+            WireCutTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
             
     #Delete excess tasks if requested on update
     RequestedTaskList = WireCuttask_list

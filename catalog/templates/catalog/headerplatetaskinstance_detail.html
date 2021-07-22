@@ -43,11 +43,25 @@ div.ex3 {color: black;}
       {% endif %}
     {{headerplatetaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
-    -
-    <a href = "{% url 'hptask-update-status' headerplatetaskinstance.pk %}">
-     Edit status</a>, <a href="{% url 'hptask-delete' headerplatetaskinstance.pk %}">Delete Task</a>
+    <hr>
+    <h5> Admin Pannel </h5>
+    <a href = "{% url 'cptask-update-status' headerplatetaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'cptask-delete' headerplatetaskinstance.pk %}">Delete Task</a>
+     
+     <div>Task Created: {{headerplatetaskinstance.createtime}}</div>
+     {% if headerplatetaskinstance.starttime == None %}
+     <div>Task Not Yet Started</div>
+     {% else %}
+     <div>Task Started: {{headerplatetaskinstance.starttime}}</div>
+     <div>Time untill Task was started: {{headerplatetaskinstance.timetostart}}</div>
+     
+     {% endif %}
+     {% if headerplatetaskinstance.finishtime == None %}
+     {% else %}
+     <div>Task Finished: {{headerplatetaskinstance.finishtime}}</div>
+     <div> Time Taken: {{headerplatetaskinstance.timetaken}}</div>
+     {% endif %}
     {% endif %}
-    
     
       <hr>
      <h5>Current options</h5>

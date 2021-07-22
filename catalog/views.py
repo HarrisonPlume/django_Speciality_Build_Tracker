@@ -14,7 +14,7 @@ from .tables import PartTable
 from catalog.forms import PartForm
 from django import forms
 from django.utils import timezone
-import datetime
+import datetime, time
 
 def index(request):
     """View for the home page of the website"""
@@ -210,6 +210,13 @@ def FinalChecks(request):
                }
     
     return render(request, "final_checks.html", context = context)
+
+@login_required
+def CoreArchive(request):
+    Parts =Part.objects.all()
+    context = {"Parts": Parts,}
+    return render(request, "core_archive.html", context = context)
+
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
@@ -429,13 +436,41 @@ class CPTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartCPTask(request, pk):
     Task = ComponentPrepTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
     Task.status = "b"
+    Task.starttime = str_Time
+    Task.starttimenum = time.time()
+    start = float(Task.createtimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetostartstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetostart = str(timetostartstr)
     Task.save()
     return HttpResponseRedirect(reverse('cptasks'))
 
 def FinishCPTask(request, pk):
     Task = ComponentPrepTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
+    Task.finishtime = str_Time
     Task.status = "z"
+    Task.finishtimenum = time.time()
+    start = float(Task.starttimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetakenstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetaken = str(timetakenstr)
     Task.save()
     return HttpResponseRedirect(reverse('cptasks'))
   
@@ -494,13 +529,41 @@ class StackingTaskDelete(LoginRequiredMixin,DeleteView):
 
 def StartStackTask(request, pk):
     Task = StackingTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
     Task.status = "b"
+    Task.starttime = str_Time
+    Task.starttimenum = time.time()
+    start = float(Task.createtimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetostartstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetostart = str(timetostartstr)
     Task.save()
     return HttpResponseRedirect(reverse('stackingtasks'))
 
 def FinishStackTask(request, pk):
     Task = StackingTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
+    Task.finishtime = str_Time
     Task.status = "z"
+    Task.finishtimenum = time.time()
+    start = float(Task.starttimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetakenstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetaken = str(timetakenstr)
     Task.save()
     return HttpResponseRedirect(reverse('stackingtasks'))    
     
@@ -585,13 +648,41 @@ class HeaderPlateTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartHeaderPlateTask(request, pk):
     Task = HeaderPlateTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
     Task.status = "b"
+    Task.starttime = str_Time
+    Task.starttimenum = time.time()
+    start = float(Task.createtimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetostartstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetostart = str(timetostartstr)
     Task.save()
     return HttpResponseRedirect(reverse('headerplatetasks'))
 
 def FinishHeaderPlateTask(request, pk):
     Task = HeaderPlateTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
+    Task.finishtime = str_Time
     Task.status = "z"
+    Task.finishtimenum = time.time()
+    start = float(Task.starttimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetakenstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetaken = str(timetakenstr)
     Task.save()
     return HttpResponseRedirect(reverse('headerplatetasks'))
 
@@ -650,13 +741,41 @@ class PitchingTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartPitchingTask(request, pk):
     Task = PitchingTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
     Task.status = "b"
+    Task.starttime = str_Time
+    Task.starttimenum = time.time()
+    start = float(Task.createtimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetostartstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetostart = str(timetostartstr)
     Task.save()
     return HttpResponseRedirect(reverse('pitchingtasks'))
 
 def FinishPitchingTask(request, pk):
     Task = PitchingTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
+    Task.finishtime = str_Time
     Task.status = "z"
+    Task.finishtimenum = time.time()
+    start = float(Task.starttimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetakenstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetaken = str(timetakenstr)
     Task.save()
     return HttpResponseRedirect(reverse('pitchingtasks'))
 
@@ -716,13 +835,41 @@ class WireCutTaskDelete(LoginRequiredMixin,DeleteView):
     
 def StartWireCutTask(request, pk):
     Task = WireCutTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
     Task.status = "b"
+    Task.starttime = str_Time
+    Task.starttimenum = time.time()
+    start = float(Task.createtimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetostartstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetostart = str(timetostartstr)
     Task.save()
     return HttpResponseRedirect(reverse('wirecuttasks'))
 
 def FinishWireCutTask(request, pk):
     Task = WireCutTaskInstance.objects.get(pk = pk)
+    str_Time = datetime.datetime.now()
+    str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%x")
+    Task.finishtime = str_Time
     Task.status = "z"
+    Task.finishtimenum = time.time()
+    start = float(Task.starttimenum)
+    end = time.time()
+    hours, rem = divmod(end-start, 3600)
+    if hours > 24:
+        days, extra = divmod(hours,24)
+    else:
+        days = 0
+    mins, seconds = divmod(rem, 60)
+    timetakenstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
+    Task.timetaken = str(timetakenstr)
     Task.save()
     return HttpResponseRedirect(reverse('wirecuttasks'))
 

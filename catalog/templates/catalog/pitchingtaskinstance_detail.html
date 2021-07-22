@@ -43,9 +43,24 @@ div.ex3 {color: black;}
       {% endif %}
     {{pitchingtaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
-    -
-    <a href = "{% url 'pitchingtask-update-status' pitchingtaskinstance.pk %}">
-     Edit status</a>, <a href="{% url 'pitchingtask-delete' pitchingtaskinstance.pk %}">Delete Task</a>
+    <hr>
+    <h5> Admin Pannel </h5>
+    <a href = "{% url 'cptask-update-status' pitchingtaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'cptask-delete' pitchingtaskinstance.pk %}">Delete Task</a>
+     
+     <div>Task Created: {{pitchingtaskinstance.createtime}}</div>
+     {% if pitchingtaskinstance.starttime == None %}
+     <div>Task Not Yet Started</div>
+     {% else %}
+     <div>Task Started: {{pitchingtaskinstance.starttime}}</div>
+     <div>Time untill Task was started: {{pitchingtaskinstance.timetostart}}</div>
+     
+     {% endif %}
+     {% if pitchingtaskinstance.finishtime == None %}
+     {% else %}
+     <div>Task Finished: {{pitchingtaskinstance.finishtime}}</div>
+     <div> Time Taken: {{pitchingtaskinstance.timetaken}}</div>
+     {% endif %}
     {% endif %}
     
       <hr>

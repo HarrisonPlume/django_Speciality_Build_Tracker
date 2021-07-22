@@ -42,10 +42,26 @@ div.ex3 {color: black;}
       {% endif %}
     {{wirecuttaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
-    -
-    <a href = "{% url 'wirecuttask-update-status' wirecuttaskinstance.pk %}">
-     Edit status</a>, <a href="{% url 'wirecuttask-delete' wirecuttaskinstance.pk %}">Delete Task</a>
+        <hr>
+    <h5> Admin Pannel </h5>
+    <a href = "{% url 'cptask-update-status' wirecuttaskinstance.pk %}">
+     Edit status</a>, <a href="{% url 'cptask-delete' wirecuttaskinstance.pk %}">Delete Task</a>
+     
+     <div>Task Created: {{wirecuttaskinstance.createtime}}</div>
+     {% if wirecuttaskinstance.starttime == None %}
+     <div>Task Not Yet Started</div>
+     {% else %}
+     <div>Task Started: {{wirecuttaskinstance.starttime}}</div>
+     <div>Time untill Task was started: {{wirecuttaskinstance.timetostart}}</div>
+     
+     {% endif %}
+     {% if wirecuttaskinstance.finishtime == None %}
+     {% else %}
+     <div>Task Finished: {{wirecuttaskinstance.finishtime}}</div>
+     <div> Time Taken: {{wirecuttaskinstance.timetaken}}</div>
+     {% endif %}
     {% endif %}
+    
       <hr>
      <h5>Current options</h5>
     {% if wirecuttaskinstance.part in stacking_tasks_not_completed %}
