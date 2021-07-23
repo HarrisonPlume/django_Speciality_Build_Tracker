@@ -217,16 +217,11 @@ def FinalChecks(request):
     
     return render(request, "final_checks.html", context = context)
 
-@login_required
-def CoreArchive(request):
-    Parts =Part.objects.all()
-    context = {"Parts": Parts,}
-    return render(request, "core_archive.html", context = context)
-
 class CoreArchiveView(generic.ListView):
     model = Part
     context_object_name = "archive_part_list"
     template_name = "core_archive.html"
+    paginate_by = 10
     
     
     

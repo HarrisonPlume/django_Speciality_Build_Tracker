@@ -6,15 +6,18 @@ a.ex2{color: black;}
 </style>
 </head>
   <h1>Core Archive</h1>
+  <div>PartNumber:</div>
     <form class="Part" method="GET" action="" >
     <input class="Part" type="search" name="search"> 
     <button class="Part" type="submit"> Search </button>
     </form>
+    
     <br>
-    <h5>Core List</h5>
+    <h5>Archived Cores</h5>
     <hr>
     {% for result in archive_part_list %}
-     <div><a class ="ex2" href = "{{ result.get_absolute_url }}">{{result}} ({{result.team}}) Serial: {{result.serial}}</a></div><br>
+     <div><a class ="ex2" href = "{{ result.get_absolute_url }}">
+     {{result}} ({{result.team}}) Serial: {{result.serial}}</a></div><br>
     {% empty %}
       <div> No Matching Parts Could be Found</div>
     {% endfor %}
