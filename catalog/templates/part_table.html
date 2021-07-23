@@ -26,9 +26,10 @@ a.ex2{color: black;}
       <hr>
       {% endif %}
       {% if part_list %}
+      {% if Cores_not_in_Archive > 0 %}
         <table>
         <tr>
-        <th><a href = "{% url 'parts' %}" class = "ex3">Part</a></th>
+        <th><a href = "" class = "ex3">Part</a></th>
         <th><a href = "" class = "ex3">Team</a></th>
         <th><a href = "" class = "ex3">Serial</a></th>
         <th><a href = "{% url 'cptasks' %}" class = "ex3">Component Prep Tasks</a></th>
@@ -41,14 +42,17 @@ a.ex2{color: black;}
         <th><a href = "{% url 'platingtasks' %}" class = "ex3">Plating Tasks</a></th>
         </tr>
         {% for part in part_list %}
+        {% if part.archive != True %}
         <tr>
         <td><a class = "ex2" href = "{{ part.get_absolute_url }}">{{part}}</a></td>
         <td>{{part.team}}  </td>
         <td>{{part.serial}}  </td>
         
+        
                 {# Component Prep Tasks with formating #}
         <td>
         {% for task in part_component_prep_tasks %}
+        {% if task.part.archive != True %}
         {% if task.part == part %}
         {% if task.status == "z" %}
         <a class = "text-success" href = "{{ task.get_absolute_url }}">
@@ -78,6 +82,7 @@ a.ex2{color: black;}
         </a>
         </span>
         <br>
+        {% endif %}
         {% endif %}
         {% endif %}
         {% endfor %}
@@ -86,6 +91,7 @@ a.ex2{color: black;}
                 {# Header Plate Forming Tasks with formating #}
         <td>
         {% for task in part_forming_tasks %}
+        {% if task.part.archive != True %}
         {% if task.part == part %}
         {% if task.status == "z" %}
         <a class = "text-success" href = "{{ task.get_absolute_url }}">
@@ -115,6 +121,7 @@ a.ex2{color: black;}
         </a>
         </span>
         <br>
+        {% endif %}
         {% endif %}
         {% endif %}
         {% endfor %}
@@ -133,6 +140,7 @@ a.ex2{color: black;}
         {% endfor %}
         {% else %}
         {% for task in part_stacking_tasks %}
+        {% if task.part.archive != True %}
         {% if task.part == part %}
         {% if task.status == "z" %}
         <a class = "text-success" href = "{{ task.get_absolute_url }}">
@@ -162,6 +170,7 @@ a.ex2{color: black;}
         </a>
         </span>
         <br>
+        {% endif %}
         {% endif %}
         {% endif %}
         {% endfor %}
@@ -181,6 +190,7 @@ a.ex2{color: black;}
         {% endfor %}
         {% else %}
         {% for task in part_wire_cut_tasks %}
+        {% if task.part.archive != True %}
         {% if task.part == part %}
         {% if task.status == "z" %}
         <a class = "text-success" href = "{{ task.get_absolute_url }}">
@@ -210,6 +220,7 @@ a.ex2{color: black;}
         </a>
         </span>
         <br>
+        {% endif %}
         {% endif %}
         {% endif %}
         {% endfor %}
@@ -229,6 +240,7 @@ a.ex2{color: black;}
         {% endfor %}
         {% else %}
         {% for task in part_pitching_tasks %}
+        {% if task.part.archive != True %}
         {% if task.part == part %}
         {% if task.status == "z" %}
         <a class = "text-success" href = "{{ task.get_absolute_url }}">
@@ -258,6 +270,7 @@ a.ex2{color: black;}
         </a>
         </span>
         <br>
+        {% endif %}
         {% endif %}
         {% endif %}
         {% endfor %}
@@ -277,6 +290,7 @@ a.ex2{color: black;}
         {% endfor %}
         {% else %}
         {% for task in part_header_plate_tasks %}
+        {% if task.part.archive != True %}
         {% if task.part == part %}
         {% if task.status == "z" %}
         <a class = "text-success" href = "{{ task.get_absolute_url }}">
@@ -306,6 +320,7 @@ a.ex2{color: black;}
         </a>
         </span>
         <br>
+        {% endif %}
         {% endif %}
         {% endif %}
         {% endfor %}
@@ -325,6 +340,7 @@ a.ex2{color: black;}
         {% endfor %}
         {% else %}
         {% for task in part_deburr_tasks %}
+        {% if task.part.archive != True %}
         {% if task.part == part %}
         {% if task.status == "z" %}
         <a class = "text-success" href = "{{ task.get_absolute_url }}">
@@ -354,6 +370,7 @@ a.ex2{color: black;}
         </a>
         </span>
         <br>
+        {% endif %}
         {% endif %}
         {% endif %}
         {% endfor %}
@@ -373,6 +390,7 @@ a.ex2{color: black;}
         {% endfor %}
         {% else %}
         {% for task in part_plating_tasks %}
+        {% if task.part.archive != True %}
         {% if task.part == part %}
         {% if task.status == "z" %}
         <a class = "text-success" href = "{{ task.get_absolute_url }}">
@@ -404,15 +422,20 @@ a.ex2{color: black;}
         <br>
         {% endif %}
         {% endif %}
+        {% endif %}
         {% endfor %}
         {% endif %}
         </td>
         
         {# Insert new collumns above #}
+        {% endif %}
         </tr>
         {% endfor %}
         
         </table>
+        {% else %}
+        <h5> There are no parts recorded in the system</h5>
+        {% endif %}
         {% else %}
         <h5> There are no parts recorded in the system</h5>
         {% endif %}

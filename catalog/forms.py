@@ -48,3 +48,11 @@ class PartForm(forms.ModelForm):
                   "Stacking_tasks", "Forming_tasks", "Header_Plate_tasks",
                   "Pitching_tasks", "Wire_Cut_tasks", "Deburr_tasks",
                   "Plating_tasks")
+        
+class ArchiveForm(forms.ModelForm):
+    archive = forms.BooleanField(required = True,
+                                 label = "Confirm Core is complete")
+    
+    class Meta:
+        model = Part
+        fields = ("archive",)

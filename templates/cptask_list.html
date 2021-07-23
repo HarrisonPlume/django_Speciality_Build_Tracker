@@ -23,6 +23,7 @@ a.ex3 {color: black;}
   <hr>
   {% endif %}
     {% for newtask in cptask_list %}
+    {% if newtask.part.archive != True %}
     <li>
     {% if newtask.status == "z" %}
     <span title="Task Complete">
@@ -52,6 +53,9 @@ a.ex3 {color: black;}
        </span>
       {% endif %}
     </li>
+    {% elif not_archived_tasks == 0 %}
+    <p>There are no tasks currently listed.</p>
+    {% endif %}
     {% endfor %}
   {% else %}
     <p>There are no tasks currently listed.</p>

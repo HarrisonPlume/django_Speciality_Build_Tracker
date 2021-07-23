@@ -21,6 +21,7 @@ a.ex3 {color: black;}
   <hr>
   {% endif %}
     {% for newtask in stackingtask_list %}
+    {% if newtask.part.archive != True %}
       {% if newtask.part in component_prep_tasks_not_completed %}
       <span title = "Task Unavalible">
       <li><span class = "text-danger" title = "Task Unavalible">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}
@@ -57,6 +58,9 @@ a.ex3 {color: black;}
        </span>
       {% endif %}
     </li>
+    {% endif %}
+    {% elif not_archived_tasks == 0 %}
+    <p>There are no tasks currently listed.</p>
     {% endif %}
     {% endfor %}
   {% else %}

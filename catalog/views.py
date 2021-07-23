@@ -11,7 +11,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .tables import PartTable
-from catalog.forms import PartForm
+from catalog.forms import PartForm, ArchiveForm
 from django import forms
 from django.utils import timezone
 import datetime, time
@@ -28,7 +28,7 @@ def index(request):
     num_HP_Tasks = HeaderPlateTaskInstance.objects.exclude(status__exact="z").count()
     num_Deburr_Tasks = DeburrTaskInstance.objects.exclude(status__exact="z").count()
     num_Plating_Tasks = PlatingTaskInstance.objects.exclude(status__exact ="z").count()
-    num_parts = Part.objects.all().count()
+    num_parts = Part.objects.filter(archive__exact = False).count()
     
     #Number of site visits by the current user    
     context = {
@@ -55,14 +55,14 @@ class PartDashboardView(generic.ListView):
     paginate_by = 10
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        part_component_prep_tasks = ComponentPrepTaskInstance.objects.all()
-        part_stacking_tasks = StackingTaskInstance.objects.all()
-        part_forming_tasks = FormingTaskInstance.objects.all()
-        part_header_plate_tasks = HeaderPlateTaskInstance.objects.all()
-        part_pitching_tasks = PitchingTaskInstance.objects.all()
-        part_wire_cut_tasks = WireCutTaskInstance.objects.all()
-        part_deburr_tasks = DeburrTaskInstance.objects.all()
-        part_plating_tasks = PlatingTaskInstance.objects.all()
+        part_component_prep_tasks = ComponentPrepTaskInstance.objects.exclude(part__archive__exact = True)
+        part_stacking_tasks = StackingTaskInstance.objects.exclude(part__archive__exact = True)
+        part_forming_tasks = FormingTaskInstance.objects.exclude(part__archive__exact = True)
+        part_header_plate_tasks = HeaderPlateTaskInstance.objects.exclude(part__archive__exact = True)
+        part_pitching_tasks = PitchingTaskInstance.objects.exclude(part__archive__exact = True)
+        part_wire_cut_tasks = WireCutTaskInstance.objects.exclude(part__archive__exact = True)
+        part_deburr_tasks = DeburrTaskInstance.objects.exclude(part__archive__exact = True)
+        part_plating_tasks = PlatingTaskInstance.objects.exclude(part__archive__exact = True)
         #Component Prep Tasks for each individual part
         part = None
         Completedict = {}
@@ -157,6 +157,9 @@ class PartDashboardView(generic.ListView):
              else:
                 if task.status != "z":
                      PlatingCompletedict[task.part] = "Not Complete"
+                     
+        Cores_not_in_Archive = Part.objects.filter(archive__exact = False).count()
+        context["Cores_not_in_Archive"] = Cores_not_in_Archive
         context["component_prep_tasks_not_completed"] = Completedict
         context["stacking_tasks_not_completed"] = StackingCompletedict
         context["forming_tasks_not_completed"] = FormingCompletedict
@@ -205,8 +208,11 @@ def FinalChecks(request):
         for task in PlatingTaskInstance.objects.all():
             if task.status != "z":
                 CompleteDict[task.part.title]= task.task
+                
+    Cores_not_in_Archive = Part.objects.filter(archive__exact = False).count()
     context = {"Parts": Parts,
                "Check_Tasks_Completed": CompleteDict,
+               "Cores_not_in_Archive": Cores_not_in_Archive,
                }
     
     return render(request, "final_checks.html", context = context)
@@ -216,6 +222,32 @@ def CoreArchive(request):
     Parts =Part.objects.all()
     context = {"Parts": Parts,}
     return render(request, "core_archive.html", context = context)
+
+class CoreArchiveView(generic.ListView):
+    model = Part
+    context_object_name = "archive_part_list"
+    template_name = "core_archive.html"
+    
+    
+    
+    def get_queryset(self):
+        result = super(CoreArchiveView, self).get_queryset()
+        query = self.request.GET.get("search")
+        if query:
+            postresult = Part.objects.filter(title__contains=query, archive__exact = True)
+            result = postresult
+        else:
+            result = Part.objects.filter(archive__exact = True)
+            
+        return result
+    
+    def get_context_data(self, **kwargs):
+         context = super().get_context_data(**kwargs)
+         Archive_Parts = Part.objects.filter(archive__exact = True)
+         context["Archive_Parts"] = Archive_Parts
+         return context
+        
+        
 
 @register.filter
 def get_item(dictionary, key):
@@ -227,7 +259,6 @@ class PartListView(generic.ListView):
     context_object_name = "part_list"
     template_name = "parts/part_list.html"
     paginate_by = 10
-
 
 
 
@@ -414,8 +445,10 @@ class CpTaskListView(generic.ListView):
         context = super().get_context_data(**kwargs)
         num_tasks_not_started = ComponentPrepTaskInstance.objects.filter(status__exact="a").count()
         tasks_remaining = ComponentPrepTaskInstance.objects.exclude(status__exact="z").count()
-        tasks_complete = ComponentPrepTaskInstance.objects.filter(status__exact="z").count()
+        tasks_complete = ComponentPrepTaskInstance.objects.filter(status__exact="z", part__archive__exact = False).count()
         tasks_on_hold = ComponentPrepTaskInstance.objects.filter(status__exact="h").count()
+        not_archived_tasks = ComponentPrepTaskInstance.objects.exclude(part__archive__exact = True).count()
+        context["not_archived_tasks"] = not_archived_tasks
         context["num_tasks_not_started"] = num_tasks_not_started
         context["tasks_remaining"] = tasks_remaining
         context["tasks_complete"] = tasks_complete
@@ -495,6 +528,8 @@ class StackingTaskListView(generic.ListView):
              else:
                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
+         not_archived_tasks = StackingTaskInstance.objects.exclude(part__archive__exact = True).count()
+         context["not_archived_tasks"] = not_archived_tasks                
          context["component_prep_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
@@ -580,6 +615,8 @@ class FormingTaskInstanceListView(generic.ListView):
          context = super().get_context_data(**kwargs)
          tasks_remaining = FormingTaskInstance.objects.exclude(status__exact="z").count()
          num_tasks_not_started = FormingTaskInstance.objects.filter(status__exact="a").count()
+         not_archived_tasks = FormingTaskInstance.objects.exclude(part__archive__exact = True).count()
+         context["not_archived_tasks"] = not_archived_tasks
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
          return context 
@@ -657,6 +694,8 @@ class HeaderPlateTaskInstanceListView(generic.ListView):
              else:
                  if task.status != "z":
                     Completedict[task.part] = "Not Complete"
+         not_archived_tasks = HeaderPlateTaskInstance.objects.exclude(part__archive__exact = True).count()
+         context["not_archived_tasks"] = not_archived_tasks     
          context["pitching_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
@@ -735,6 +774,8 @@ class PitchingTaskListView(generic.ListView):
              else:
                  if task.status != "z":
                     Completedict[task.part] = "Not Complete"
+         not_archived_tasks = PitchingTaskInstance.objects.exclude(part__archive__exact = True).count()
+         context["not_archived_tasks"] = not_archived_tasks    
          context["wire_cut_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
@@ -829,6 +870,8 @@ class WireCutTaskListView(generic.ListView):
              else:
                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
+         not_archived_tasks = WireCutTaskInstance.objects.exclude(part__archive__exact = True).count()
+         context["not_archived_tasks"] = not_archived_tasks  
          context["stacking_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
@@ -923,6 +966,8 @@ class DeburrTaskListView(generic.ListView):
              else:
                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
+         not_archived_tasks = DeburrTaskInstance.objects.exclude(part__archive__exact = True).count()
+         context["not_archived_tasks"] = not_archived_tasks  
          context["header_plate_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
@@ -1016,6 +1061,8 @@ class PlatingTaskListView(generic.ListView):
              else:
                 if task.status != "z":
                      Completedict[task.part] = "Not Complete"
+         not_archived_tasks = PlatingTaskInstance.objects.exclude(part__archive__exact = True).count()
+         context["not_archived_tasks"] = not_archived_tasks
          context["deburr_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
          context["tasks_remaining"] = tasks_remaining
@@ -1088,8 +1135,18 @@ def FinishPlatingTask(request, pk):
     Task.save()
     return HttpResponseRedirect(reverse('platingtasks'))
 
-#Complete Core 
-class PartComplete(LoginRequiredMixin,DeleteView):
-    model = Part 
-    template_name = "catalog/part_confirm_complete.html"
-    success_url = reverse_lazy('index')
+#Complete Core
+@login_required 
+def PartComplete(request, pk):
+    instance = get_object_or_404(Part, pk = pk)
+    form = ArchiveForm(request.POST or None, instance = instance)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.poster = request.user
+        archive = form.cleaned_data.get("archive")
+        instance.archive = archive
+        instance.save()
+        return HttpResponseRedirect(reverse('part-dashboard'))
+    
+    return render(request, "catalog/part_confirm_complete.html", {"form": form})
+    

@@ -3,6 +3,7 @@
 {% block content %}
 
 <h1>{{part}} ({{part.team}}) Serial: {{part.serial}} </h1>
+{% if part.archive != True %}
 {% if user.is_authenticated %}
 <hr>
 <h5>Admin Panel</h5>
@@ -229,4 +230,95 @@ Forming Tasks Complete
 </div>
 <br>
 <br>
+{% else %}
+{# Archived Core #}
+{% if user.is_authenticated %}
+<h5 class ="text-danger"> Archived Core</h5>
+<hr>
+<h5>Admin Panel</h5>
+<li><a href = "{% url 'part-delete' part.pk %}">Delete part</a></li>
+<hr>
+
+<h4>Component Prep Tasks</h4>
+<hr>
+{% for task in part_component_prep_tasks %}
+{% if task.part == part %}
+<li> <a href = "{% url 'cptask-detail' task.pk %}">{{task}}</a> 
+</li>
+<br>
+{% endif %}
+{% endfor %}
+
+<h4>Forming Tasks</h4>
+<hr>
+{% for task in part_forming_tasks %}
+{% if task.part == part %}
+<li> <a href = "{% url 'formingtask-detail' task.pk %}">{{task}}</a> 
+</li>
+<br>
+{% endif %}
+{% endfor %}
+
+<h4>Stacking Tasks</h4>
+<hr>
+{% for task in part_stacking_tasks %}
+{% if task.part == part %}
+<li> <a href = "{% url 'stackingtask-detail' task.pk %}">{{task}}</a> 
+</li>
+<br>
+{% endif %}
+{% endfor %}
+
+<h4>Wire Cut Tasks</h4>
+<hr>
+{% for task in part_wire_cut_tasks %}
+{% if task.part == part %}
+<li> <a href = "{% url 'wirecuttask-detail' task.pk %}">{{task}}</a> 
+</li>
+<br>
+{% endif %}
+{% endfor %}
+
+<h4>Pitching Tasks</h4>
+<hr>
+{% for task in part_pitching_tasks %}
+{% if task.part == part %}
+<li> <a href = "{% url 'pitchingtask-detail' task.pk %}">{{task}}</a> 
+</li>
+<br>
+{% endif %}
+{% endfor %}
+
+<h4>Header Plate Machining Tasks</h4>
+<hr>
+{% for task in part_header_plate_tasks %}
+{% if task.part == part %}
+<li> <a href = "{% url 'hptask-detail' task.pk %}">{{task}}</a> 
+</li>
+<br>
+{% endif %}
+{% endfor %}
+
+<h4>Deburring Tasks</h4>
+<hr>
+{% for task in part_deburr_tasks %}
+{% if task.part == part %}
+<li> <a href = "{% url 'deburrtask-detail' task.pk %}">{{task}}</a> 
+</li>
+<br>
+{% endif %}
+{% endfor %}
+
+<h4>Plating Tasks</h4>
+<hr>
+{% for task in part_plating_tasks %}
+{% if task.part == part %}
+<li> <a href = "{% url 'platingtask-detail' task.pk %}">{{task}}</a> 
+</li>
+<br>
+{% endif %}
+{% endfor %}
+
+{% endif %}
+{% endif %}
 {% endblock %}

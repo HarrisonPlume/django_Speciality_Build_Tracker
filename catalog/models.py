@@ -367,6 +367,8 @@ class Part(models.Model):
                                             Select the nessessary plating\
                                                 tasks")
     pub_date = models.DateTimeField("time published", auto_now=True)
+    
+    archive = models.BooleanField(null = True, default=False)
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""
         return self.title
