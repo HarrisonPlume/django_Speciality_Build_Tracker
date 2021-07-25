@@ -18,7 +18,7 @@
     <span class = "text-success"> (All Tasks Completed) <img src="{% static 'catalog/tick.png' %}" alt="Complete"></span> 
     <a href = "{% url 'part-complete' part.pk %}"> Sign off Core</a></li>
     {% endif %}
-    {% else %}
+    {% elif Cores_not_in_Archive == 0 and forloop.counter0 == 0 %}
     <h5> There are Currently no cores in the system.</h5>
     {% endif %}
     {% endfor %}

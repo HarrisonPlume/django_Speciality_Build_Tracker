@@ -59,7 +59,7 @@ a.ex3 {color: black;}
       {% endif %}
     </li>
     {% endif %}
-    {% elif not_archived_tasks == 0 %}
+    {% elif not_archived_tasks == 0 and forloop.counter0 == 0 %}
     <p>There are no tasks currently listed.</p>
     {% endif %}
     {% endfor %}

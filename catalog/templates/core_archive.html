@@ -15,10 +15,12 @@ a.ex2{color: black;}
     <br>
     <h5>Archived Cores</h5>
     <hr>
+    <ul>
     {% for result in archive_part_list %}
      <div><a class ="ex2" href = "{{ result.get_absolute_url }}">
-     {{result}} ({{result.team}}) Serial: {{result.serial}}</a></div><br>
+     {{result}} ({{result.team}}) Serial: {{result.serial}}</a></div>
     {% empty %}
       <div> No Matching Parts Could be Found</div>
     {% endfor %}
+    </ul>
 {% endblock %}

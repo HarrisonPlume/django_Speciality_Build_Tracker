@@ -427,7 +427,6 @@ def CreateParts():
     """
     Function takes the input setials and creates multiple parts 
 
-
     """
     
 # Create Sheet Metal Forming Tasks
@@ -436,7 +435,7 @@ def CreateNewFormingTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Formingtask_list = obj.Forming_tasks.all()
     Created_Time = datetime.datetime.now()
-    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%d/%m/%Y")
     for task in Formingtask_list:
        try:
            FormingTaskInstance.objects.get(task= task, part=obj)
@@ -465,7 +464,7 @@ def CreateNewCPTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     CPtask_list = obj.Component_Prep_tasks.all()
     Created_Time = datetime.datetime.now()
-    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%d/%m/%Y")
     for task in CPtask_list:
        try:
            ComponentPrepTaskInstance.objects.get(task= task, part=obj)
@@ -495,7 +494,7 @@ def CreateNewStackingTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Stacktask_list = obj.Stacking_tasks.all()
     Created_Time = datetime.datetime.now()
-    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%d/%m/%Y")
     for task in Stacktask_list:
         try:
             StackingTaskInstance.objects.get(task = task, part = obj)
@@ -523,7 +522,7 @@ def CreateNewHeaderPlateTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     HPtask_list = obj.Header_Plate_tasks.all()
     Created_Time = datetime.datetime.now()
-    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%d/%m/%Y")
     for task in HPtask_list:
         try:
             HeaderPlateTaskInstance.objects.get(task = task, part = obj)
@@ -551,7 +550,7 @@ def CreateNewPitchingTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Pitchingtask_list = obj.Pitching_tasks.all()
     Created_Time = datetime.datetime.now()
-    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%d/%m/%Y")
     for task in Pitchingtask_list:
         try:
             PitchingTaskInstance.objects.get(task = task, part = obj)
@@ -579,7 +578,7 @@ def CreateNewWireCutTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     WireCuttask_list = obj.Wire_Cut_tasks.all()
     Created_Time = datetime.datetime.now()
-    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%d/%m/%Y")
     for task in WireCuttask_list:
         try:
             WireCutTaskInstance.objects.get(task = task, part = obj)
@@ -607,7 +606,7 @@ def CreateNewDeburrTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Deburrtask_list = obj.Deburr_tasks.all()
     Created_Time = datetime.datetime.now()
-    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%d/%m/%Y")
     for task in Deburrtask_list:
         try:
             DeburrTaskInstance.objects.get(task = task, part = obj)
@@ -635,7 +634,7 @@ def CreateNewPlatingTaskInstance(sender, **kwargs):
     obj = Part.objects.latest("pub_date")
     Platingtask_list = obj.Plating_tasks.all()
     Created_Time = datetime.datetime.now()
-    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%x")
+    Created_Time = Created_Time.strftime("%X")+" on the "+Created_Time.strftime("%d/%m/%Y")
     for task in Platingtask_list:
         try:
             PlatingTaskInstance.objects.get(task = task, part = obj)

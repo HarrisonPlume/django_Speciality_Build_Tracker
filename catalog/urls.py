@@ -149,4 +149,5 @@ urlpatterns += [
          name='part-complete'),
     path('parts/dashboard/', views.PartDashboardView.as_view(), 
          name='part-dashboard'),
+    path("team/create", views.TeamCreate.as_view(), name = "teamcreate")
 ]
