@@ -8,12 +8,7 @@
     <hr>
     {% for part in Parts %}
     {% if part.archive != True %}
-    {% if part.title|add:"s"|add:part.serial in Check_Tasks_Completed %}
-    <li>{{part.title}} ({{part.team}}) Serial: {{part.serial}} - 
-    <strong>Incomplete Task:</strong>
-    {{part.serial|get_partNo:part.title|get_item:Check_Tasks_Completed}}</li>
-    
-    {% else %}
+    {% if part.title|add:"s"|add:part.serial not in Check_Tasks_Completed %}
     <li>{{part.title}} ({{part.team}}) Serial: {{part.serial}} 
     <span class = "text-success"> (All Tasks Completed) <img src="{% static 'catalog/tick.png' %}" alt="Complete"></span> 
     <a href = "{% url 'part-complete' part.pk %}"> Sign off Core</a></li>
@@ -22,6 +17,17 @@
     <h5> There are Currently no cores in the system.</h5>
     {% endif %}
     {% endfor %}
+    
+    {% for part in Parts %}
+    {% if part.archive != True %}
+    {% if part.title|add:"s"|add:part.serial in Check_Tasks_Completed %}
+    <li>{{part.title}} ({{part.team}}) Serial: {{part.serial}} - 
+    <strong>Incomplete Task:</strong>
+    {{part.serial|get_partNo:part.title|get_item:Check_Tasks_Completed}}</li>    
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    
    
         
 {% endblock %}

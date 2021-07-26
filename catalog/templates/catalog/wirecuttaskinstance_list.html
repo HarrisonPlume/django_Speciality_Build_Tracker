@@ -22,13 +22,7 @@ a.ex3 {color: black;}
   {% endif %}
     {% for newtask in wirecuttask_list %}
     {% if newtask.part.archive != True %}
-      {% if newtask.part in stacking_tasks_not_completed %}
-      <span title = "Task Unavalible">
-      <li><span class = "text-danger" title = "Task Unavalible">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}
-      <img src="{% static 'catalog/prohibition.png' %}" alt="Complete">
-      </span>
-      </li>
-  {% else %}
+      {% if newtask.part not in stacking_tasks_not_completed %}
     <li>
     {% if newtask.status == "z" %}
     <span title="Task Complete">
@@ -66,6 +60,18 @@ a.ex3 {color: black;}
   {% else %}
     <p>There are no tasks currently listed.</p>
   {% endif %} 
+  {% for newtask in wirecuttask_list %}
+  {% if newtask.part.archive != True %}
+      {% if newtask.part in stacking_tasks_not_completed %}
+      <span title = "Task Unavalible">
+      <li><span class = "text-danger" title = "Task Unavalible">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}
+      <img src="{% static 'catalog/prohibition.png' %}" alt="Complete">
+      </span>
+      </li>
+  {% endif %}
+  {% endif %}
+  {% endfor %}
+
 {% endblock %}
 </body>
 </html>
