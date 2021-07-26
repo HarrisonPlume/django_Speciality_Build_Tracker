@@ -3,7 +3,7 @@ from django.urls import reverse # generate urls' by reversing url patterns
 import uuid #Required for unique book instances
 from django.contrib.auth.models import User
 from datetime import date
-from django.db.models.signals import m2m_changed, post_save
+from django.db.models.signals import m2m_changed, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.db.models import Case, When, Value
@@ -346,26 +346,34 @@ class Part(models.Model):
     team = models.ForeignKey(Team, on_delete = models.RESTRICT, null = True)
     Component_Prep_tasks = models.ManyToManyField(Component_Prep_Task, help_text = "Select \
                                      the component prep tasks \
-                                         to be completed.") 
+                                         to be completed.",
+                                         blank = True) 
     Stacking_tasks = models.ManyToManyField(Stacking_Task, help_text = "Select\
-                                         the required stacking tasks.")
+                                         the required stacking tasks.",
+                                         blank = True)
     Forming_tasks = models.ManyToManyField(Forming_Task, help_text = "Select\
-                                           the required forming tasks.")
+                                           the required forming tasks.",
+                                         blank = True)
     Header_Plate_tasks = models.ManyToManyField("Header_Plate_Task", help_text = "\
                                                 Select The nessessary header \
-                                                    plate tasks")
+                                                    plate tasks",
+                                         blank = True)
     Pitching_tasks = models.ManyToManyField(Pitching_Task, help_text = "\
                                             Select the nessessary pitching \
-                                                tasks")
+                                                tasks",
+                                         blank = True)
     Wire_Cut_tasks = models.ManyToManyField(Wire_Cut_Task, help_text = "\
                                             Select the nessessary wire cut\
-                                                tasks")
+                                                tasks",
+                                         blank = True)
     Deburr_tasks = models.ManyToManyField(Deburr_Task, help_text = "\
                                             Select the nessessary deburr\
-                                                tasks")
+                                                tasks",
+                                         blank = True)
     Plating_tasks = models.ManyToManyField(Plating_Task, help_text = "\
                                             Select the nessessary plating\
-                                                tasks")
+                                                tasks",
+                                         blank = True)
     pub_date = models.DateTimeField("time published", auto_now=True)
     
     archive = models.BooleanField(null = True, default=False)
@@ -376,6 +384,8 @@ class Part(models.Model):
     def get_absolute_url(self):
         """Returns the url to access a sepecfic author instance."""
         return reverse("part-detail", args=[str(self.id)])
+    
+    
     
     class Meta:
         ordering = ['title','serial']
@@ -422,12 +432,6 @@ class HeaderPlateTaskInstance(models.Model):
         """Returns the url to access a detail record for this task."""
         return reverse('hptask-detail', args = [str(self.id)])                          
                         
-    
-def CreateParts():
-    """
-    Function takes the input setials and creates multiple parts 
-
-    """
     
 # Create Sheet Metal Forming Tasks
 @receiver(m2m_changed, sender = Part.Forming_tasks.through)

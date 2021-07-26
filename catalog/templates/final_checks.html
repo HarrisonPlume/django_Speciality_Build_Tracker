@@ -8,11 +8,11 @@
     <hr>
     {% for part in Parts %}
     {% if part.archive != True %}
-    {% if part.title in Check_Tasks_Completed %}
-    <li>{{part.title}} ({{part.team}}) Serial: {{part.serial}} -  
-    <strong>Core Incomplete</strong><br>
-     <strong>Incomplete Task:</strong>
-     {{Check_Tasks_Completed|get_item:part.title}}</li>
+    {% if part.title|add:"s"|add:part.serial in Check_Tasks_Completed %}
+    <li>{{part.title}} ({{part.team}}) Serial: {{part.serial}} - 
+    <strong>Incomplete Task:</strong>
+    {{part.serial|get_partNo:part.title|get_item:Check_Tasks_Completed}}</li>
+    
     {% else %}
     <li>{{part.title}} ({{part.team}}) Serial: {{part.serial}} 
     <span class = "text-success"> (All Tasks Completed) <img src="{% static 'catalog/tick.png' %}" alt="Complete"></span> 
@@ -22,5 +22,6 @@
     <h5> There are Currently no cores in the system.</h5>
     {% endif %}
     {% endfor %}
+   
         
 {% endblock %}

@@ -1,5 +1,5 @@
 {% extends "base_generic.html" %}
-
+{% load static %}
 {% block content %}
 <style>
 table, th, td {
@@ -17,7 +17,9 @@ a.ex2{color: black;}
 </style>
 <h1>Create / Update Part</h1>
 <hr>
-<a class = "ex2" href = "{% url 'teamcreate' %}">Create New Team</a>
+<a class = "ex2" href = "{% url 'teamcreate' %}">
+<img src="{% static 'catalog/plus.png' %}" alt="Add new Team">Create New Team 
+</a>
 <hr>
   <form action="" method="post">
     {% csrf_token %}

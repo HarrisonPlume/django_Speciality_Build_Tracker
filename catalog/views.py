@@ -15,6 +15,7 @@ from catalog.forms import PartForm, ArchiveForm
 from django import forms
 from django.utils import timezone
 import datetime, time
+from .signals import Part_Saved
 
 def index(request):
     """View for the home page of the website"""
@@ -187,28 +188,49 @@ def FinalChecks(request):
     Parts =Part.objects.all()
     CompleteDict = {}
     for part in Parts:
-        for task in ComponentPrepTaskInstance.objects.all():
-            if task.status != "z":
-                CompleteDict[task.part.title]= task.task
-        for task in StackingTaskInstance.objects.all():
-            if task.status != "z":
-                CompleteDict[task.part.title]= task.task
-        for task in WireCutTaskInstance.objects.all():
-            if task.status != "z":
-                CompleteDict[task.part.title]= task.task
-        for task in PitchingTaskInstance.objects.all():
-            if task.status != "z":
-                CompleteDict[task.part.title]= task.task
-        for task in HeaderPlateTaskInstance.objects.all():
-            if task.status != "z":
-                CompleteDict[task.part.title]= task.task
-        for task in DeburrTaskInstance.objects.all():
-            if task.status != "z":
-                CompleteDict[task.part.title]= task.task
-        for task in PlatingTaskInstance.objects.all():
-            if task.status != "z":
-                CompleteDict[task.part.title]= task.task
-                
+        Partkey = part.title+"s"+part.serial
+        cptasks = ComponentPrepTaskInstance.objects.filter(part__title = part.title)
+        for task in cptasks:
+            if task.part.serial == part.serial:
+                if task.status != "z":
+                    CompleteDict[Partkey]= task.task
+        stackingtasks = StackingTaskInstance.objects.filter(part__title = part.title)
+        for task in stackingtasks:
+            if task.part.serial == part.serial:
+                if task.status != "z":
+                    CompleteDict[Partkey]= task.task      
+        formingtasks = FormingTaskInstance.objects.filter(part__title = part.title)
+        for task in formingtasks:
+            if task.part.serial == part.serial:
+                if task.status != "z":
+                    CompleteDict[Partkey]= task.task  
+        WCtasks = WireCutTaskInstance.objects.filter(part__title = part.title)
+        for task in WCtasks:
+            if task.part.serial == part.serial:
+                if task.status != "z":
+                    CompleteDict[Partkey]= task.task 
+        Pitchingtasks = PitchingTaskInstance.objects.filter(part__title = part.title)
+        for task in WCtasks:
+            if task.part.serial == part.serial:
+                if task.status != "z":
+                    CompleteDict[Partkey]= task.task 
+        HPtasks = HeaderPlateTaskInstance.objects.filter(part__title = part.title)
+        for task in HPtasks:
+            if task.part.serial == part.serial:
+                if task.status != "z":
+                    CompleteDict[Partkey]= task.task 
+        Deburrtasks = DeburrTaskInstance.objects.filter(part__title = part.title)
+        for task in Deburrtasks:
+            if task.part.serial == part.serial:
+                if task.status != "z":
+                    CompleteDict[Partkey]= task.task
+        Platingtasks = PlatingTaskInstance.objects.filter(part__title = part.title)
+        for task in Platingtasks:
+            if task.part.serial == part.serial:
+                if task.status != "z":
+                    CompleteDict[Partkey]= task.task
+                    
+
     Cores_not_in_Archive = Part.objects.filter(archive__exact = False).count()
     context = {"Parts": Parts,
                "Check_Tasks_Completed": CompleteDict,
@@ -245,7 +267,11 @@ class CoreArchiveView(generic.ListView):
         
 
 @register.filter
-def get_item(dictionary, key):
+def get_partNo(serial, key): 
+    return key+"s"+serial
+
+@register.filter
+def get_item(key, dictionary): 
     return dictionary.get(key)
 
 # Part Classes
@@ -399,17 +425,21 @@ def PartCreate(request):
             Wire_Cut_tasks = form.cleaned_data.get("Wire_Cut_tasks")
             Deburr_tasks = form.cleaned_data.get("Deburr_tasks")
             Plating_tasks = form.cleaned_data.get("Plating_tasks")
-            part.save()
-            part.Component_Prep_tasks.set(Component_Prep_tasks)
-            part.Stacking_tasks.set(Stacking_tasks)
-            part.Forming_tasks.set(Forming_tasks)
-            part.Header_Plate_tasks.set(Header_Plate_tasks)
-            part.Pitching_tasks.set(Pitching_tasks)
-            part.Wire_Cut_tasks.set(Wire_Cut_tasks)
-            part.Deburr_tasks.set(Deburr_tasks)
-            part.Plating_tasks.set(Plating_tasks)
-            part.save()
-            return HttpResponseRedirect(reverse('part-dashboard'))
+            try:
+                part.save()
+                part.Component_Prep_tasks.set(Component_Prep_tasks)
+                part.Stacking_tasks.set(Stacking_tasks)
+                part.Forming_tasks.set(Forming_tasks)
+                part.Header_Plate_tasks.set(Header_Plate_tasks)
+                part.Pitching_tasks.set(Pitching_tasks)
+                part.Wire_Cut_tasks.set(Wire_Cut_tasks)
+                part.Deburr_tasks.set(Deburr_tasks)
+                part.Plating_tasks.set(Plating_tasks)
+                part.save()
+                Part_Saved.send(sender = part, title = part.title)
+                return HttpResponseRedirect(reverse('part-dashboard'))
+            except:
+                return HttpResponseRedirect(reverse('part-dashboard'))
     else:
         form = PartForm()
     
@@ -432,7 +462,7 @@ class PartDelete(LoginRequiredMixin,DeleteView):
 class TeamCreate(LoginRequiredMixin, CreateView):
     model = Team
     fields = '__all__'
-    success_url = reverse_lazy('part-dashboard')
+    success_url = reverse_lazy('part-create')
     
 
 #Component Prep Classes

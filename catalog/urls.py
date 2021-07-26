@@ -1,10 +1,11 @@
 from django.urls import path
 from . import views
-#component prep url's
+#Index
 urlpatterns = [
     path("", views.index, name = "index"),
-    path("FinalChecks/", views.FinalChecks, name = "finalchecks"),
-    path("CoreArchive/", views.CoreArchiveView.as_view(), name = "corearchive"),
+    ]
+#Componet Prep urls
+urlpatterns += [
     path("CPTasks/", views.CpTaskListView.as_view(), name="cptasks"),
     path("CPTask/<int:pk>/", views.CPTaskDetailView.as_view(), 
          name = "cptask-detail"),
@@ -16,6 +17,15 @@ urlpatterns = [
          name="startcptask"),
     path("CPTask/<int:pk>/FinishTask", views.FinishCPTask, 
        name="finishcptask"),
+    ]
+#Check off core urls
+urlpatterns += [
+    path("FinalChecks/", views.FinalChecks, name = "finalchecks"),
+    path("CoreArchive/", views.CoreArchiveView.as_view(), name = "corearchive"),
+    path('part/<int:pk>/complete/', views.PartComplete, 
+         name='part-complete'),
+    path('parts/dashboard/', views.PartDashboardView.as_view(), 
+         name='part-dashboard'),
     ]
 # part url's
 urlpatterns += [
@@ -144,10 +154,7 @@ urlpatterns += [
        name="finishplatingtask"),
     ]
 
+#Create Team Url
 urlpatterns += [
-    path('part/<int:pk>/complete/', views.PartComplete, 
-         name='part-complete'),
-    path('parts/dashboard/', views.PartDashboardView.as_view(), 
-         name='part-dashboard'),
     path("team/create", views.TeamCreate.as_view(), name = "teamcreate")
 ]
