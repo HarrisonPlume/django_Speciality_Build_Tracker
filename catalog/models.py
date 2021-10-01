@@ -290,6 +290,10 @@ class Component_Prep_Task(models.Model):
     description = models.TextField(max_length = 1000, help_text = "Task\
                                    description to aid new employees", null=True,
                                    blank = True)
+    order = models.IntegerField(null=True)
+    
+    class Meta:
+        ordering = ['order']
     
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""

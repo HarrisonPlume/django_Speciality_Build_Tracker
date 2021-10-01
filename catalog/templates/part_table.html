@@ -14,7 +14,17 @@ table, th, td {
 a.ex3 {color: black;
 font-weight: bold;
 }
-a.ex2{color: black;}
+a.ex2{color: black; text-align:center}
+
+
+th span 
+{
+  -ms-writing-mode: tb-rl;
+  -webkit-writing-mode: vertical-rl;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
 </style>
 </head>
     <h1> Current Parts</h1>
@@ -31,406 +41,72 @@ a.ex2{color: black;}
         <th><a href = "" class = "ex3">Part</a></th>
         <th><a href = "" class = "ex3">Team</a></th>
         <th><a href = "" class = "ex3">Serial</a></th>
-        <th><a href = "{% url 'cptasks' %}" class = "ex3">Component Prep Tasks</a></th>
-        <th><a href = "{% url 'formingtasks' %}" class = "ex3">Forming Header Plate Tasks</a></th>
-        <th><a href = "{% url 'stackingtasks' %}" class = "ex3">Stacking Tasks</a></th>
-        <th><a href = "{% url 'wirecuttasks' %}" class = "ex3">Wire Cut Tasks</a></th>
-        <th><a href = "{% url 'pitchingtasks' %}" class = "ex3">Pitching Tasks</a></th>
-        <th><a href = "{% url 'headerplatetasks' %}" class = "ex3">HP Machining Tasks</a></th>
-        <th><a href = "{% url 'deburrtasks' %}" class = "ex3">Deburr Tasks</a></th>
-        <th><a href = "{% url 'platingtasks' %}" class = "ex3">Plating Tasks</a></th>
+        <th colspan={{ Component_Prep_Tasks|length }}><a href = "{% url 'cptasks' %}" class = "ex3">Component Prep Tasks</a></th>
+        <th colspan={{ Forming_Tasks|length }}><a href = "{% url 'formingtasks' %}" class = "ex3">Forming Header Plate Tasks</a></th>
+        <th colspan={{ Stacking_Tasks|length }}><a href = "{% url 'stackingtasks' %}" class = "ex3">Stacking Tasks</a></th>
+        <th colspan={{ Wire_Cut_Tasks|length }}><a href = "{% url 'wirecuttasks' %}" class = "ex3">Wire Cut Tasks</a></th>
+        <th colspan={{ Pitching_Tasks|length }}><a href = "{% url 'pitchingtasks' %}" class = "ex3">Pitching Tasks</a></th>
+        <th colspan={{ HP_Tasks|length }}><a href = "{% url 'headerplatetasks' %}" class = "ex3">HP Machining Tasks</a></th>
+        <th colspan={{ Deburr_Tasks|length }}><a href = "{% url 'deburrtasks' %}" class = "ex3">Deburr Tasks</a></th>
+        <th colspan={{ Plating_Tasks|length }}><a href = "{% url 'platingtasks' %}" class = "ex3">Plating Tasks</a></th>
         </tr>
         {% for part in part_list %}
         {% if part.archive != True %}
         <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        {% for task in Component_Prep_Tasks %}
+        <th style = "text-align:center"><span>{{task}}</span></th> 
+        {% endfor %}
+        {% for task in Forming_Tasks %}
+        <th style = "text-align:center"><span>{{task}}</span></th> 
+        {% endfor %}
+        {% for task in Stacking_Tasks %}
+        <th style = "text-align:center"><span>{{task}}</span></th> 
+        {% endfor %}
+        {% for task in Wire_Cut_Tasks %}
+        <th style = "text-align:center"><span>{{task}}</span></th> 
+        {% endfor %}
+        {% for task in Pitching_Tasks %}
+        <th style = "text-align:center"><span>{{task}}</span></th> 
+        {% endfor %}
+        {% for task in HP_Tasks %}
+        <th style = "text-align:center"><span>{{task}}</span></th> 
+        {% endfor %}
+        {% for task in Deburr_Tasks %}
+        <th style = "text-align:center"><span>{{task}}</span></th> 
+        {% endfor %}
+        {% for task in Plating_Tasks %}
+        <th style = "text-align:center"><span>{{task}}</span></th> 
+        {% endfor %}
+        
+        </tr>
+        <tr>
         <td><a class = "ex2" href = "{{ part.get_absolute_url }}">{{part}}</a></td>
         <td>{{part.team}}  </td>
         <td>{{part.serial}}  </td>
-        
-        
-                {# Component Prep Tasks with formating #}
-        <td>
+            {# Component Prep Tasks with formating #}
+            
         {% for task in part_component_prep_tasks %}
-        {% if task.part.archive != True %}
-        {% if task.part == part %}
-        {% if task.status == "z" %}
-        <a class = "text-success" href = "{{ task.get_absolute_url }}">
-        <span title="Task complete">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/tick.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "b" %}
-        <a class = "text-info" href = "{{ task.get_absolute_url }}">
-        <span title="Task in progress">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "h" %}
-        <span title="Task on hold">
-        <a class = "text-warning" href = "{{ task.get_absolute_url }}">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On Hold">
-        </span><br>
-        {% else %}
-        <a class = "text-body" href = "{{ task.get_absolute_url }}">
-        <span title = "Not Started">
-        {{task}}
-        </a>
-        </span>
-        <br>
-        {% endif %}
-        {% endif %}
+        {% for taskname in Component_Prep_Tasks %}
+        {% if task.task == taskname.title %}
+        <td style = "text-align:center"><a href = "{{ task.get_absolute_url }}"><img src="{% static 'catalog/RedButton.webp' %}" alt="Not Started"></a></td>
         {% endif %}
         {% endfor %}
-        </td>
+        {% if taskname.title not in part_component_prep_tasks %}
+        <td style = "text-align:center">-</td>
+        {% endif %}
+        {% endfor %}
         
-                {# Header Plate Forming Tasks with formating #}
-        <td>
-        {% for task in part_forming_tasks %}
-        {% if task.part.archive != True %}
-        {% if task.part == part %}
-        {% if task.status == "z" %}
-        <a class = "text-success" href = "{{ task.get_absolute_url }}">
-        <span title="Task complete">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/tick.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "b" %}
-        <a class = "text-info" href = "{{ task.get_absolute_url }}">
-        <span title="Task in progress">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "h" %}
-        <span title="Task on hold">
-        <a class = "text-warning" href = "{{ task.get_absolute_url }}">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On Hold">
-        </span><br>
-        {% else %}
-        <a class = "text-body" href = "{{ task.get_absolute_url }}">
-        <span title = "Not Started">
-        {{task}}
-        </a>
-        </span>
-        <br>
-        {% endif %}
-        {% endif %}
-        {% endif %}
-        {% endfor %}
-        </td>
         
-                {# Stacking Tasks #}
-        <td>
-        {% if part in component_prep_tasks_not_completed %}
-        {% for task in part_stacking_tasks %}
-        {% if task.part == part %}
-        <span class = "text-danger", title="Task Unavaliable">
-        {{task}} 
-        <img src="{% static 'catalog/prohibition.png' %}" alt="Task Unavaliable">
-        </span><br>
-        {% endif %}
-        {% endfor %}
-        {% else %}
-        {% for task in part_stacking_tasks %}
-        {% if task.part.archive != True %}
-        {% if task.part == part %}
-        {% if task.status == "z" %}
-        <a class = "text-success" href = "{{ task.get_absolute_url }}">
-        <span title="Task complete">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/tick.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "b" %}
-        <a class = "text-info" href = "{{ task.get_absolute_url }}">
-        <span title="Task in progress">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "h" %}
-        <span title="Task on hold">
-        <a class = "text-warning" href = "{{ task.get_absolute_url }}">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On Hold">
-        </span><br>
-        {% else %}
-        <a class = "text-body" href = "{{ task.get_absolute_url }}">
-        <span title = "Not Started">
-        {{task}}
-        </a>
-        </span>
-        <br>
-        {% endif %}
-        {% endif %}
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        </td>
+       
         
-                {# Wire Cut Tasks #}
-        <td>
-        {% if part in stacking_tasks_not_completed %}
-        {% for task in part_wire_cut_tasks %}
-        {% if task.part == part %}
-        <span class = "text-danger", title="Task Unavaliable">
-        {{task}} 
-        <img src="{% static 'catalog/prohibition.png' %}" alt="Task Unavaliable">
-        </span><br>
-        {% endif %}
-        {% endfor %}
-        {% else %}
-        {% for task in part_wire_cut_tasks %}
-        {% if task.part.archive != True %}
-        {% if task.part == part %}
-        {% if task.status == "z" %}
-        <a class = "text-success" href = "{{ task.get_absolute_url }}">
-        <span title="Task complete">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/tick.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "b" %}
-        <a class = "text-info" href = "{{ task.get_absolute_url }}">
-        <span title="Task in progress">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "h" %}
-        <span title="Task on hold">
-        <a class = "text-warning" href = "{{ task.get_absolute_url }}">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On Hold">
-        </span><br>
-        {% else %}
-        <a class = "text-body" href = "{{ task.get_absolute_url }}">
-        <span title = "Not Started">
-        {{task}}
-        </a>
-        </span>
-        <br>
-        {% endif %}
-        {% endif %}
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        </td>
         
-                {# Pitching Tasks #}
-        <td>
-        {% if part in wire_cut_tasks_not_completed %}
-        {% for task in part_pitching_tasks %}
-        {% if task.part == part %}
-        <span class = "text-danger", title="Task Unavaliable">
-        {{task}} 
-        <img src="{% static 'catalog/prohibition.png' %}" alt="Task Unavaliable">
-        </span><br>
-        {% endif %}
-        {% endfor %}
-        {% else %}
-        {% for task in part_pitching_tasks %}
-        {% if task.part.archive != True %}
-        {% if task.part == part %}
-        {% if task.status == "z" %}
-        <a class = "text-success" href = "{{ task.get_absolute_url }}">
-        <span title="Task complete">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/tick.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "b" %}
-        <a class = "text-info" href = "{{ task.get_absolute_url }}">
-        <span title="Task in progress">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "h" %}
-        <span title="Task on hold">
-        <a class = "text-warning" href = "{{ task.get_absolute_url }}">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On Hold">
-        </span><br>
-        {% else %}
-        <a class = "text-body" href = "{{ task.get_absolute_url }}">
-        <span title = "Not Started">
-        {{task}}
-        </a>
-        </span>
-        <br>
-        {% endif %}
-        {% endif %}
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        </td>
-        
-                {# Machine HP Tasks #}
-        <td>
-        {% if part in pitching_tasks_not_completed or part in forming_tasks_not_completed%}
-        {% for task in part_header_plate_tasks %}
-        {% if task.part == part %}
-        <span class = "text-danger", title="Task Unavaliable">
-        {{task}} 
-        <img src="{% static 'catalog/prohibition.png' %}" alt="Task Unavaliable">
-        </span><br>
-        {% endif %}
-        {% endfor %}
-        {% else %}
-        {% for task in part_header_plate_tasks %}
-        {% if task.part.archive != True %}
-        {% if task.part == part %}
-        {% if task.status == "z" %}
-        <a class = "text-success" href = "{{ task.get_absolute_url }}">
-        <span title="Task complete">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/tick.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "b" %}
-        <a class = "text-info" href = "{{ task.get_absolute_url }}">
-        <span title="Task in progress">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "h" %}
-        <span title="Task on hold">
-        <a class = "text-warning" href = "{{ task.get_absolute_url }}">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On Hold">
-        </span><br>
-        {% else %}
-        <a class = "text-body" href = "{{ task.get_absolute_url }}">
-        <span title = "Not Started">
-        {{task}}
-        </a>
-        </span>
-        <br>
-        {% endif %}
-        {% endif %}
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        </td>
-
-                {# Deburr Tasks #}
-        <td>
-        {% if part in HP_tasks_not_completed %}
-        {% for task in part_deburr_tasks %}
-        {% if task.part == part %}
-        <span class = "text-danger", title="Task Unavaliable">
-        {{task}} 
-        <img src="{% static 'catalog/prohibition.png' %}" alt="Task Unavaliable">
-        </span><br>
-        {% endif %}
-        {% endfor %}
-        {% else %}
-        {% for task in part_deburr_tasks %}
-        {% if task.part.archive != True %}
-        {% if task.part == part %}
-        {% if task.status == "z" %}
-        <a class = "text-success" href = "{{ task.get_absolute_url }}">
-        <span title="Task complete">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/tick.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "b" %}
-        <a class = "text-info" href = "{{ task.get_absolute_url }}">
-        <span title="Task in progress">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "h" %}
-        <span title="Task on hold">
-        <a class = "text-warning" href = "{{ task.get_absolute_url }}">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On Hold">
-        </span><br>
-        {% else %}
-        <a class = "text-body" href = "{{ task.get_absolute_url }}">
-        <span title = "Not Started">
-        {{task}}
-        </a>
-        </span>
-        <br>
-        {% endif %}
-        {% endif %}
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        </td>
-        
-                        {# Plating Tasks #}
-        <td>
-        {% if part in deburr_tasks_not_completed %}
-        {% for task in part_plating_tasks %}
-        {% if task.part == part %}
-        <span class = "text-danger", title="Task Unavaliable">
-        {{task}} 
-        <img src="{% static 'catalog/prohibition.png' %}" alt="Task Unavaliable">
-        </span><br>
-        {% endif %}
-        {% endfor %}
-        {% else %}
-        {% for task in part_plating_tasks %}
-        {% if task.part.archive != True %}
-        {% if task.part == part %}
-        {% if task.status == "z" %}
-        <a class = "text-success" href = "{{ task.get_absolute_url }}">
-        <span title="Task complete">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/tick.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "b" %}
-        <a class = "text-info" href = "{{ task.get_absolute_url }}">
-        <span title="Task in progress">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="Complete">
-        </span><br>
-        {% elif task.status == "h" %}
-        <span title="Task on hold">
-        <a class = "text-warning" href = "{{ task.get_absolute_url }}">
-        {{task}} 
-        </a>
-        <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On Hold">
-        </span><br>
-        {% else %}
-        <a class = "text-body" href = "{{ task.get_absolute_url }}">
-        <span title = "Not Started">
-        {{task}}
-        </a>
-        </span>
-        <br>
-        {% endif %}
-        {% endif %}
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        </td>
-        
-        {# Insert new collumns above #}
-        {% endif %}
         </tr>
-        {% endfor %}
         
+        {% endif %}
+        {% endfor %}
         </table>
         {% else %}
         <h5> There are no parts recorded in the system</h5>

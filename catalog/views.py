@@ -1,6 +1,10 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
-from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance, FormingTaskInstance, HeaderPlateTaskInstance, PitchingTaskInstance, WireCutTaskInstance, DeburrTaskInstance, PlatingTaskInstance, Team
+from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance,\
+    FormingTaskInstance, HeaderPlateTaskInstance, PitchingTaskInstance,\
+        WireCutTaskInstance, DeburrTaskInstance, PlatingTaskInstance, Team, \
+        Component_Prep_Task, Forming_Task, Stacking_Task, Wire_Cut_Task,\
+        Pitching_Task, Header_Plate_Task, Deburr_Task, Plating_Task
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -56,6 +60,17 @@ class PartDashboardView(generic.ListView):
     paginate_by = 10
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        Component_Prep_Tasks = Component_Prep_Task.objects.all()
+        Forming_Tasks = Forming_Task.objects.all()
+        Stacking_Tasks = Stacking_Task.objects.all()
+        Wire_Cut_Tasks = Wire_Cut_Task.objects.all()
+        Pitching_Tasks = Pitching_Task.objects.all()
+        HP_Tasks = Header_Plate_Task.objects.all()
+        Deburr_Tasks = Deburr_Task.objects.all()
+        Plating_Tasks = Plating_Task.objects.all()
+        
+        
+        
         part_component_prep_tasks = ComponentPrepTaskInstance.objects.exclude(part__archive__exact = True)
         part_stacking_tasks = StackingTaskInstance.objects.exclude(part__archive__exact = True)
         part_forming_tasks = FormingTaskInstance.objects.exclude(part__archive__exact = True)
@@ -179,6 +194,14 @@ class PartDashboardView(generic.ListView):
         context["part_deburr_tasks"] = part_deburr_tasks
         context["part_plating_tasks"] = part_plating_tasks
         
+        context["Component_Prep_Tasks"] = Component_Prep_Tasks
+        context["Forming_Tasks"] = Forming_Tasks
+        context["Stacking_Tasks"] = Stacking_Tasks
+        context["Wire_Cut_Tasks"] = Wire_Cut_Tasks
+        context["Pitching_Tasks"] = Pitching_Tasks
+        context["HP_Tasks"] = HP_Tasks
+        context["Deburr_Tasks"] = Deburr_Tasks
+        context["Plating_Tasks"] = Plating_Tasks        
         return context
         
 
