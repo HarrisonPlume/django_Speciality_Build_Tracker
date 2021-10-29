@@ -2,6 +2,12 @@
 
 {% block content %}
 {% load static %}
+
+<head >
+<style> 
+a.ex3 {color: #28a745}
+</style>
+</head>
 <h1>{{part}} ({{part.team}}) Serial: {{part.serial}} </h1>
 {% if part.archive != True %}
 {% if user.is_authenticated %}
@@ -15,38 +21,128 @@
 <h5>Part Location:</h5>
 {% if part in component_prep_tasks_not_completed %}
 <p>Component Prep</p>
-<img loading="lazy" src="{% static 'catalog/SpecialityMudMapCP.png' %}" alt="Complete" height = 400px>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapCP.png' %}" alt="Complete" height = 400px usemap="#Locations">
+
+<map name="Locations">
+<area shape="rect" title="Component Prep" coords="280,150,320,260" href="{% url 'cptasks' %}" alt="Component Prep">
+<area shape="rect" title="Stacking" coords="335,100,380,310" href="{% url 'stackingtasks' %}" alt="Stacking">
+<area shape="rect" title="Plating" coords="178,90,250,180" href="{% url 'platingtasks' %}" alt="Plating">
+<area shape="rect" title="Forming" coords="80,162,110,202" href="{% url 'formingtasks' %}" alt="Forming">
+<area shape="rect" title="HP Machining" coords="0,126,45,255" href="{% url 'headerplatetasks' %}" alt="HP Machining">
+<area shape="rect" title="Wire Cut" coords="0,270,45,400" href="{% url 'wirecuttasks' %}" alt="Wire Cut">
+<area shape="rect" title="Pitching" coords="43,0,105,45" href="{% url 'pitchingtasks' %}" alt="Pitching">
+<area shape="rect" title="Deburr" coords="400,0,500,45" href="{% url 'deburrtasks' %}" alt="Deburr">
+</map>
 
 {% elif part in forming_tasks_not_completed %}
 <p>Header Plate Forming</p>
-<img loading="lazy" src="{% static 'catalog/SpecialityMudMapFO.png' %}" alt="Complete" height = 400px>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapFO.png' %}" alt="Complete" height = 400px usemap="#Locations">
+
+<map name="Locations">
+<area shape="rect" title="Component Prep" coords="280,150,320,260" href="{% url 'cptasks' %}" alt="Component Prep">
+<area shape="rect" title="Stacking" coords="335,100,380,310" href="{% url 'stackingtasks' %}" alt="Stacking">
+<area shape="rect" title="Plating" coords="178,90,250,180" href="{% url 'platingtasks' %}" alt="Plating">
+<area shape="rect" title="Forming" coords="80,162,110,202" href="{% url 'formingtasks' %}" alt="Forming">
+<area shape="rect" title="HP Machining" coords="0,126,45,255" href="{% url 'headerplatetasks' %}" alt="HP Machining">
+<area shape="rect" title="Wire Cut" coords="0,270,45,400" href="{% url 'wirecuttasks' %}" alt="Wire Cut">
+<area shape="rect" title="Pitching" coords="43,0,105,45" href="{% url 'pitchingtasks' %}" alt="Pitching">
+<area shape="rect" title="Deburr" coords="400,0,500,45" href="{% url 'deburrtasks' %}" alt="Deburr">
+</map>
 
 {% elif part in stacking_tasks_not_completed %}
 <p>Stacking</p>
-<img loading="lazy" src="{% static 'catalog/SpecialityMudMapST.png' %}" alt="Complete" height = 400px>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapST.png' %}" alt="Complete" height = 400px usemap="#Locations">
+
+<map name="Locations">
+<area shape="rect" title="Component Prep" coords="280,150,320,260" href="{% url 'cptasks' %}" alt="Component Prep">
+<area shape="rect" title="Stacking" coords="335,100,380,310" href="{% url 'stackingtasks' %}" alt="Stacking">
+<area shape="rect" title="Plating" coords="178,90,250,180" href="{% url 'platingtasks' %}" alt="Plating">
+<area shape="rect" title="Forming" coords="80,162,110,202" href="{% url 'formingtasks' %}" alt="Forming">
+<area shape="rect" title="HP Machining" coords="0,126,45,255" href="{% url 'headerplatetasks' %}" alt="HP Machining">
+<area shape="rect" title="Wire Cut" coords="0,270,45,400" href="{% url 'wirecuttasks' %}" alt="Wire Cut">
+<area shape="rect" title="Pitching" coords="43,0,105,45" href="{% url 'pitchingtasks' %}" alt="Pitching">
+<area shape="rect" title="Deburr" coords="400,0,500,45" href="{% url 'deburrtasks' %}" alt="Deburr">
+</map>
 
 {% elif part in wire_cut_tasks_not_completed %}
 <p>Wire Cut</p>
-<img loading="lazy" src="{% static 'catalog/SpecialityMudMapWC.png' %}" alt="Complete" height = 400px>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapWC.png' %}" alt="Complete" height = 400px usemap="#Locations">
+
+<map name="Locations">
+<area shape="rect" title="Component Prep" coords="280,150,320,260" href="{% url 'cptasks' %}" alt="Component Prep">
+<area shape="rect" title="Stacking" coords="335,100,380,310" href="{% url 'stackingtasks' %}" alt="Stacking">
+<area shape="rect" title="Plating" coords="178,90,250,180" href="{% url 'platingtasks' %}" alt="Plating">
+<area shape="rect" title="Forming" coords="80,162,110,202" href="{% url 'formingtasks' %}" alt="Forming">
+<area shape="rect" title="HP Machining" coords="0,126,45,255" href="{% url 'headerplatetasks' %}" alt="HP Machining">
+<area shape="rect" title="Wire Cut" coords="0,270,45,400" href="{% url 'wirecuttasks' %}" alt="Wire Cut">
+<area shape="rect" title="Pitching" coords="43,0,105,45" href="{% url 'pitchingtasks' %}" alt="Pitching">
+<area shape="rect" title="Deburr" coords="400,0,500,45" href="{% url 'deburrtasks' %}" alt="Deburr">
+</map>
 
 {% elif part in pitching_tasks_not_completed %}
 <p>Pitching</p>
-<img loading="lazy" src="{% static 'catalog/SpecialityMudMapPT.png' %}" alt="Complete" height = 400px>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapPT.png' %}" alt="Complete" height = 400px usemap="#Locations">
+
+<map name="Locations">
+<area shape="rect" title="Component Prep" coords="280,150,320,260" href="{% url 'cptasks' %}" alt="Component Prep">
+<area shape="rect" title="Stacking" coords="335,100,380,310" href="{% url 'stackingtasks' %}" alt="Stacking">
+<area shape="rect" title="Plating" coords="178,90,250,180" href="{% url 'platingtasks' %}" alt="Plating">
+<area shape="rect" title="Forming" coords="80,162,110,202" href="{% url 'formingtasks' %}" alt="Forming">
+<area shape="rect" title="HP Machining" coords="0,126,45,255" href="{% url 'headerplatetasks' %}" alt="HP Machining">
+<area shape="rect" title="Wire Cut" coords="0,270,45,400" href="{% url 'wirecuttasks' %}" alt="Wire Cut">
+<area shape="rect" title="Pitching" coords="43,0,105,45" href="{% url 'pitchingtasks' %}" alt="Pitching">
+<area shape="rect" title="Deburr" coords="400,0,500,45" href="{% url 'deburrtasks' %}" alt="Deburr">
+</map>
 
 {% elif part in HP_tasks_not_completed %}
 <p>HP Machining</p>
-<img loading="lazy" src="{% static 'catalog/SpecialityMudMapHP.png' %}" alt="Complete" height = 400px>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapHP.png' %}" alt="Complete" height = 400px usemap="#Locations">
+
+<map name="Locations">
+<area shape="rect" title="Component Prep" coords="280,150,320,260" href="{% url 'cptasks' %}" alt="Component Prep">
+<area shape="rect" title="Stacking" coords="335,100,380,310" href="{% url 'stackingtasks' %}" alt="Stacking">
+<area shape="rect" title="Plating" coords="178,90,250,180" href="{% url 'platingtasks' %}" alt="Plating">
+<area shape="rect" title="Forming" coords="80,162,110,202" href="{% url 'formingtasks' %}" alt="Forming">
+<area shape="rect" title="HP Machining" coords="0,126,45,255" href="{% url 'headerplatetasks' %}" alt="HP Machining">
+<area shape="rect" title="Wire Cut" coords="0,270,45,400" href="{% url 'wirecuttasks' %}" alt="Wire Cut">
+<area shape="rect" title="Pitching" coords="43,0,105,45" href="{% url 'pitchingtasks' %}" alt="Pitching">
+<area shape="rect" title="Deburr" coords="400,0,500,45" href="{% url 'deburrtasks' %}" alt="Deburr">
+</map>
 
 {% elif part in deburr_tasks_not_completed %}
 <p>Deburr</p>
-<img loading="lazy" src="{% static 'catalog/SpecialityMudMapDB.png' %}" alt="Complete" height = 400px>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapDB.png' %}" alt="Complete" height = 400px usemap="#Locations">
+
+<map name="Locations">
+<area shape="rect" title="Component Prep" coords="280,150,320,260" href="{% url 'cptasks' %}" alt="Component Prep">
+<area shape="rect" title="Stacking" coords="335,100,380,310" href="{% url 'stackingtasks' %}" alt="Stacking">
+<area shape="rect" title="Plating" coords="178,90,250,180" href="{% url 'platingtasks' %}" alt="Plating">
+<area shape="rect" title="Forming" coords="80,162,110,202" href="{% url 'formingtasks' %}" alt="Forming">
+<area shape="rect" title="HP Machining" coords="0,126,45,255" href="{% url 'headerplatetasks' %}" alt="HP Machining">
+<area shape="rect" title="Wire Cut" coords="0,270,45,400" href="{% url 'wirecuttasks' %}" alt="Wire Cut">
+<area shape="rect" title="Pitching" coords="43,0,105,45" href="{% url 'pitchingtasks' %}" alt="Pitching">
+<area shape="rect" title="Deburr" coords="400,0,500,45" href="{% url 'deburrtasks' %}" alt="Deburr">
+</map>
 
 {% elif part in plating_tasks_not_completed %}
 <p>Plating</p>
-<img loading="lazy" src="{% static 'catalog/SpecialityMudMapPL.png' %}" alt="Complete" height = 400px>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapPL.png' %}" alt="Complete" height = 400px usemap="#Locations">
+
+<map name="Locations">
+<area shape="rect" title="Component Prep" coords="280,150,320,260" href="{% url 'cptasks' %}" alt="Component Prep">
+<area shape="rect" title="Stacking" coords="335,100,380,310" href="{% url 'stackingtasks' %}" alt="Stacking">
+<area shape="rect" title="Plating" coords="178,90,250,180" href="{% url 'platingtasks' %}" alt="Plating">
+<area shape="rect" title="Forming" coords="80,162,110,202" href="{% url 'formingtasks' %}" alt="Forming">
+<area shape="rect" title="HP Machining" coords="0,126,45,255" href="{% url 'headerplatetasks' %}" alt="HP Machining">
+<area shape="rect" title="Wire Cut" coords="0,270,45,400" href="{% url 'wirecuttasks' %}" alt="Wire Cut">
+<area shape="rect" title="Pitching" coords="43,0,105,45" href="{% url 'pitchingtasks' %}" alt="Pitching">
+<area shape="rect" title="Deburr" coords="400,0,500,45" href="{% url 'deburrtasks' %}" alt="Deburr">
+</map>
+
+
 
 {% else %}
-<p class = "text-success">Ready To Leave For Fabrication</p>
+<h5 class = "text-success"><a class = "ex3" href = "{% url 'part-complete' part.pk %}">Ready To Leave For Fabrication</a></h5>
 
 {% endif %}
 </div>
