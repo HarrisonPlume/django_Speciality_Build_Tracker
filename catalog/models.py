@@ -45,7 +45,7 @@ class DeburrTaskInstance(models.Model):
     #Time taken str field
     timetaken = models.CharField(max_length = 50,null=True, blank = True)
     class Meta:
-        ordering = ['status']
+        ordering = ['part','status']
 
     def __str__(self):
         """String for Representing the model object (on admin site)"""
@@ -90,7 +90,7 @@ class PlatingTaskInstance(models.Model):
     #Time taken str field
     timetaken = models.CharField(max_length = 50,null=True, blank = True)    
     class Meta:
-        ordering = ['status']
+        ordering = ['part','status']
 
     def __str__(self):
         """String for Representing the model object (on admin site)"""
@@ -134,7 +134,7 @@ class WireCutTaskInstance(models.Model):
     #Time taken str field
     timetaken = models.CharField(max_length = 50,null=True, blank = True)
     class Meta:
-        ordering = ['status']
+        ordering = ['part','status']
 
     def __str__(self):
         """String for Representing the model object (on admin site)"""
@@ -179,7 +179,7 @@ class PitchingTaskInstance(models.Model):
     #Time taken str field
     timetaken = models.CharField(max_length = 50,null=True, blank = True)    
     class Meta:
-        ordering = ['status']
+        ordering = ['part','status']
 
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""
@@ -227,7 +227,7 @@ class FormingTaskInstance(models.Model):
     timetaken = models.CharField(max_length = 50,null=True, blank = True)
     
     class Meta:
-        ordering = ['status']
+        ordering = ['part','status']
 
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""
@@ -245,6 +245,11 @@ class Stacking_Task(models.Model):
     description = models.TextField(max_length = 1000, help_text = "Task\
                                    description to aid new employees", null=True,
                                    blank = True)
+        
+    order = models.IntegerField(null=True)
+    
+    class Meta:
+        ordering = ['order']
     def __str__(self):
         """String for Representing the model objetc (on admin site)"""
         return self.title
@@ -272,7 +277,7 @@ class StackingTaskInstance(models.Model):
     #Time taken str field
     timetaken = models.CharField(max_length = 50,null=True, blank = True)
     class Meta:
-        ordering = ['status']
+        ordering = ['part','status']
         
     def __str__(self):
         """string for representing the Model object."""
@@ -322,7 +327,7 @@ class ComponentPrepTaskInstance(models.Model):
     #Time taken str field
     timetaken = models.CharField(max_length = 50,null=True, blank = True)
     class Meta:
-        ordering = ['status']
+        ordering = ['part','status']
         
         
     def __str__(self):
@@ -379,6 +384,7 @@ class Part(models.Model):
                                                 tasks",
                                          blank = True)
     pub_date = models.DateTimeField("time published", auto_now=True)
+    priority = models.IntegerField(null=True, default = 30)
     
     archive = models.BooleanField(null = True, default=False)
     def __str__(self):
@@ -392,12 +398,16 @@ class Part(models.Model):
     
     
     class Meta:
-        ordering = ['title','serial']
+        ordering = ['priority','title','serial']
     
 class Header_Plate_Task(models.Model):
     """Model representing the required Header Plate Tasks"""
     title = models.CharField(max_length = 100, help_text = "Enter the Name\
                      of a header plate machining task")
+    order = models.IntegerField(null=True)
+    
+    class Meta:
+        ordering = ['order']
                      
     def __str__(self):
         """string for representing the Model object."""
@@ -426,7 +436,7 @@ class HeaderPlateTaskInstance(models.Model):
     #Time taken str field
     timetaken = models.CharField(max_length = 50,null=True, blank = True)
     class Meta:
-        ordering = ['status']
+        ordering = ['part','status']
         
     def __str__(self):
         """string for representing the Model object."""

@@ -1,29 +1,32 @@
+{% extends "base_generic.html" %}
+{% block content %}
+{% load static %}
+
 <html>
 <head>
 <style>
 
-a.ex3 {color: black;}
+a.ex3 {color: #bababa}
 
 </style>
 </head>
 <body>
-{% extends "base_generic.html" %}
-{% load static %}
-{% block content %}
-  <h1>Component Prep Tasks</h1>
+
+  <h1 style="color: #bababa">Component Prep Tasks</h1>
   <hr>
   {% if cptask_list %} 
-  <h4>Tasks Remaining: {{tasks_remaining}}</h4>
+  <h4 style="color: #bababa">Tasks Remaining: {{tasks_remaining}}</h4>
   {% if user.is_authenticated %}
   <hr>
-  <h5>Admin Panel</h5>
-  <div>Tasks not yet started: {{num_tasks_not_started}} </div>
-  <div>Tasks on hold: {{tasks_on_hold}} </div>
-  <div>Tasks completed: {{tasks_complete}} </div>
+  <h5 style="color: #bababa">Admin Panel</h5>
+  <div style="color: #bababa">Tasks not yet started: {{num_tasks_not_started}} </div>
+  <div style="color: #bababa">Tasks on hold: {{tasks_on_hold}} </div>
+  <div style="color: #bababa">Tasks completed: {{tasks_complete}} </div>
   <hr>
   {% endif %}
     {% for newtask in cptask_list %}
     {% if newtask.part.archive != True %}
+    
     <li>
     {% if newtask.status == "z" %}
     <span title="Task Complete">

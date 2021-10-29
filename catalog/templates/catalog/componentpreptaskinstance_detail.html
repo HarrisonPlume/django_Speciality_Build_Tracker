@@ -1,37 +1,39 @@
+{% extends "base_generic.html" %}
+{% block content %}
+{% load static %}
 <html>
 <head>
 <style>
-div.ex3 {color: black;}
+div.ex3 {color: #bababa;}
+a.ex2{color: #d6d6d6;font-weight: 600}
+a.ex1 {color: #bababa;}
 </style>
-{% extends "base_generic.html" %}
-{% load static %}
+
 </head>
 <body>
-{% block content %}
-  <h1><a href ="{% url 'part-detail' componentpreptaskinstance.part.pk %}">{{componentpreptaskinstance.part}} 
+
+  <h1 style = "color: #bababa;"><a href ="{% url 'part-detail' componentpreptaskinstance.part.pk %}">{{componentpreptaskinstance.part}} 
   ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}}</a> - 
   {{componentpreptaskinstance}}</h1>
-    <h4>Status: </h4>
+    <h4 style = "color: #bababa;">Status: </h4>
    {% if componentpreptaskinstance.status == "z" %}
     <span title="Task Complete">
-      <div class = "text-success">{{componentpreptaskinstance.part}} ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}} - {{componentpreptaskinstance.task}}</div>
-       <img src="{% static 'catalog/tick.png' %}" alt="Complete">
+      <div class = "text-success">Task Complete <img src="{% static 'catalog/tick.png' %}" alt="Complete"></div>
        </span>
     {% elif componentpreptaskinstance.status == "b" %}
     <span title="Task in progress">
-      <div class = "text-info">{{componentpreptaskinstance.part}} ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}} - {{componentpreptaskinstance.task}}</div>
-       <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress">
+      <div class = "text-info">In Progress <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress"></div>
+       
        </span>
     {% elif componentpreptaskinstance.status == "h" %}
     <span title="Task on hold">
-       <div class = "text-warning">{{componentpreptaskinstance.part}} ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}} - {{componentpreptaskinstance.task}}</div>
-       <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold">
+       <div class = "text-warning">Task On Hold <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold"></div>
+       
        </span>
        {% elif componentpreptaskinstance.status == "a" %}
        <span title="Task not yet started">
-        <div class = "ex3">{{componentpreptaskinstance.part}} ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}} - {{componentpreptaskinstance.task}}</div>
       <span class = "text-success">
-      (Avaliable)
+      Avaliable To Start
       </span>
       </span>
       {% else %}
@@ -39,36 +41,35 @@ div.ex3 {color: black;}
        <div  class = "text-danger" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</div>
        </span>
       {% endif %}
-    {{componentpreptaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
     <hr>
-    <h5> Admin Pannel </h5>
-    <a href = "{% url 'cptask-update-status' componentpreptaskinstance.pk %}">
-     Edit status</a>, <a href="{% url 'cptask-delete' componentpreptaskinstance.pk %}">Delete Task</a>
+    <h5 style = "color: #bababa;"> Admin Pannel </h5>
+    <a class = "ex2" href = "{% url 'cptask-update-status' componentpreptaskinstance.pk %}">
+     Edit status</a>, <a class = "ex2" href="{% url 'cptask-delete' componentpreptaskinstance.pk %}">Delete Task</a>
      
-     <div>Task Created: {{componentpreptaskinstance.createtime}}</div>
+     <div style = "color: #bababa;">Task Created: {{componentpreptaskinstance.createtime}}</div>
      {% if componentpreptaskinstance.starttime == None %}
-     <div>Task Not Yet Started</div>
+     <div style = "color: #bababa;">Task Not Yet Started</div>
      {% else %}
-     <div>Task Started: {{componentpreptaskinstance.starttime}}</div>
-     <div>Time untill Task was started: {{componentpreptaskinstance.timetostart}}</div>
+     <div style = "color: #bababa;">Task Started: {{componentpreptaskinstance.starttime}}</div>
+     <div style = "color: #bababa;">Time untill Task was started: {{componentpreptaskinstance.timetostart}}</div>
      
      {% endif %}
      {% if componentpreptaskinstance.finishtime == None %}
      {% else %}
-     <div>Task Finished: {{componentpreptaskinstance.finishtime}}</div>
-     <div> Time Taken: {{componentpreptaskinstance.timetaken}}</div>
+     <div style = "color: #bababa;">Task Finished: {{componentpreptaskinstance.finishtime}}</div>
+     <div style = "color: #bababa;"> Time Taken: {{componentpreptaskinstance.timetaken}}</div>
      {% endif %}
     {% endif %}
     
       <hr>
-     <h5>Current options</h5>
+     <h5 style = "color: #bababa;">Current options</h5>
     {% if componentpreptaskinstance.status == 'z' %}
     <p>Task Complete</p> 
     {% elif componentpreptaskinstance.status == 'h' %}
-    <p><a href="{% url 'startcptask' pk=componentpreptaskinstance.pk %}">Resume Task</a></p>
+    <p style = "color: #bababa;"><a href="{% url 'startcptask' pk=componentpreptaskinstance.pk %}">Resume Task</a></p>
     {% elif componentpreptaskinstance.status == 'a' %}
-    <p><a href="{% url 'startcptask' pk=componentpreptaskinstance.pk %}">Begin Task</a></p>
+    <p style = "color: #bababa;"><a href="{% url 'startcptask' pk=componentpreptaskinstance.pk %}">Begin Task</a></p>
     {% elif componentpreptaskinstance.status == 'b' %}
     <p><a href="{% url 'finishcptask' pk=componentpreptaskinstance.pk %}">Finish Task</a></p>
     {% endif %}

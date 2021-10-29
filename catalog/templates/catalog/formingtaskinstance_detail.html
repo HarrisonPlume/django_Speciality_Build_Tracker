@@ -1,15 +1,17 @@
+{% extends "base_generic.html" %}
+{% block content %}
+{% load static %}
 <html>
 <head>
 <style>
 
-a.ex3 {color: black;}
+a.ex3 {color: #bababa;}
+a.ex2{color: #d6d6d6;font-weight: 600}
 
 </style>
 </head>
 <body>
-{% extends "base_generic.html" %}
-{% load static %}
-{% block content %}
+
   <h1><a href ="{% url 'part-detail' formingtaskinstance.part.pk %}">{{formingtaskinstance.part}} 
   ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}}</a> - 
   {{formingtaskinstance}}</h1>
@@ -17,24 +19,20 @@ a.ex3 {color: black;}
     <h4>Status: </h4>
 {% if formingtaskinstance.status == "z" %}
     <span title="Task Complete">
-      <div class = "text-success">{{formingtaskinstance.part}} ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}} - {{formingtaskinstance.task}}</div>
-       <img src="{% static 'catalog/tick.png' %}" alt="Complete">
+      <div class = "text-success">Task Complete <img src="{% static 'catalog/tick.png' %}" alt="Complete"></div>
        </span>
     {% elif formingtaskinstance.status == "b" %}
     <span title="Task in progress">
-      <div class = "text-info">{{formingtaskinstance.part}} ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}} - {{formingtaskinstance.task}}</div>
-       <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress">
+      <div class = "text-info">In Progress <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress"></div>
        </span>
     {% elif formingtaskinstance.status == "h" %}
     <span title="Task on hold">
-       <div class = "text-warning">{{formingtaskinstance.part}} ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}} - {{formingtaskinstance.task}}</div>
-       <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold">
+       <div class = "text-warning">Task On Hold <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold"></div>
        </span>
        {% elif formingtaskinstance.status == "a" %}
        <span title="Task not yet started">
-        <div class = "ex3">{{formingtaskinstance.part}} ({{formingtaskinstance.part.team}}) Serial: {{formingtaskinstance.part.serial}} - {{formingtaskinstance.task}}</div>
       <span class = "text-success">
-      (Avaliable)
+      Avaliable To Start
       </span>
       </span>
       {% else %}
@@ -42,12 +40,11 @@ a.ex3 {color: black;}
        <div  class = "text-danger" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</div>
        </span>
       {% endif %}
-    {{formingtaskinstance.get_status_display}}
     {% if user.is_authenticated %} 
     <hr>
     <h5> Admin Pannel </h5>
-    <a href = "{% url 'formingtask-update-status' formingtaskinstance.pk %}">
-     Edit status</a>, <a href="{% url 'formingtask-delete' formingtaskinstance.pk %}">Delete Task</a>
+    <a class = "ex2" href = "{% url 'formingtask-update-status' formingtaskinstance.pk %}">
+     Edit status</a>, <a class = "ex2" href="{% url 'formingtask-delete' formingtaskinstance.pk %}">Delete Task</a>
      
      <div>Task Created: {{formingtaskinstance.createtime}}</div>
      {% if formingtaskinstance.starttime == None %}

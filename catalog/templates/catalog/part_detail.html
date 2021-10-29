@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-
+{% load static %}
 <h1>{{part}} ({{part.team}}) Serial: {{part.serial}} </h1>
 {% if part.archive != True %}
 {% if user.is_authenticated %}
@@ -11,6 +11,45 @@
 <li><a href = "{% url 'part-delete' part.pk %}">Delete part</a></li>
 <hr>
 {% endif %}
+<div style="margin-left:30px;margin-top:20px">
+<h5>Part Location:</h5>
+{% if part in component_prep_tasks_not_completed %}
+<p>Component Prep</p>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapCP.png' %}" alt="Complete" height = 400px>
+
+{% elif part in forming_tasks_not_completed %}
+<p>Header Plate Forming</p>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapFO.png' %}" alt="Complete" height = 400px>
+
+{% elif part in stacking_tasks_not_completed %}
+<p>Stacking</p>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapST.png' %}" alt="Complete" height = 400px>
+
+{% elif part in wire_cut_tasks_not_completed %}
+<p>Wire Cut</p>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapWC.png' %}" alt="Complete" height = 400px>
+
+{% elif part in pitching_tasks_not_completed %}
+<p>Pitching</p>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapPT.png' %}" alt="Complete" height = 400px>
+
+{% elif part in HP_tasks_not_completed %}
+<p>HP Machining</p>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapHP.png' %}" alt="Complete" height = 400px>
+
+{% elif part in deburr_tasks_not_completed %}
+<p>Deburr</p>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapDB.png' %}" alt="Complete" height = 400px>
+
+{% elif part in plating_tasks_not_completed %}
+<p>Plating</p>
+<img loading="lazy" src="{% static 'catalog/SpecialityMudMapPL.png' %}" alt="Complete" height = 400px>
+
+{% else %}
+<p class = "text-success">Ready To Leave For Fabrication</p>
+
+{% endif %}
+</div>
 <div style="margin-left:20px;margin-top:20px">
 <h4>Current Component Prep Tasks</h4>
 <hr>
@@ -22,7 +61,7 @@
        {% elif task.status == 'h' %}text-warning 
        {% elif task.status == 'p' %}text-info {% else %}
        text-body{% endif %}">
-       - {{task.get_status_display}} </span> 
+    </span> 
 {% if task.status == "a" %}
 <span class = "text-success"> (Avaliable) </span>{% endif %}
 </li>
@@ -46,7 +85,7 @@ Component Prep Tasks Complete
 <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
       text-warning {% elif task.status == 'p' %}
       text-info {% else %}text-body{% endif %}">
-      - {{task.get_status_display}} </span>
+      </span>
 {% if task.status == "a" %}
 <span class = "text-success"> (Avaliable) </span>{% endif %}
 </li>
@@ -75,7 +114,7 @@ Forming Tasks Complete
       <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
       text-warning {% elif task.status == 'p' %}
       text-info {% else %}text-body{% endif %}">
-      - {{task.get_status_display}} </span>
+      </span>
       {% if task.status == "a" %}
         <span class = "text-success"> (Avaliable) </span>{% endif %}
       {% endif %}
@@ -104,7 +143,7 @@ Forming Tasks Complete
       <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
       text-warning {% elif task.status == 'p' %}
       text-info {% else %}text-body{% endif %}">
-      - {{task.get_status_display}} </span>
+      </span>
       {% if task.status == "a" %}
         <span class = "text-success"> (Avaliable) </span>{% endif %}
       {% endif %}
@@ -132,7 +171,7 @@ Forming Tasks Complete
       <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
       text-warning {% elif task.status == 'p' %}
       text-info {% else %}text-body{% endif %}">
-      - {{task.get_status_display}} </span>
+      </span>
       {% if task.status == "a" %}
         <span class = "text-success"> (Avaliable) </span>{% endif %}
       {% endif %}
@@ -160,7 +199,7 @@ Forming Tasks Complete
       <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
       text-warning {% elif task.status == 'p' %}
       text-info {% else %}text-body{% endif %}">
-      - {{task.get_status_display}} </span>
+      </span>
       {% if task.status == "a" %}
         <span class = "text-success"> (Avaliable) </span>{% endif %}
       {% endif %}
@@ -188,7 +227,7 @@ Forming Tasks Complete
       <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
       text-warning {% elif task.status == 'p' %}
       text-info {% else %}text-body{% endif %}">
-      - {{task.get_status_display}} </span>
+      </span>
       {% if task.status == "a" %}
         <span class = "text-success"> (Avaliable) </span>{% endif %}
       {% endif %}
@@ -216,7 +255,7 @@ Forming Tasks Complete
       <span class ="{% if task.status == 'c' %}text-success {% elif task.status == 'h' %}
       text-warning {% elif task.status == 'p' %}
       text-info {% else %}text-body{% endif %}">
-      - {{task.get_status_display}} </span>
+      </span>
       {% if task.status == "a" %}
         <span class = "text-success"> (Avaliable) </span>{% endif %}
       {% endif %}

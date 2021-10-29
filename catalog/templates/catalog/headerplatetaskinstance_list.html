@@ -1,15 +1,17 @@
+{% extends "base_generic.html" %}
+{% block content %}
+{% load static %}
 <html>
 <head>
 <style>
 
-a.ex3 {color: black;}
+a.ex3 {color: #bababa;}
+a.ex2{color: #d6d6d6;font-weight: 600}
 
 </style>
 </head>
 <body>
-{% extends "base_generic.html" %}
-{% load static %}
-{% block content %}
+
   <h1>Header Plate Machining Tasks</h1>
   <hr>
   {% if headerplatetask_list %} 

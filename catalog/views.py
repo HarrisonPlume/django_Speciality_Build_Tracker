@@ -57,7 +57,7 @@ class PartDashboardView(generic.ListView):
     context_object_name = "part_list"
     table_class = PartTable
     template_name = 'part_table.html'
-    paginate_by = 10
+    paginate_by = 40
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         Component_Prep_Tasks = Component_Prep_Task.objects.all()
@@ -69,7 +69,7 @@ class PartDashboardView(generic.ListView):
         Deburr_Tasks = Deburr_Task.objects.all()
         Plating_Tasks = Plating_Task.objects.all()
         
-        
+        Current_Part_List = Part.objects.exclude(archive__exact = True)
         
         part_component_prep_tasks = ComponentPrepTaskInstance.objects.exclude(part__archive__exact = True)
         part_stacking_tasks = StackingTaskInstance.objects.exclude(part__archive__exact = True)
@@ -80,110 +80,291 @@ class PartDashboardView(generic.ListView):
         part_deburr_tasks = DeburrTaskInstance.objects.exclude(part__archive__exact = True)
         part_plating_tasks = PlatingTaskInstance.objects.exclude(part__archive__exact = True)
         #Component Prep Tasks for each individual part
-        part = None
-        Completedict = {}
-        for task in ComponentPrepTaskInstance.objects.all():
-             if task.part != part:
-                 part = task.part
-                 if task.status != "z":
-                     Completedict[task.part] = "Not Complete"
-             else:
-                if task.status != "z":
-                     Completedict[task.part] = "Not Complete"
                      
-        #Stacking Tasks for each individual part
-        partst = None
-        StackingCompletedict = {}
-        for task in StackingTaskInstance.objects.all():
-             if task.part != partst:
-                 partst = task.part
-                 if task.status != "z":
-                     StackingCompletedict[task.part] = "Not Complete"
-             else:
-                if task.status != "z":
-                     StackingCompletedict[task.part] = "Not Complete"
-        #Forming Tasks for each individual part
-        partfo = None
-        FormingCompletedict = {}
-        for task in FormingTaskInstance.objects.all():
-             if task.part != partfo:
-                 partfo = task.part
-                 if task.status != "z":
-                     FormingCompletedict[task.part] = "Not Complete"
-             else:
-                if task.status != "z":
-                     FormingCompletedict[task.part] = "Not Complete"
-                     
-        #Wire Cut Tasks for each individual part
-        partwc = None
-        WCCompletedict = {}
-        for task in WireCutTaskInstance.objects.all():
-             if task.part != partwc:
-                 partwc = task.part
-                 if task.status != "z":
-                     WCCompletedict[task.part] = "Not Complete"
-             else:
-                if task.status != "z":
-                     WCCompletedict[task.part] = "Not Complete" 
-                     
-        #Pitching Tasks for each individual part
-        partpt = None
-        PitchCompletedict = {}
-        for task in PitchingTaskInstance.objects.all():
-             if task.part != partpt:
-                 partpt = task.part
-                 if task.status != "z":
-                     PitchCompletedict[task.part] = "Not Complete"
-             else:
-                if task.status != "z":
-                     PitchCompletedict[task.part] = "Not Complete" 
-                     
-        #Hp Machining Tasks for each individual part
-        parthp = None
-        HPCompletedict = {}
-        for task in HeaderPlateTaskInstance.objects.all():
-             if task.part != parthp:
-                 parthp = task.part
-                 if task.status != "z":
-                     HPCompletedict[task.part] = "Not Complete"
-             else:
-                if task.status != "z":
-                     HPCompletedict[task.part] = "Not Complete"
-                     
-        #Deburr Tasks for each individual part
-        partdb = None
-        DeburrCompletedict = {}
-        for task in DeburrTaskInstance.objects.all():
-             if task.part != partdb:
-                 partdb = task.part
-                 if task.status != "z":
-                     DeburrCompletedict[task.part] = "Not Complete"
-             else:
-                if task.status != "z":
-                     DeburrCompletedict[task.part] = "Not Complete"
-                     
-        #Plating Tasks for each individual part
-        partpl = None
-        PlatingCompletedict = {}
-        for task in PlatingTaskInstance.objects.all():
-             if task.part != partpl:
-                 partpl = task.part
-                 if task.status != "z":
-                     PlatingCompletedict[task.part] = "Not Complete"
-             else:
-                if task.status != "z":
-                     PlatingCompletedict[task.part] = "Not Complete"
+        #DisplayList For CP Tasks:
+        CPDict = {} 
+        for task in part_component_prep_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            CPDict[part+"_"+serial] = []
+            
+        for task in part_component_prep_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            taskname = task.task
+            CPDict[part+"_"+serial].append(taskname)
+            
+        for PartSerial in CPDict:
+            if "Linish Tube" in CPDict[PartSerial]:
+                CPDict[PartSerial].append("Linish Tube")
+            else:
+                CPDict[PartSerial].append("-")
+            if "Deburr Sheet Metal" in CPDict[PartSerial]:
+                CPDict[PartSerial].append("Deburr Sheet Metal")
+            else:
+                CPDict[PartSerial].append("-" )
+            if "Expand Tube" in CPDict[PartSerial]:
+                CPDict[PartSerial].append("Expand Tube")
+            else:
+                CPDict[PartSerial].append("-")
+                
+            if "Prepare Turb" in CPDict[PartSerial]:
+                CPDict[PartSerial].append("Prepare Turb")
+            else:
+                CPDict[PartSerial].append("-")
+                
+            if "Load Turb" in CPDict[PartSerial]:
+                CPDict[PartSerial].append("Load Turb")
+            else:
+                CPDict[PartSerial].append("-")
+                
+            if "Roll Tube" in CPDict[PartSerial]:
+                CPDict[PartSerial].append("Roll Tube")
+            else:
+                CPDict[PartSerial].append("-")
+                
+            if "Markout Tube" in CPDict[PartSerial]:
+                CPDict[PartSerial].append("Markout Tube")
+            else:
+                CPDict[PartSerial].append("-")
+            if "HyBraze Rub" in CPDict[PartSerial]:
+                CPDict[PartSerial].append("HyBraze Rub")
+            else:
+                CPDict[PartSerial].append("-")
+                
+            if "Install Prewires" in CPDict[PartSerial]:
+                CPDict[PartSerial].append("Install Prewires")
+            else:
+                CPDict[PartSerial].append("-")
+            
+            CPDict[PartSerial] = CPDict[PartSerial][-9:]
+            
+        CPpartlist =[]
+        for part in CPDict:
+            CPpartlist.append(CPDict[part])
+        
+                
+        #DisplayList For Forming Tasks:
+        FODict = {} 
+        for task in part_forming_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            FODict[part+"_"+serial] = []
+            
+        for task in part_forming_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            taskname = task.task
+            FODict[part+"_"+serial].append(taskname)
+            
+        for PartSerial in FODict:
+            if "Form Header Plate" in FODict[PartSerial]:
+                FODict[PartSerial].append("Form Header Plate")
+            else:
+                FODict[PartSerial].append("-")
+            
+            FODict[PartSerial] = FODict[PartSerial][-1:]
+            
+        FOpartlist =[]
+        for part in FODict:
+            FOpartlist.append(FODict[part])
+            
+            
+        #DisplayList For Stacking Tasks:
+        STDict = {} 
+        for task in part_stacking_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            STDict[part+"_"+serial] = []
+            
+        for task in part_stacking_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            taskname = task.task
+            STDict[part+"_"+serial].append(taskname)
+            
+        for PartSerial in STDict:
+            if "Set up Table" in STDict[PartSerial]:
+                STDict[PartSerial].append("Set up Table")
+            else:
+                STDict[PartSerial].append("-")
+            if "Stack Core" in STDict[PartSerial]:
+                STDict[PartSerial].append("Stack Core")
+            else:
+                STDict[PartSerial].append("-")
+            if "Post Stacking Braze Check" in STDict[PartSerial]:
+                STDict[PartSerial].append("Post Stacking Braze Check")
+            else:
+                STDict[PartSerial].append("-")
+            
+            STDict[PartSerial] = STDict[PartSerial][-3:]
+            
+        STpartlist =[]
+        for part in STDict:
+            STpartlist.append(STDict[part])
+            
+        
+        #DisplayList For Wire Cut Tasks:
+        WCDict = {} 
+        for task in part_wire_cut_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            WCDict[part+"_"+serial] = []
+            
+        for task in part_wire_cut_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            taskname = task.task
+            WCDict[part+"_"+serial].append(taskname)
+            
+        for PartSerial in WCDict:
+            if "Wire Cut Core" in WCDict[PartSerial]:
+                WCDict[PartSerial].append("Wire Cut Core")
+            else:
+                WCDict[PartSerial].append("-")
+            
+            WCDict[PartSerial] = WCDict[PartSerial][-1:]
+            
+        WCpartlist =[]
+        for part in WCDict:
+            WCpartlist.append(WCDict[part])
+            
+        
+                #DisplayList For Pitching Tasks:
+        PTDict = {} 
+        for task in part_pitching_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            PTDict[part+"_"+serial] = []
+            
+        for task in part_pitching_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            taskname = task.task
+            PTDict[part+"_"+serial].append(taskname)
+            
+        for PartSerial in PTDict:
+            if "Pitch Core" in PTDict[PartSerial]:
+                PTDict[PartSerial].append("Pitch Core")
+            else:
+                PTDict[PartSerial].append("-")
+            if "Slot Generation" in PTDict[PartSerial]:
+                PTDict[PartSerial].append("Slot Generation")
+            else:
+                PTDict[PartSerial].append("-")
+
+            
+            PTDict[PartSerial] = PTDict[PartSerial][-2:]
+            
+        PTpartlist =[]
+        for part in PTDict:
+            PTpartlist.append(PTDict[part])
+            
+            
+            
+                #DisplayList For HP Machining Tasks:
+        HPDict = {} 
+        for task in part_header_plate_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            HPDict[part+"_"+serial] = []
+            
+        for task in part_header_plate_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            taskname = task.task
+            HPDict[part+"_"+serial].append(taskname)
+            
+        for PartSerial in HPDict:
+            if "Program HP Machining" in HPDict[PartSerial]:
+                HPDict[PartSerial].append("Program HP Machining")
+            else:
+                HPDict[PartSerial].append("-")
+            if "Machine Header Plate" in HPDict[PartSerial]:
+                HPDict[PartSerial].append("Machine Header Plate")
+            else:
+                HPDict[PartSerial].append("-")
+
+            
+            HPDict[PartSerial] = HPDict[PartSerial][-2:]
+            
+        HPpartlist =[]
+        for part in HPDict:
+            HPpartlist.append(HPDict[part])
+            
+            
+                        #DisplayList For Deburr Tasks:
+        DBDict = {} 
+        for task in part_deburr_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            DBDict[part+"_"+serial] = []
+            
+        for task in part_deburr_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            taskname = task.task
+            DBDict[part+"_"+serial].append(taskname)
+            
+        for PartSerial in DBDict:
+            if "Deburr Core" in DBDict[PartSerial]:
+                DBDict[PartSerial].append("Deburr Core")
+            else:
+                DBDict[PartSerial].append("-")
+            if "Deburr Header Plate" in DBDict[PartSerial]:
+                DBDict[PartSerial].append("Deburr Header Plate")
+            else:
+                DBDict[PartSerial].append("-")
+
+            
+            DBDict[PartSerial] = DBDict[PartSerial][-2:]
+            
+        DBpartlist =[]
+        for part in DBDict:
+            DBpartlist.append(DBDict[part])
+            
+            
+        #DisplayList For PL Tasks:
+        PLDict = {} 
+        for task in part_plating_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            PLDict[part+"_"+serial] = []
+            
+        for task in part_plating_tasks:
+            part = task.part.title
+            serial = task.part.serial
+            taskname = task.task
+            PLDict[part+"_"+serial].append(taskname)
+            
+        for PartSerial in PLDict:
+            if "Plate Core" in PLDict[PartSerial]:
+                PLDict[PartSerial].append("Plate Core")
+            else:
+                PLDict[PartSerial].append("-")
+            if "Install Baffles" in PLDict[PartSerial]:
+                PLDict[PartSerial].append("Install Baffles")
+            else:
+                PLDict[PartSerial].append("-" )
+            if "Scribe Header Plate" in PLDict[PartSerial]:
+                PLDict[PartSerial].append("Scribe Header Plate")
+            else:
+                PLDict[PartSerial].append("-")
+                
+            if "Post Braze Check" in PLDict[PartSerial]:
+                PLDict[PartSerial].append("Post Braze Check")
+            else:
+                PLDict[PartSerial].append("-")
+            
+            PLDict[PartSerial] = PLDict[PartSerial][-4:]
+            
+        PLpartlist =[]
+        for part in PLDict:
+            PLpartlist.append(PLDict[part])
+       
                      
         Cores_not_in_Archive = Part.objects.filter(archive__exact = False).count()
         context["Cores_not_in_Archive"] = Cores_not_in_Archive
-        context["component_prep_tasks_not_completed"] = Completedict
-        context["stacking_tasks_not_completed"] = StackingCompletedict
-        context["forming_tasks_not_completed"] = FormingCompletedict
-        context["HP_tasks_not_completed"] = HPCompletedict
-        context["pitching_tasks_not_completed"] = PitchCompletedict
-        context["wire_cut_tasks_not_completed"] = WCCompletedict
-        context["deburr_tasks_not_completed"] = DeburrCompletedict
-        context["plating_tasks_not_completed"] = PlatingCompletedict
         
         context["part_component_prep_tasks"] = part_component_prep_tasks
         context["part_stacking_tasks"] = part_stacking_tasks
@@ -201,7 +382,19 @@ class PartDashboardView(generic.ListView):
         context["Pitching_Tasks"] = Pitching_Tasks
         context["HP_Tasks"] = HP_Tasks
         context["Deburr_Tasks"] = Deburr_Tasks
-        context["Plating_Tasks"] = Plating_Tasks        
+        context["Plating_Tasks"] = Plating_Tasks    
+        
+        #DisplayLists
+        context["CPpartlist"] = CPpartlist
+        context["FOpartlist"] = FOpartlist
+        context["STpartlist"] = STpartlist
+        context["WCpartlist"] = WCpartlist
+        context["PTpartlist"] = PTpartlist
+        context["HPpartlist"] = HPpartlist
+        context["DBpartlist"] = DBpartlist
+        context["PLpartlist"] = PLpartlist
+        
+        context["Current_Part_List"] = Current_Part_List
         return context
         
 
@@ -287,7 +480,9 @@ class CoreArchiveView(generic.ListView):
          context["Archive_Parts"] = Archive_Parts
          return context
         
-        
+@register.filter
+def indexer(indexable, i): 
+        return indexable[i]   
 
 @register.filter
 def get_partNo(serial, key): 
@@ -515,11 +710,11 @@ class CPTaskDetailView(generic.DetailView):
 class CPTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = ComponentPrepTaskInstance
     fields = ['status'] 
-    success_url = reverse_lazy('cptasks')
+    success_url = reverse_lazy('part-dashboard')
     
 class CPTaskDelete(LoginRequiredMixin,DeleteView):
     model = ComponentPrepTaskInstance 
-    success_url = reverse_lazy('cptasks')
+    success_url = reverse_lazy('part-dashboard')
     
 def StartCPTask(request, pk):
     Task = ComponentPrepTaskInstance.objects.get(pk = pk)
@@ -539,7 +734,7 @@ def StartCPTask(request, pk):
     timetostartstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetostart = str(timetostartstr)
     Task.save()
-    return HttpResponseRedirect(reverse('cptasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 def FinishCPTask(request, pk):
     Task = ComponentPrepTaskInstance.objects.get(pk = pk)
@@ -559,7 +754,7 @@ def FinishCPTask(request, pk):
     timetakenstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetaken = str(timetakenstr)
     Task.save()
-    return HttpResponseRedirect(reverse('cptasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
   
 #Stacking Classes  
 class StackingTaskListView(generic.ListView):
@@ -613,7 +808,7 @@ class StackingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     
 class StackingTaskDelete(LoginRequiredMixin,DeleteView):
     model = StackingTaskInstance 
-    success_url = reverse_lazy('stackingtasks')
+    success_url = reverse_lazy('part-dashboard')
     
 
 def StartStackTask(request, pk):
@@ -634,7 +829,7 @@ def StartStackTask(request, pk):
     timetostartstr = "{:0>2} days, {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetostart = str(timetostartstr)
     Task.save()
-    return HttpResponseRedirect(reverse('stackingtasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 def FinishStackTask(request, pk):
     Task = StackingTaskInstance.objects.get(pk = pk)
@@ -654,7 +849,7 @@ def FinishStackTask(request, pk):
     timetakenstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetaken = str(timetakenstr)
     Task.save()
-    return HttpResponseRedirect(reverse('stackingtasks'))    
+    return HttpResponseRedirect(reverse('part-dashboard'))    
     
 
  
@@ -681,11 +876,11 @@ class FormingTaskInstanceDetailView(generic.DetailView):
 class FormingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = FormingTaskInstance
     fields = ['status'] 
-    success_url = reverse_lazy('formingtasks')
+    success_url = reverse_lazy('part-dashboard')
     
 class FormingTaskDelete(LoginRequiredMixin,DeleteView):
     model = FormingTaskInstance 
-    success_url = reverse_lazy('formingtasks')
+    success_url = reverse_lazy('part-dashboard')
     
 def StartFormingTask(request, pk):
     Task = FormingTaskInstance.objects.get(pk = pk)
@@ -705,7 +900,7 @@ def StartFormingTask(request, pk):
     timetostartstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetostart = str(timetostartstr)
     Task.save()
-    return HttpResponseRedirect(reverse('formingtasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 def FinishFormingTask(request, pk):
     Task = FormingTaskInstance.objects.get(pk = pk)
@@ -725,7 +920,7 @@ def FinishFormingTask(request, pk):
     timetakenstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetaken = str(timetakenstr)
     Task.save()
-    return HttpResponseRedirect(reverse('formingtasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
     
 #Header Plate Views
 class HeaderPlateTaskInstanceListView(generic.ListView):
@@ -761,11 +956,11 @@ class HeaderPlateTaskInstanceDetailView(generic.DetailView):
 class HeaderPlateTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = HeaderPlateTaskInstance
     fields = ['status'] 
-    success_url = reverse_lazy('headerplatetasks')
+    success_url = reverse_lazy('part-dashboard')
     
 class HeaderPlateTaskDelete(LoginRequiredMixin,DeleteView):
     model = HeaderPlateTaskInstance 
-    success_url = reverse_lazy('headerplatetasks')
+    success_url = reverse_lazy('part-dashboard')
     
 def StartHeaderPlateTask(request, pk):
     Task = HeaderPlateTaskInstance.objects.get(pk = pk)
@@ -785,7 +980,7 @@ def StartHeaderPlateTask(request, pk):
     timetostartstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetostart = str(timetostartstr)
     Task.save()
-    return HttpResponseRedirect(reverse('headerplatetasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 def FinishHeaderPlateTask(request, pk):
     Task = HeaderPlateTaskInstance.objects.get(pk = pk)
@@ -805,7 +1000,7 @@ def FinishHeaderPlateTask(request, pk):
     timetakenstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetaken = str(timetakenstr)
     Task.save()
-    return HttpResponseRedirect(reverse('headerplatetasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 #Pitching Task Views
 class PitchingTaskListView(generic.ListView):
@@ -856,11 +1051,11 @@ class PitchingTaskDetailView(generic.DetailView):
 class PitchingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = PitchingTaskInstance
     fields = ['status'] 
-    success_url = reverse_lazy('pitchingtasks')
+    success_url = reverse_lazy('part-dashboard')
     
 class PitchingTaskDelete(LoginRequiredMixin,DeleteView):
     model = PitchingTaskInstance 
-    success_url = reverse_lazy('pitchingtasks')
+    success_url = reverse_lazy('part-dashboard')
     
 def StartPitchingTask(request, pk):
     Task = PitchingTaskInstance.objects.get(pk = pk)
@@ -880,7 +1075,7 @@ def StartPitchingTask(request, pk):
     timetostartstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetostart = str(timetostartstr)
     Task.save()
-    return HttpResponseRedirect(reverse('pitchingtasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 def FinishPitchingTask(request, pk):
     Task = PitchingTaskInstance.objects.get(pk = pk)
@@ -900,7 +1095,7 @@ def FinishPitchingTask(request, pk):
     timetakenstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetaken = str(timetakenstr)
     Task.save()
-    return HttpResponseRedirect(reverse('pitchingtasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 
 #Wire Cut Task Views
@@ -976,7 +1171,7 @@ def StartWireCutTask(request, pk):
     timetostartstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetostart = str(timetostartstr)
     Task.save()
-    return HttpResponseRedirect(reverse('wirecuttasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 def FinishWireCutTask(request, pk):
     Task = WireCutTaskInstance.objects.get(pk = pk)
@@ -996,7 +1191,7 @@ def FinishWireCutTask(request, pk):
     timetakenstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetaken = str(timetakenstr)
     Task.save()
-    return HttpResponseRedirect(reverse('wirecuttasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 
 #Deburr Task Views
@@ -1048,11 +1243,11 @@ class DeburrTaskDetailView(generic.DetailView):
 class DeburrTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = DeburrTaskInstance
     fields = ['status'] 
-    success_url = reverse_lazy('deburrtasks')
+    success_url = reverse_lazy('part-dashboard')
     
 class DeburrTaskDelete(LoginRequiredMixin,DeleteView):
     model = DeburrTaskInstance
-    success_url = reverse_lazy('deburrtasks')
+    success_url = reverse_lazy('part-dashboard')
     
 def StartDeburrTask(request, pk):
     Task = DeburrTaskInstance.objects.get(pk = pk)
@@ -1072,7 +1267,7 @@ def StartDeburrTask(request, pk):
     timetostartstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetostart = str(timetostartstr)
     Task.save()
-    return HttpResponseRedirect(reverse('deburrtasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 def FinishDeburrTask(request, pk):
     Task = DeburrTaskInstance.objects.get(pk = pk)
@@ -1092,7 +1287,7 @@ def FinishDeburrTask(request, pk):
     timetakenstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetaken = str(timetakenstr)
     Task.save()
-    return HttpResponseRedirect(reverse('deburrtasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 #Plating Task Views
 class PlatingTaskListView(generic.ListView):
@@ -1143,11 +1338,11 @@ class PlatingTaskDetailView(generic.DetailView):
 class PlatingTaskStatusUpdate(LoginRequiredMixin,UpdateView):
     model = PlatingTaskInstance
     fields = ['status'] 
-    success_url = reverse_lazy('platingtasks')
+    success_url = reverse_lazy('part-dashboard')
     
 class PlatingTaskDelete(LoginRequiredMixin,DeleteView):
     model = PlatingTaskInstance
-    success_url = reverse_lazy('platingtasks')
+    success_url = reverse_lazy('part-dashboard')
     
 def StartPlatingTask(request, pk):
     Task = PlatingTaskInstance.objects.get(pk = pk)
@@ -1167,7 +1362,7 @@ def StartPlatingTask(request, pk):
     timetostartstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetostart = str(timetostartstr)
     Task.save()
-    return HttpResponseRedirect(reverse('platingtasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 def FinishPlatingTask(request, pk):
     Task = PlatingTaskInstance.objects.get(pk = pk)
@@ -1187,7 +1382,7 @@ def FinishPlatingTask(request, pk):
     timetakenstr = "{:0>2} days- {:0>2} hours, {:0>2} minutes, {:05.2f} seconds".format(int(days),int(hours),int(mins),seconds)
     Task.timetaken = str(timetakenstr)
     Task.save()
-    return HttpResponseRedirect(reverse('platingtasks'))
+    return HttpResponseRedirect(reverse('part-dashboard'))
 
 #Complete Core
 @login_required 

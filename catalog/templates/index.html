@@ -4,24 +4,24 @@
 {% block content %}
 <head>
 <style>
-a.ex2{color: black;}
+a.ex2{color:#bababa;}
 </style>
 </head>
 
-  <p>Speciality Build Traking DataBase<p>
-  <p>Any bugs please report to <a href = "{% url 'cptasks' %}">harrison@pwr.com.au</a></p>
+  <p style= "color:#bababa">Speciality Build Traking DataBase<p>
+  <p style= "color:#bababa">Any bugs please report to <a class = "ex2" href = "{% url 'cptasks' %}">harrison@pwr.com.au</a></p>
   
-  <h2>Current Tasks</h2>
-    <div> <a class = "ex2" href="{% url 'part-dashboard' %}"> Parts in progress:</a> {{ num_parts }}</div>
+  <h2 style= "color:#bababa">Current Tasks</h2>
+    <div style= "color:#bababa"> <a class = "ex2" href="{% url 'part-dashboard' %}"> Parts in progress:</a> {{ num_parts }}</div>
     <hr>
-    <h5> Incomplete Tasks</h5>
-    <li> <a class = "ex2" href="{% url 'cptasks' %}"> Component Prep Tasks:</a> {{ num_CpTasks }} </li>
-    <li> <a class = "ex2" href="{% url 'stackingtasks' %}"> Stacking Tasks:</a> {{ num_Stacking_Tasks }} </li>
-    <li> <a class = "ex2" href="{% url 'formingtasks' %}"> Forming Tasks:</a> {{ num_Forming_Tasks }} </li>
-    <li> <a class = "ex2" href="{% url 'wirecuttasks' %}"> Wire Cut Tasks:</a> {{ num_Wire_Cut_Tasks }} </li>
-    <li> <a class = "ex2" href="{% url 'pitchingtasks' %}"> Pitching Tasks:</a> {{ num_Pitching_Tasks }} </li>
-    <li> <a class = "ex2" href="{% url 'headerplatetasks' %}"> Header Plate Machining Tasks:</a> {{ num_HP_Tasks }} </li>
-    <li> <a class = "ex2" href="{% url 'deburrtasks' %}"> Deburring Tasks:</a> {{ num_Deburr_Tasks }} </li>
-    <li> <a class = "ex2" href="{% url 'platingtasks' %}"> Plating Tasks:</a> {{ num_Plating_Tasks }} </li>
+    <h5 style= "color:#bababa"> Incomplete Tasks</h5>
+    <li style= "color:#bababa"> <a class = "ex2" href="{% url 'cptasks' %}"> Component Prep Tasks:</a> {{ num_CpTasks }} </li>
+    <li style= "color:#bababa"> <a class = "ex2" href="{% url 'stackingtasks' %}"> Stacking Tasks:</a> {{ num_Stacking_Tasks }} </li>
+    <li style= "color:#bababa"> <a class = "ex2" href="{% url 'formingtasks' %}"> Forming Tasks:</a> {{ num_Forming_Tasks }} </li>
+    <li style= "color:#bababa"> <a class = "ex2" href="{% url 'wirecuttasks' %}"> Wire Cut Tasks:</a> {{ num_Wire_Cut_Tasks }} </li>
+    <li style= "color:#bababa"> <a class = "ex2" href="{% url 'pitchingtasks' %}"> Pitching Tasks:</a> {{ num_Pitching_Tasks }} </li>
+    <li style= "color:#bababa"> <a class = "ex2" href="{% url 'headerplatetasks' %}"> Header Plate Machining Tasks:</a> {{ num_HP_Tasks }} </li>
+    <li style= "color:#bababa"> <a class = "ex2" href="{% url 'deburrtasks' %}"> Deburring Tasks:</a> {{ num_Deburr_Tasks }} </li>
+    <li style= "color:#bababa"> <a class = "ex2" href="{% url 'platingtasks' %}"> Plating Tasks:</a> {{ num_Plating_Tasks }} </li>
     
 {% endblock %}
