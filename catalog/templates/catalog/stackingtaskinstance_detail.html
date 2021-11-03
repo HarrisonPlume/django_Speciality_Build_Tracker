@@ -15,19 +15,19 @@ a.ex2{color: #d6d6d6;font-weight: 600}
   ({{stackingtaskinstance.part.team}}) Serial: {{stackingtaskinstance.part.serial}}</a> - 
   {{stackingtaskinstance}}</h1>
     <h4>Status: </h4>
-   {% if stackingtaskinstance.status == "z" %}
+   {% if stackingtaskinstance.status == 10 %}
     <span title="Task Complete">
       <div class = "text-success">Task Complete <img src="{% static 'catalog/tick.png' %}" alt="Complete"></div>
        </span>
-    {% elif stackingtaskinstance.status == "b" %}
+    {% elif stackingtaskinstance.status == 1 %}
     <span title="Task in progress">
       <div class = "text-info">In Progress <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress"></div>
        </span>
-    {% elif stackingtaskinstance.status == "h" %}
+    {% elif stackingtaskinstance.status == 3 %}
     <span title="Task on hold">
        <div class = "text-warning">Task On Hold <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold"></div>
        </span>
-       {% elif stackingtaskinstance.status == "a" %}
+       {% elif stackingtaskinstance.status == 2 %}
        <span title="Task not yet started">
       <span class = "text-success">
       Avaliable To Start
@@ -64,13 +64,13 @@ a.ex2{color: #d6d6d6;font-weight: 600}
     {% if stackingtaskinstance.part in component_prep_tasks_not_completed %}
     <p> Component Prep Tasks Incomplete </p>
     {% else %}
-    {% if stackingtaskinstance.status == 'z' %}
+    {% if stackingtaskinstance.status == 10 %}
     <p>Task Complete</p> 
-    {% elif stackingtaskinstance.status == 'h' %}
+    {% elif stackingtaskinstance.status == 3 %}
     <p><a href="{% url 'startstackingtask' pk=stackingtaskinstance.pk %}">Resume Task</a></p>
-    {% elif stackingtaskinstance.status == 'a' %}
+    {% elif stackingtaskinstance.status == 2 %}
     <p><a href="{% url 'startstackingtask' pk=stackingtaskinstance.pk %}">Begin Task</a></p>
-    {% elif stackingtaskinstance.status == 'b' %}
+    {% elif stackingtaskinstance.status == 1 %}
     <p><a href="{% url 'finishstackingtask' pk=stackingtaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
     {% endif %}

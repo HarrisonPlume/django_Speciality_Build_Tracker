@@ -1,6 +1,5 @@
 
 {% extends "base_generic.html" %}
-
 {% block content %}
 <head>
 <style>
@@ -23,5 +22,8 @@ a.ex2{color:#bababa;}
     <li style= "color:#bababa"> <a class = "ex2" href="{% url 'headerplatetasks' %}"> Header Plate Machining Tasks:</a> {{ num_HP_Tasks }} </li>
     <li style= "color:#bababa"> <a class = "ex2" href="{% url 'deburrtasks' %}"> Deburring Tasks:</a> {{ num_Deburr_Tasks }} </li>
     <li style= "color:#bababa"> <a class = "ex2" href="{% url 'platingtasks' %}"> Plating Tasks:</a> {{ num_Plating_Tasks }} </li>
+    
+    <a href="{% url 'Scan' %}">Scan Work Order</a>
+    
     
 {% endblock %}

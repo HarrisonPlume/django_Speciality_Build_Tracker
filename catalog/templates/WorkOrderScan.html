@@ -1,0 +1,20 @@
+
+
+{% extends "base_generic.html" %}
+{% block content %}
+<head>
+<style>
+a.ex2{color:#bababa;}
+</style>
+</head>
+
+  <h1 style= "color:#bababa">Work Order Scanner</h1>
+  <h5> <a href="{% url 'Scan_Complete' %}">Press When Scan is complete</a></h5>
+  
+  <img src="{% url 'mask_feed' %}">
+  
+
+    
+    
+    
+{% endblock %}

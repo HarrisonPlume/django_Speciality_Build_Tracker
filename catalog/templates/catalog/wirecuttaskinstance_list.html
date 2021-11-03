@@ -14,7 +14,7 @@ a.ex3 {color: #bababa;}
 
   <h1>Wire Cut Tasks</h1>
   <hr>
-  {% if wirecuttask_list %} 
+  {% if not_archived_tasks > 0 %} 
   <h4>Tasks Remaining: {{tasks_remaining}}</h4>
   {% if user.is_authenticated %}
   <hr>
@@ -22,58 +22,86 @@ a.ex3 {color: #bababa;}
   <div>Tasks not yet started: {{num_tasks_not_started}} </div>
   <hr>
   {% endif %}
-    {% for newtask in wirecuttask_list %}
-    {% if newtask.part.archive != True %}
+   
+    {% if tasks_in_progress_count != 0 %}
+     <h5>Tasks In Progress</h5>
+      {% for newtask in tasks_in_progress %}
+        <li>
+        <span title="Task in progress">
+        <a  class = "text-info" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
+        <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress">
+        </span>
+        </li>    
+      {% endfor %}
+      <br>
+{% else %}
+<h5>Tasks In Progress</h5>
+<p>There are Currently No Parts In Progress</p>
+    {% endif %}
+    
+    
+{% if tasks_avaliable_count != 0 %}
+     <h5>Task List</h5>
+      {% for newtask in tasks_avaliable %}
       {% if newtask.part not in stacking_tasks_not_completed %}
-    <li>
-    {% if newtask.status == "z" %}
-    <span title="Task Complete">
-      <a  class = "text-success" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
-       <img src="{% static 'catalog/tick.png' %}" alt="Complete">
-       </span>
-    {% elif newtask.status == "b" %}
-    <span title="Task in progress">
-      <a  class = "text-info" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
-       <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress">
-       </span>
-    {% elif newtask.status == "h" %}
-    <span title="Task on hold">
-      <a  class = "text-warning" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
-       <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold">
-       </span>
-       {% elif newtask.status == "a" %}
-       <span title="Task not yet started">
-       <a  class = "ex3" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
+        <li>
+        <span title="Task not yet started">
       <span class = "text-success">
       (Avaliable)
       </span>
+       <a  class = "ex3" href = "{{newtask.get_absolute_url}}">- {{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
       </span>
-      {% else %}
-      <span title="Task Failed">
-       <a  class = "text-danger" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
+        </li>    
+    {% else %}
+    <li><span class = "text-danger">(Pending) </span>- {{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</li>
+    {% endif %}
+      {% endfor %}
+      <br>
+{% else %}
+<h5>Task List</h5>
+<p>There are Currently No Avaliable Tasks</p>
+    {% endif %}
+  
+{% if tasks_on_hold_count != 0 %}
+     <h5>Tasks On Hold</h5>
+      {% for newtask in tasks_on_hold %}
+        <li>
+         <span title="Task on hold">
+      <a  class = "text-warning" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
+       <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold">
        </span>
-      {% endif %}
-    </li>
+        </li>    
+      {% endfor %}
+      <br>
+{% else %}
+<h5>Tasks On Hold</h5>
+<p>There are Currently No Tasks On Hold</p>
     {% endif %}
-    {% elif not_archived_tasks == 0 and forloop.counter0 == 0 %}
-    <p>There are no tasks currently listed.</p>
+  
+  
+{% if tasks_complete_count != 0 %}
+     <h5>Tasks Complete</h5>
+      {% for newtask in tasks_complete %}
+        <li>
+        <span title="Task Complete">
+      <a  class = "text-success" href = "{{newtask.get_absolute_url}}">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}</a>
+       <img src="{% static 'catalog/tick.png' %}" alt="Complete">
+       </span>
+        </li>    
+      {% endfor %}
+      <br>
+{% else %}
+<h5>Tasks Complete</h5>
+<p>There are Currently No Tasks Complete</p>
     {% endif %}
-    {% endfor %}
+    
+
+  
+    
   {% else %}
     <p>There are no tasks currently listed.</p>
   {% endif %} 
-  {% for newtask in wirecuttask_list %}
-  {% if newtask.part.archive != True %}
-      {% if newtask.part in stacking_tasks_not_completed %}
-      <span title = "Task Unavalible">
-      <li><span class = "text-danger" title = "Task Unavalible">{{newtask.part}} ({{newtask.part.team}}) Serial: {{newtask.part.serial}} - {{newtask.task}}
-      <img src="{% static 'catalog/prohibition.png' %}" alt="Complete">
-      </span>
-      </li>
-  {% endif %}
-  {% endif %}
-  {% endfor %}
-
+      
 {% endblock %}
 </body>
 </html>

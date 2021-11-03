@@ -17,19 +17,19 @@ a.ex2{color: #d6d6d6;font-weight: 600}
   {{pitchingtaskinstance}}</h1>
   <div style="margin-left:20px;margin-top:20px">
     <h4>Status: </h4>
-   {% if pitchingtaskinstance.status == "z" %}
+   {% if pitchingtaskinstance.status == 10 %}
     <span title="Task Complete">
      <div class = "text-success">Task Complete <img src="{% static 'catalog/tick.png' %}" alt="Complete"></div>
        </span>
-    {% elif pitchingtaskinstance.status == "b" %}
+    {% elif pitchingtaskinstance.status == 1 %}
     <span title="Task in progress">
       <div class = "text-info">In Progress <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress"></div>
        </span>
-    {% elif pitchingtaskinstance.status == "h" %}
+    {% elif pitchingtaskinstance.status == 3 %}
     <span title="Task on hold">
        <div class = "text-warning">Task On Hold <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold"></div>
        </span>
-       {% elif pitchingtaskinstance.status == "a" %}
+       {% elif pitchingtaskinstance.status == 2 %}
        <span title="Task not yet started">
       <span class = "text-success">
       Avaliable To Start
@@ -66,13 +66,13 @@ a.ex2{color: #d6d6d6;font-weight: 600}
     {% if pitchingtaskinstance.part in wire_cut_tasks_not_completed %}
     <p> Wire Cut Tasks Incomplete </p>
     {% else %}
-    {% if pitchingtaskinstance.status == 'z' %}
+    {% if pitchingtaskinstance.status == 10 %}
     <p>Task Complete</p> 
-    {% elif pitchingtaskinstance.status == 'h' %}
+    {% elif pitchingtaskinstance.status == 3 %}
     <p><a href="{% url 'startpitchingtask' pk=pitchingtaskinstance.pk %}">Resume Task</a></p>
-    {% elif pitchingtaskinstance.status == 'a' %}
+    {% elif pitchingtaskinstance.status == 2 %}
     <p><a href="{% url 'startpitchingtask' pk=pitchingtaskinstance.pk %}">Begin Task</a></p>
-    {% elif pitchingtaskinstance.status == 'b' %}
+    {% elif pitchingtaskinstance.status == 1 %}
     <p><a href="{% url 'finishpitchingtask' pk=pitchingtaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
     {% endif %}

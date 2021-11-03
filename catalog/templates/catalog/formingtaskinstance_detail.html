@@ -17,19 +17,19 @@ a.ex2{color: #d6d6d6;font-weight: 600}
   {{formingtaskinstance}}</h1>
   <div style="margin-left:20px;margin-top:20px">
     <h4>Status: </h4>
-{% if formingtaskinstance.status == "z" %}
+{% if formingtaskinstance.status == 10 %}
     <span title="Task Complete">
       <div class = "text-success">Task Complete <img src="{% static 'catalog/tick.png' %}" alt="Complete"></div>
        </span>
-    {% elif formingtaskinstance.status == "b" %}
+    {% elif formingtaskinstance.status == 1 %}
     <span title="Task in progress">
       <div class = "text-info">In Progress <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress"></div>
        </span>
-    {% elif formingtaskinstance.status == "h" %}
+    {% elif formingtaskinstance.status == 3 %}
     <span title="Task on hold">
        <div class = "text-warning">Task On Hold <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold"></div>
        </span>
-       {% elif formingtaskinstance.status == "a" %}
+       {% elif formingtaskinstance.status == 2 %}
        <span title="Task not yet started">
       <span class = "text-success">
       Avaliable To Start
@@ -63,13 +63,13 @@ a.ex2{color: #d6d6d6;font-weight: 600}
     
       <hr>
      <h5>Current options</h5>
-    {% if formingtaskinstance.status == 'z' %}
+    {% if formingtaskinstance.status == 10 %}
     <p>Task Complete</p> 
-    {% elif formingtaskinstance.status == 'h' %}
+    {% elif formingtaskinstance.status == 3 %}
     <p><a href="{% url 'startformingtask' pk=formingtaskinstance.pk %}">Resume Task</a></p>
-    {% elif formingtaskinstance.status == 'a' %}
+    {% elif formingtaskinstance.status == 2 %}
     <p><a href="{% url 'startformingtask' pk=formingtaskinstance.pk %}">Begin Task</a></p>
-    {% elif formingtaskinstance.status == 'b' %}
+    {% elif formingtaskinstance.status == 1 %}
     <p><a href="{% url 'finishformingtask' pk=formingtaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
 {% endblock %}

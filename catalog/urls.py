@@ -17,6 +17,9 @@ urlpatterns += [
          name="startcptask"),
     path("CPTask/<int:pk>/FinishTask", views.FinishCPTask, 
        name="finishcptask"),
+    path('mask_feed', views.mask_feed, name='mask_feed'),
+    path("WorkOrderScan/", views.WorkOrderScan, name="Scan"),
+    path('ScanComplete/', views.ScanResult, name='Scan_Complete'),
     ]
 #Check off core urls
 urlpatterns += [

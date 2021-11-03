@@ -27,10 +27,10 @@ class DeburrTaskInstance(models.Model):
     """
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
-    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"))
-    status = models.CharField(max_length = 1, choices = TASK_STATUS, 
-                              blank = False, default = "a",
+    TASK_STATUS = ((2,"Not Started"),(3, "On Hold"),(10, "Complete"),
+                   (1, "In Progress"))
+    status = models.IntegerField(choices = TASK_STATUS, 
+                              blank = False, default = 2,
                               help_text = "Set task completion status")
     #Create Time String and decimal fields
     createtime = models.CharField(max_length = 50, null = True, blank = True)
@@ -72,10 +72,10 @@ class PlatingTaskInstance(models.Model):
     """
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
-    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"))
-    status = models.CharField(max_length = 1, choices = TASK_STATUS, 
-                              blank = False, default = "a",
+    TASK_STATUS = ((2,"Not Started"),(3, "On Hold"),(10, "Complete"),
+                   (1, "In Progress"))
+    status = models.IntegerField(choices = TASK_STATUS, 
+                              blank = False, default = 2,
                               help_text = "Set task completion status")
     #Create Time String and decimal fields
     createtime = models.CharField(max_length = 50, null = True, blank = True)
@@ -117,10 +117,10 @@ class WireCutTaskInstance(models.Model):
     """
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
-    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"))
-    status = models.CharField(max_length = 1, choices = TASK_STATUS, 
-                              blank = False, default = "a",
+    TASK_STATUS = ((2,"Not Started"),(3, "On Hold"),(10, "Complete"),
+                   (1, "In Progress"))
+    status = models.IntegerField(choices = TASK_STATUS, 
+                              blank = False, default = 2,
                               help_text = "Set task completion status")
     createtime = models.CharField(max_length = 50, null = True, blank = True)
     createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
@@ -162,10 +162,10 @@ class PitchingTaskInstance(models.Model):
     """
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
-    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"))
-    status = models.CharField(max_length = 1, choices = TASK_STATUS, 
-                              blank = False, default = "a",
+    TASK_STATUS = ((2,"Not Started"),(3, "On Hold"),(10, "Complete"),
+                   (1, "In Progress"))
+    status = models.IntegerField(choices = TASK_STATUS, 
+                              blank = False, default = 2,
                               help_text = "Set task completion status")
     createtime = models.CharField(max_length = 50, null = True, blank = True)
     createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
@@ -208,10 +208,10 @@ class FormingTaskInstance(models.Model):
     """
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete=models.CASCADE, null = True)
-    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"))
-    status = models.CharField(max_length = 1, choices = TASK_STATUS, 
-                              blank = False, default = "a",
+    TASK_STATUS = ((2,"Not Started"),(3, "On Hold"),(10, "Complete"),
+                   (1, "In Progress"))
+    status = models.IntegerField(choices = TASK_STATUS, 
+                              blank = False, default = 2,
                               help_text = "Set task completion status")
     #Create Time String and decimal fields
     createtime = models.CharField(max_length = 50, null = True, blank = True)
@@ -259,11 +259,11 @@ class StackingTaskInstance(models.Model):
     """ Instance of a specific component prep task"""
     task = models.CharField(max_length= 100, null = True)
     part = models.ForeignKey("Part",on_delete=models.CASCADE, null=True)
-    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"))
+    TASK_STATUS = ((2,"Not Started"),(3, "On Hold"),(10, "Complete"),
+                   (1, "In Progress"))
     
-    status = models.CharField(max_length = 1, choices= TASK_STATUS, 
-                              blank = False, default = "a", help_text = "Set \
+    status = models.IntegerField(choices= TASK_STATUS, 
+                              blank = False, default = 2, help_text = "Set \
                                   task completion status")
     createtime = models.CharField(max_length = 50, null = True, blank = True)
     createtimenum = models.DecimalField(decimal_places=2, max_digits=14, null=True, blank = True)
@@ -308,11 +308,11 @@ class ComponentPrepTaskInstance(models.Model):
     """ Instance of a specific component prep task"""
     task = models.CharField(max_length= 100, null = True)
     part = models.ForeignKey("Part",on_delete=models.CASCADE, null=True)
-    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"))
+    TASK_STATUS = ((2,"Not Started"),(3, "On Hold"),(10, "Complete"),
+                   (1, "In Progress"))
     
-    status = models.CharField(max_length = 1, choices= TASK_STATUS, 
-                              blank = False, default = "a", help_text = "Set \
+    status = models.IntegerField(choices= TASK_STATUS, 
+                              blank = False, default = 2, help_text = "Set \
                                   task completion status")
     #Create Time String and decimal fields
     createtime = models.CharField(max_length = 50, null = True, blank = True)
@@ -352,6 +352,7 @@ class Part(models.Model):
     """ Model represents a Part to be completed"""
     title = models.CharField(max_length = 100)
     serial = models.CharField(max_length = 20,null = True)
+    Work_Order = models.CharField(max_length = 6, null = True)
     team = models.ForeignKey(Team, on_delete = models.RESTRICT, null = True)
     Component_Prep_tasks = models.ManyToManyField(Component_Prep_Task, help_text = "Select \
                                      the component prep tasks \
@@ -384,7 +385,9 @@ class Part(models.Model):
                                                 tasks",
                                          blank = True)
     pub_date = models.DateTimeField("time published", auto_now=True)
-    priority = models.IntegerField(null=True, default = 30)
+    priority = models.IntegerField(null=True, default = 30, help_text = "\
+                                            Select the nessessary priority\
+                                                ")
     
     archive = models.BooleanField(null = True, default=False)
     def __str__(self):
@@ -417,10 +420,10 @@ class HeaderPlateTaskInstance(models.Model):
     """Model representing the multiple instances of a header plate task"""
     task = models.CharField(max_length = 100, null = True)
     part = models.ForeignKey("Part", on_delete = models.CASCADE,null = True)
-    TASK_STATUS = (("a","Not Started"),("h", "On Hold"),("z", "Complete"),
-                   ("b", "In Progress"))
+    TASK_STATUS = ((2,"Not Started"),(3, "On Hold"),(10, "Complete"),
+                   (1, "In Progress"))
     
-    status = models.CharField(max_length = 1, choices= TASK_STATUS, 
+    status = models.IntegerField(choices= TASK_STATUS, 
                               blank = False, default = "a", help_text = "Set \
                                   task completion status")
     #Create Time String and decimal fields
@@ -458,7 +461,7 @@ def CreateNewFormingTaskInstance(sender, **kwargs):
        try:
            FormingTaskInstance.objects.get(task= task, part=obj)
        except:
-           FormingTaskInstance.objects.create(task= task, part=obj, status="a", createtime = Created_Time, createtimenum = time.time())
+           FormingTaskInstance.objects.create(task= task, part=obj, status=2, createtime = Created_Time, createtimenum = time.time())
            
     #Delete excess tasks if requested on update
     RequestedTaskList = Formingtask_list
@@ -487,7 +490,7 @@ def CreateNewCPTaskInstance(sender, **kwargs):
        try:
            ComponentPrepTaskInstance.objects.get(task= task, part=obj)
        except:
-           ComponentPrepTaskInstance.objects.create(task= task, part=obj, status="a", createtime = Created_Time, createtimenum = time.time())
+           ComponentPrepTaskInstance.objects.create(task= task, part=obj, status=2, createtime = Created_Time, createtimenum = time.time())
            
     #Delete excess tasks if requested on update
     RequestedTaskList = CPtask_list
@@ -517,7 +520,7 @@ def CreateNewStackingTaskInstance(sender, **kwargs):
         try:
             StackingTaskInstance.objects.get(task = task, part = obj)
         except:
-            StackingTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
+            StackingTaskInstance.objects.create(task = task, part = obj, status = 2, createtime = Created_Time, createtimenum = time.time())
             
     #Delete excess tasks if requested on update
     RequestedTaskList = Stacktask_list
@@ -545,7 +548,7 @@ def CreateNewHeaderPlateTaskInstance(sender, **kwargs):
         try:
             HeaderPlateTaskInstance.objects.get(task = task, part = obj)
         except:
-            HeaderPlateTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
+            HeaderPlateTaskInstance.objects.create(task = task, part = obj, status = 2, createtime = Created_Time, createtimenum = time.time())
     
     #Delete excess tasks if requested on update
     RequestedTaskList = HPtask_list
@@ -573,7 +576,7 @@ def CreateNewPitchingTaskInstance(sender, **kwargs):
         try:
             PitchingTaskInstance.objects.get(task = task, part = obj)
         except:
-            PitchingTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
+            PitchingTaskInstance.objects.create(task = task, part = obj, status = 2, createtime = Created_Time, createtimenum = time.time())
     
     #Delete excess tasks if requested on update
     RequestedTaskList = Pitchingtask_list
@@ -601,7 +604,7 @@ def CreateNewWireCutTaskInstance(sender, **kwargs):
         try:
             WireCutTaskInstance.objects.get(task = task, part = obj)
         except:
-            WireCutTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
+            WireCutTaskInstance.objects.create(task = task, part = obj, status = 2, createtime = Created_Time, createtimenum = time.time())
             
     #Delete excess tasks if requested on update
     RequestedTaskList = WireCuttask_list
@@ -629,7 +632,7 @@ def CreateNewDeburrTaskInstance(sender, **kwargs):
         try:
             DeburrTaskInstance.objects.get(task = task, part = obj)
         except:
-            DeburrTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
+            DeburrTaskInstance.objects.create(task = task, part = obj, status = 2, createtime = Created_Time, createtimenum = time.time())
             
     #Delete excess tasks if requested on update
     RequestedTaskList = Deburrtask_list
@@ -657,7 +660,7 @@ def CreateNewPlatingTaskInstance(sender, **kwargs):
         try:
             PlatingTaskInstance.objects.get(task = task, part = obj)
         except:
-            PlatingTaskInstance.objects.create(task = task, part = obj, status = "a", createtime = Created_Time, createtimenum = time.time())
+            PlatingTaskInstance.objects.create(task = task, part = obj, status = 2, createtime = Created_Time, createtimenum = time.time())
             
     #Delete excess tasks if requested on update
     RequestedTaskList = Platingtask_list

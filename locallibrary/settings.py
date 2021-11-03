@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #added new application
     'catalog.apps.CatalogConfig', 
     'django_tables2',
+    'embed_video',
 ]
 
 MIDDLEWARE = [

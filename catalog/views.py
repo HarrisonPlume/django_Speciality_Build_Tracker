@@ -7,7 +7,7 @@ from .models import ComponentPrepTaskInstance, Part, StackingTaskInstance,\
         Pitching_Task, Header_Plate_Task, Deburr_Task, Plating_Task
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.template.defaulttags import register
@@ -20,19 +20,23 @@ from django import forms
 from django.utils import timezone
 import datetime, time
 from .signals import Part_Saved
+from django.shortcuts import render, redirect
+from django.http.response import StreamingHttpResponse
+from catalog.camera import MaskDetect
+import time
 
 def index(request):
     """View for the home page of the website"""
     
     #Generate counts for soe of the main objetcs
-    num_CpTasks = ComponentPrepTaskInstance.objects.exclude(status__exact="z").count()
-    num_Forming_Tasks = FormingTaskInstance.objects.exclude(status__exact="z").count()
-    num_Stacking_Tasks = StackingTaskInstance.objects.exclude(status__exact="z").count()
-    num_Wire_Cut_Tasks = WireCutTaskInstance.objects.exclude(status__exact="z").count()
-    num_Pitching_Tasks = PitchingTaskInstance.objects.exclude(status__exact="z").count()
-    num_HP_Tasks = HeaderPlateTaskInstance.objects.exclude(status__exact="z").count()
-    num_Deburr_Tasks = DeburrTaskInstance.objects.exclude(status__exact="z").count()
-    num_Plating_Tasks = PlatingTaskInstance.objects.exclude(status__exact ="z").count()
+    num_CpTasks = ComponentPrepTaskInstance.objects.exclude(status__exact=10).count()
+    num_Forming_Tasks = FormingTaskInstance.objects.exclude(status__exact=10).count()
+    num_Stacking_Tasks = StackingTaskInstance.objects.exclude(status__exact=10).count()
+    num_Wire_Cut_Tasks = WireCutTaskInstance.objects.exclude(status__exact=10).count()
+    num_Pitching_Tasks = PitchingTaskInstance.objects.exclude(status__exact=10).count()
+    num_HP_Tasks = HeaderPlateTaskInstance.objects.exclude(status__exact=10).count()
+    num_Deburr_Tasks = DeburrTaskInstance.objects.exclude(status__exact=10).count()
+    num_Plating_Tasks = PlatingTaskInstance.objects.exclude(status__exact =10).count()
     num_parts = Part.objects.filter(archive__exact = False).count()
     
     #Number of site visits by the current user    
@@ -50,6 +54,48 @@ def index(request):
     
     #Render the HTML template index.html with the data in the context vairable
     return render(request, "index.html", context = context)
+
+
+
+def ScanResult(request):
+    """ Page For Scanning Work Orders"""  
+    print("Yeet")
+    print(barcodestr)
+    context = {"Barcode": barcodestr}
+    
+    return render(request, "ScanDisplay.html", context = context)
+
+def WorkOrderScan(request):
+    """ Page For Scanning Work Orders"""
+    barcode = next(gen(MaskDetect()))
+    barcode = barcode[-30:]
+    barcode = barcode.decode("utf-8")
+    barcode = barcode.split("_")[1]
+    
+    context = {"Barcode": barcode}
+    
+    return render(request, "WorkOrderScan.html", context = context)
+
+
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        barcode = barcode = camera.get_barcode()
+        if barcode.decode("utf-8") != "_No Barcode Currently Scanned":
+            global barcodestr
+            barcodestr = barcode.decode("utf-8")
+            print(barcodestr)
+            break
+            #return HttpResponseRedirect(reverse('index'))
+        yield (b'--frame\r\n'
+				b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n'+barcode)
+        
+    
+        
+
+def mask_feed(request):
+    return StreamingHttpResponse(gen(MaskDetect()),
+					content_type='multipart/x-mixed-replace; boundary=frame')
 
 
 class PartDashboardView(generic.ListView):
@@ -408,42 +454,42 @@ def FinalChecks(request):
         cptasks = ComponentPrepTaskInstance.objects.filter(part__title = part.title)
         for task in cptasks:
             if task.part.serial == part.serial:
-                if task.status != "z":
+                if task.status != 10:
                     CompleteDict[Partkey]= task.task
         stackingtasks = StackingTaskInstance.objects.filter(part__title = part.title)
         for task in stackingtasks:
             if task.part.serial == part.serial:
-                if task.status != "z":
+                if task.status != 10:
                     CompleteDict[Partkey]= task.task      
         formingtasks = FormingTaskInstance.objects.filter(part__title = part.title)
         for task in formingtasks:
             if task.part.serial == part.serial:
-                if task.status != "z":
+                if task.status != 10:
                     CompleteDict[Partkey]= task.task  
         WCtasks = WireCutTaskInstance.objects.filter(part__title = part.title)
         for task in WCtasks:
             if task.part.serial == part.serial:
-                if task.status != "z":
+                if task.status != 10:
                     CompleteDict[Partkey]= task.task 
         Pitchingtasks = PitchingTaskInstance.objects.filter(part__title = part.title)
         for task in WCtasks:
             if task.part.serial == part.serial:
-                if task.status != "z":
+                if task.status != 10:
                     CompleteDict[Partkey]= task.task 
         HPtasks = HeaderPlateTaskInstance.objects.filter(part__title = part.title)
         for task in HPtasks:
             if task.part.serial == part.serial:
-                if task.status != "z":
+                if task.status != 10:
                     CompleteDict[Partkey]= task.task 
         Deburrtasks = DeburrTaskInstance.objects.filter(part__title = part.title)
         for task in Deburrtasks:
             if task.part.serial == part.serial:
-                if task.status != "z":
+                if task.status != 10:
                     CompleteDict[Partkey]= task.task
         Platingtasks = PlatingTaskInstance.objects.filter(part__title = part.title)
         for task in Platingtasks:
             if task.part.serial == part.serial:
-                if task.status != "z":
+                if task.status != 10:
                     CompleteDict[Partkey]= task.task
                     
 
@@ -519,10 +565,10 @@ class PartDetailView(generic.DetailView):
         for task in ComponentPrepTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      Completedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      Completedict[task.part] = "Not Complete"
                      
         #Stacking Tasks for each individual part
@@ -531,10 +577,10 @@ class PartDetailView(generic.DetailView):
         for task in StackingTaskInstance.objects.all():
              if task.part != partst:
                  partst = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      StackingCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      StackingCompletedict[task.part] = "Not Complete"
         #Forming Tasks for each individual part
         partfo = None
@@ -542,10 +588,10 @@ class PartDetailView(generic.DetailView):
         for task in FormingTaskInstance.objects.all():
              if task.part != partfo:
                  partfo = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      FormingCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      FormingCompletedict[task.part] = "Not Complete"
                      
         #Wire Cut Tasks for each individual part
@@ -554,10 +600,10 @@ class PartDetailView(generic.DetailView):
         for task in WireCutTaskInstance.objects.all():
              if task.part != partwc:
                  partwc = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      WCCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      WCCompletedict[task.part] = "Not Complete" 
                      
         #Pitching Tasks for each individual part
@@ -566,10 +612,10 @@ class PartDetailView(generic.DetailView):
         for task in PitchingTaskInstance.objects.all():
              if task.part != partpt:
                  partpt = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      PitchCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      PitchCompletedict[task.part] = "Not Complete" 
                      
         #Hp Machining Tasks for each individual part
@@ -578,10 +624,10 @@ class PartDetailView(generic.DetailView):
         for task in HeaderPlateTaskInstance.objects.all():
              if task.part != parthp:
                  parthp = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      HPCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      HPCompletedict[task.part] = "Not Complete"
                      
         #Deburr Tasks for each individual part
@@ -590,10 +636,10 @@ class PartDetailView(generic.DetailView):
         for task in DeburrTaskInstance.objects.all():
              if task.part != partdb:
                  partdb = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      DeburrCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      DeburrCompletedict[task.part] = "Not Complete"
                      
         #Plating Tasks for each individual part
@@ -602,10 +648,10 @@ class PartDetailView(generic.DetailView):
         for task in PlatingTaskInstance.objects.all():
              if task.part != partpl:
                  partpl = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      PlatingCompletedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      PlatingCompletedict[task.part] = "Not Complete"
         context["component_prep_tasks_not_completed"] = Completedict
         context["stacking_tasks_not_completed"] = StackingCompletedict
@@ -692,16 +738,33 @@ class CpTaskListView(generic.ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        num_tasks_not_started = ComponentPrepTaskInstance.objects.filter(status__exact="a").count()
-        tasks_remaining = ComponentPrepTaskInstance.objects.exclude(status__exact="z").count()
-        tasks_complete = ComponentPrepTaskInstance.objects.filter(status__exact="z", part__archive__exact = False).count()
-        tasks_on_hold = ComponentPrepTaskInstance.objects.filter(status__exact="h").count()
+        
+        num_tasks_not_started = ComponentPrepTaskInstance.objects.filter(status__exact=2, part__archive__exact = False).count()
+        tasks_remaining = ComponentPrepTaskInstance.objects.exclude(status__exact=10,part__archive__exact = False).count()
+        tasks_complete_count = ComponentPrepTaskInstance.objects.filter(status__exact=10, part__archive__exact = False).count()
+        tasks_complete = ComponentPrepTaskInstance.objects.filter(status__exact=10, part__archive__exact = False)
+        tasks_on_hold = ComponentPrepTaskInstance.objects.filter(status__exact=3,part__archive__exact = False).count()
         not_archived_tasks = ComponentPrepTaskInstance.objects.exclude(part__archive__exact = True).count()
+        tasks_in_progress = ComponentPrepTaskInstance.objects.filter(status__exact=1,part__archive__exact = False)
+        tasks_in_progress_count = ComponentPrepTaskInstance.objects.filter(status__exact=1,part__archive__exact = False).count()
+        
+        tasks_avaliable = ComponentPrepTaskInstance.objects.filter(status__exact=2,part__archive__exact = False)
+        tasks_avaliable_count = ComponentPrepTaskInstance.objects.filter(status__exact=2,part__archive__exact = False).count()
+        
+        tasks_on_hold = ComponentPrepTaskInstance.objects.filter(status__exact=3,part__archive__exact = False)
+        tasks_on_hold_count = ComponentPrepTaskInstance.objects.filter(status__exact=3, part__archive__exact = False).count()
+        
+        context["tasks_on_hold_count"] = tasks_on_hold_count
+        context["tasks_on_hold"] = tasks_on_hold      
+        context["tasks_avaliable_count"] = tasks_avaliable_count
+        context["tasks_avaliable"] = tasks_avaliable
+        context["tasks_in_progress_count"] = tasks_in_progress_count
+        context["tasks_in_progress"] = tasks_in_progress
         context["not_archived_tasks"] = not_archived_tasks
         context["num_tasks_not_started"] = num_tasks_not_started
         context["tasks_remaining"] = tasks_remaining
         context["tasks_complete"] = tasks_complete
-        context["tasks_on_hold"] = tasks_on_hold
+        context["tasks_complete_count"] = tasks_complete_count
         return context
     
 class CPTaskDetailView(generic.DetailView):
@@ -720,7 +783,7 @@ def StartCPTask(request, pk):
     Task = ComponentPrepTaskInstance.objects.get(pk = pk)
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
-    Task.status = "b"
+    Task.status = 1
     Task.starttime = str_Time
     Task.starttimenum = time.time()
     start = float(Task.createtimenum)
@@ -741,7 +804,7 @@ def FinishCPTask(request, pk):
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
     Task.finishtime = str_Time
-    Task.status = "z"
+    Task.status = 10
     Task.finishtimenum = time.time()
     start = float(Task.starttimenum)
     end = time.time()
@@ -765,19 +828,39 @@ class StackingTaskListView(generic.ListView):
     
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
-         num_tasks_not_started = StackingTaskInstance.objects.filter(status__exact="a").count()
-         tasks_remaining = StackingTaskInstance.objects.exclude(status__exact="z").count()
+         num_tasks_not_started = StackingTaskInstance.objects.filter(status__exact=2, part__archive__exact = False).count()
+         tasks_remaining = StackingTaskInstance.objects.exclude(status__exact=10,part__archive__exact = False).count()
+         tasks_complete_count = StackingTaskInstance.objects.filter(status__exact=10, part__archive__exact = False).count()
+         tasks_complete = StackingTaskInstance.objects.filter(status__exact=10, part__archive__exact = False)
+         tasks_on_hold = StackingTaskInstance.objects.filter(status__exact=3,part__archive__exact = False).count()
+         not_archived_tasks = StackingTaskInstance.objects.exclude(part__archive__exact = True).count()
+         tasks_in_progress = StackingTaskInstance.objects.filter(status__exact=1,part__archive__exact = False)
+         tasks_in_progress_count = StackingTaskInstance.objects.filter(status__exact=1,part__archive__exact = False).count()
+            
+         tasks_avaliable = StackingTaskInstance.objects.filter(status__exact=2,part__archive__exact = False)
+         tasks_avaliable_count = StackingTaskInstance.objects.filter(status__exact=2,part__archive__exact = False).count()
+            
+         tasks_on_hold = StackingTaskInstance.objects.filter(status__exact=3,part__archive__exact = False)
+         tasks_on_hold_count = StackingTaskInstance.objects.filter(status__exact=3, part__archive__exact = False).count()
          part = None
          Completedict = {}
          for task in ComponentPrepTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      Completedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      Completedict[task.part] = "Not Complete"
-         not_archived_tasks = StackingTaskInstance.objects.exclude(part__archive__exact = True).count()
+         
+         context["tasks_on_hold_count"] = tasks_on_hold_count
+         context["tasks_on_hold"] = tasks_on_hold      
+         context["tasks_avaliable_count"] = tasks_avaliable_count
+         context["tasks_avaliable"] = tasks_avaliable
+         context["tasks_in_progress_count"] = tasks_in_progress_count
+         context["tasks_in_progress"] = tasks_in_progress
+         context["tasks_complete"] = tasks_complete
+         context["tasks_complete_count"] = tasks_complete_count
          context["not_archived_tasks"] = not_archived_tasks                
          context["component_prep_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -794,10 +877,10 @@ class StackingTaskDetailView(generic.DetailView):
         for task in ComponentPrepTaskInstance.objects.all():
             if task.part != part:
                 part = task.part
-                if task.status != "z":
+                if task.status != 10:
                     Completedict[task.part] = "Not Complete"
             else:
-                if task.status != "z":
+                if task.status != 10:
                     Completedict[task.part] = "Not Complete"
         context["component_prep_tasks_not_completed"] = Completedict
         return context
@@ -815,7 +898,7 @@ def StartStackTask(request, pk):
     Task = StackingTaskInstance.objects.get(pk = pk)
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
-    Task.status = "b"
+    Task.status = 1
     Task.starttime = str_Time
     Task.starttimenum = time.time()
     start = float(Task.createtimenum)
@@ -836,7 +919,7 @@ def FinishStackTask(request, pk):
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
     Task.finishtime = str_Time
-    Task.status = "z"
+    Task.status = 10
     Task.finishtimenum = time.time()
     start = float(Task.starttimenum)
     end = time.time()
@@ -861,14 +944,35 @@ class FormingTaskInstanceListView(generic.ListView):
     paginate_by = 10
     
     def get_context_data(self, **kwargs):
-         context = super().get_context_data(**kwargs)
-         tasks_remaining = FormingTaskInstance.objects.exclude(status__exact="z").count()
-         num_tasks_not_started = FormingTaskInstance.objects.filter(status__exact="a").count()
-         not_archived_tasks = FormingTaskInstance.objects.exclude(part__archive__exact = True).count()
-         context["not_archived_tasks"] = not_archived_tasks
-         context["num_tasks_not_started"] = num_tasks_not_started
-         context["tasks_remaining"] = tasks_remaining
-         return context 
+        context = super().get_context_data(**kwargs)
+         
+        num_tasks_not_started = FormingTaskInstance.objects.filter(status__exact=2).count()
+        tasks_remaining = FormingTaskInstance.objects.exclude(status__exact=10).count()
+        tasks_complete_count = FormingTaskInstance.objects.filter(status__exact=10, part__archive__exact = False).count()
+        tasks_complete = FormingTaskInstance.objects.filter(status__exact=10, part__archive__exact = False)
+        tasks_on_hold = FormingTaskInstance.objects.filter(status__exact=3).count()
+        not_archived_tasks = FormingTaskInstance.objects.exclude(part__archive__exact = True).count()
+        tasks_in_progress = FormingTaskInstance.objects.filter(status__exact=1).exclude(part__archive__exact = True)
+        tasks_in_progress_count = FormingTaskInstance.objects.filter(status__exact=1).exclude(part__archive__exact = True).count()
+        
+        tasks_avaliable = FormingTaskInstance.objects.filter(status__exact=2).exclude(part__archive__exact = True)
+        tasks_avaliable_count = FormingTaskInstance.objects.filter(status__exact=2).exclude(part__archive__exact = True).count()
+        
+        tasks_on_hold = FormingTaskInstance.objects.filter(status__exact=3).exclude(part__archive__exact = True)
+        tasks_on_hold_count = FormingTaskInstance.objects.filter(status__exact=3).exclude(part__archive__exact = True).count()
+        
+        context["tasks_on_hold_count"] = tasks_on_hold_count
+        context["tasks_on_hold"] = tasks_on_hold      
+        context["tasks_avaliable_count"] = tasks_avaliable_count
+        context["tasks_avaliable"] = tasks_avaliable
+        context["tasks_in_progress_count"] = tasks_in_progress_count
+        context["tasks_in_progress"] = tasks_in_progress
+        context["not_archived_tasks"] = not_archived_tasks
+        context["num_tasks_not_started"] = num_tasks_not_started
+        context["tasks_remaining"] = tasks_remaining
+        context["tasks_complete"] = tasks_complete
+        context["tasks_complete_count"] = tasks_complete_count
+        return context 
      
 class FormingTaskInstanceDetailView(generic.DetailView):
     model = FormingTaskInstance
@@ -886,7 +990,7 @@ def StartFormingTask(request, pk):
     Task = FormingTaskInstance.objects.get(pk = pk)
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
-    Task.status = "b"
+    Task.status = 1
     Task.starttime = str_Time
     Task.starttimenum = time.time()
     start = float(Task.createtimenum)
@@ -907,7 +1011,7 @@ def FinishFormingTask(request, pk):
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
     Task.finishtime = str_Time
-    Task.status = "z"
+    Task.status = 10
     Task.finishtimenum = time.time()
     start = float(Task.starttimenum)
     end = time.time()
@@ -931,19 +1035,40 @@ class HeaderPlateTaskInstanceListView(generic.ListView):
     
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
-         tasks_remaining = HeaderPlateTaskInstance.objects.exclude(status__exact="z").count()
-         num_tasks_not_started = HeaderPlateTaskInstance.objects.filter(status__exact="a").count()
+         tasks_remaining = HeaderPlateTaskInstance.objects.exclude(status__exact=10).count()
+         num_tasks_not_started = HeaderPlateTaskInstance.objects.filter(status__exact=2).count()
          part = None
          Completedict = {}
          for task in PitchingTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      Completedict[task.part] = "Not Complete"
              else:
-                 if task.status != "z":
+                 if task.status != 10:
                     Completedict[task.part] = "Not Complete"
+                    
+         tasks_complete_count = HeaderPlateTaskInstance.objects.filter(status__exact=10, part__archive__exact = False).count()
+         tasks_complete = HeaderPlateTaskInstance.objects.filter(status__exact=10, part__archive__exact = False)
+         tasks_on_hold = HeaderPlateTaskInstance.objects.filter(status__exact=3,part__archive__exact = False).count()
          not_archived_tasks = HeaderPlateTaskInstance.objects.exclude(part__archive__exact = True).count()
+         tasks_in_progress = HeaderPlateTaskInstance.objects.filter(status__exact=1,part__archive__exact = False)
+         tasks_in_progress_count = HeaderPlateTaskInstance.objects.filter(status__exact=1,part__archive__exact = False).count()
+         
+         tasks_avaliable = HeaderPlateTaskInstance.objects.filter(status__exact=2,part__archive__exact = False)
+         tasks_avaliable_count = HeaderPlateTaskInstance.objects.filter(status__exact=2,part__archive__exact = False).count()
+         
+         tasks_on_hold = HeaderPlateTaskInstance.objects.filter(status__exact=3,part__archive__exact = False)
+         tasks_on_hold_count = HeaderPlateTaskInstance.objects.filter(status__exact=3, part__archive__exact = False).count()
+         
+         context["tasks_complete"] = tasks_complete
+         context["tasks_complete_count"] = tasks_complete_count
+         context["tasks_on_hold_count"] = tasks_on_hold_count
+         context["tasks_on_hold"] = tasks_on_hold      
+         context["tasks_avaliable_count"] = tasks_avaliable_count
+         context["tasks_avaliable"] = tasks_avaliable
+         context["tasks_in_progress_count"] = tasks_in_progress_count
+         context["tasks_in_progress"] = tasks_in_progress
          context["not_archived_tasks"] = not_archived_tasks     
          context["pitching_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -966,7 +1091,7 @@ def StartHeaderPlateTask(request, pk):
     Task = HeaderPlateTaskInstance.objects.get(pk = pk)
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
-    Task.status = "b"
+    Task.status = 1
     Task.starttime = str_Time
     Task.starttimenum = time.time()
     start = float(Task.createtimenum)
@@ -987,7 +1112,7 @@ def FinishHeaderPlateTask(request, pk):
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
     Task.finishtime = str_Time
-    Task.status = "z"
+    Task.status = 10
     Task.finishtimenum = time.time()
     start = float(Task.starttimenum)
     end = time.time()
@@ -1011,19 +1136,39 @@ class PitchingTaskListView(generic.ListView):
     
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
-         num_tasks_not_started = PitchingTaskInstance.objects.filter(status__exact="a").count()
-         tasks_remaining = PitchingTaskInstance.objects.exclude(status__exact="z").count()
+         num_tasks_not_started = PitchingTaskInstance.objects.filter(status__exact=2).count()
+         tasks_remaining = PitchingTaskInstance.objects.exclude(status__exact=1).count()
          part = None
          Completedict = {}
          for task in WireCutTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      Completedict[task.part] = "Not Complete"
              else:
-                 if task.status != "z":
+                 if task.status != 10:
                     Completedict[task.part] = "Not Complete"
+         tasks_complete_count = PitchingTaskInstance.objects.filter(status__exact=10, part__archive__exact = False).count()
+         tasks_complete = PitchingTaskInstance.objects.filter(status__exact=10, part__archive__exact = False)
+         tasks_on_hold = PitchingTaskInstance.objects.filter(status__exact=3,part__archive__exact = False).count()
          not_archived_tasks = PitchingTaskInstance.objects.exclude(part__archive__exact = True).count()
+         tasks_in_progress = PitchingTaskInstance.objects.filter(status__exact=1,part__archive__exact = False)
+         tasks_in_progress_count = PitchingTaskInstance.objects.filter(status__exact=1,part__archive__exact = False).count()
+         
+         tasks_avaliable = PitchingTaskInstance.objects.filter(status__exact=2,part__archive__exact = False)
+         tasks_avaliable_count = PitchingTaskInstance.objects.filter(status__exact=2,part__archive__exact = False).count()
+         
+         tasks_on_hold = PitchingTaskInstance.objects.filter(status__exact=3,part__archive__exact = False)
+         tasks_on_hold_count = PitchingTaskInstance.objects.filter(status__exact=3, part__archive__exact = False).count()
+         
+         context["tasks_complete"] = tasks_complete
+         context["tasks_complete_count"] = tasks_complete_count
+         context["tasks_on_hold_count"] = tasks_on_hold_count
+         context["tasks_on_hold"] = tasks_on_hold      
+         context["tasks_avaliable_count"] = tasks_avaliable_count
+         context["tasks_avaliable"] = tasks_avaliable
+         context["tasks_in_progress_count"] = tasks_in_progress_count
+         context["tasks_in_progress"] = tasks_in_progress
          context["not_archived_tasks"] = not_archived_tasks    
          context["wire_cut_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -1040,10 +1185,10 @@ class PitchingTaskDetailView(generic.DetailView):
         for task in WireCutTaskInstance.objects.all():
             if task.part != part:
                 part = task.part
-                if task.status != "z":
+                if task.status != 10:
                     Completedict[task.part] = "Not Complete"
             else:
-                if task.status != "z":
+                if task.status != 10:
                     Completedict[task.part] = "Not Complete"
         context["wire_cut_tasks_not_completed"] = Completedict
         return context
@@ -1061,7 +1206,7 @@ def StartPitchingTask(request, pk):
     Task = PitchingTaskInstance.objects.get(pk = pk)
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
-    Task.status = "b"
+    Task.status = 1
     Task.starttime = str_Time
     Task.starttimenum = time.time()
     start = float(Task.createtimenum)
@@ -1082,7 +1227,7 @@ def FinishPitchingTask(request, pk):
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
     Task.finishtime = str_Time
-    Task.status = "z"
+    Task.status = 10
     Task.finishtimenum = time.time()
     start = float(Task.starttimenum)
     end = time.time()
@@ -1107,19 +1252,41 @@ class WireCutTaskListView(generic.ListView):
     
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
-         num_tasks_not_started = WireCutTaskInstance.objects.filter(status__exact="a").count()
-         tasks_remaining = WireCutTaskInstance.objects.exclude(status__exact="z").count()
+         num_tasks_not_started = WireCutTaskInstance.objects.filter(status__exact=2, part__archive__exact = False).count()
+         tasks_remaining = WireCutTaskInstance.objects.exclude(status__exact=10, part__archive__exact = False).count()
          part = None
          Completedict = {}
          for task in StackingTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      Completedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      Completedict[task.part] = "Not Complete"
+                     
+                     
+         tasks_complete_count = WireCutTaskInstance.objects.filter(status__exact=10, part__archive__exact = False).count()
+         tasks_complete = WireCutTaskInstance.objects.filter(status__exact=10, part__archive__exact = False)
+         tasks_on_hold = WireCutTaskInstance.objects.filter(status__exact=3,part__archive__exact = False).count()
          not_archived_tasks = WireCutTaskInstance.objects.exclude(part__archive__exact = True).count()
+         tasks_in_progress = WireCutTaskInstance.objects.filter(status__exact=1,part__archive__exact = False)
+         tasks_in_progress_count = WireCutTaskInstance.objects.filter(status__exact=1,part__archive__exact = False).count()
+         
+         tasks_avaliable = WireCutTaskInstance.objects.filter(status__exact=2,part__archive__exact = False)
+         tasks_avaliable_count = WireCutTaskInstance.objects.filter(status__exact=2,part__archive__exact = False).count()
+         
+         tasks_on_hold = WireCutTaskInstance.objects.filter(status__exact=3,part__archive__exact = False)
+         tasks_on_hold_count = WireCutTaskInstance.objects.filter(status__exact=3, part__archive__exact = False).count()
+         
+         context["tasks_complete"] = tasks_complete
+         context["tasks_complete_count"] = tasks_complete_count
+         context["tasks_on_hold_count"] = tasks_on_hold_count
+         context["tasks_on_hold"] = tasks_on_hold      
+         context["tasks_avaliable_count"] = tasks_avaliable_count
+         context["tasks_avaliable"] = tasks_avaliable
+         context["tasks_in_progress_count"] = tasks_in_progress_count
+         context["tasks_in_progress"] = tasks_in_progress
          context["not_archived_tasks"] = not_archived_tasks  
          context["stacking_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -1136,10 +1303,10 @@ class WireCutTaskDetailView(generic.DetailView):
         for task in StackingTaskInstance.objects.all():
             if task.part != part:
                 part = task.part
-                if task.status != "z":
+                if task.status != 10:
                     Completedict[task.part] = "Not Complete"
             else:
-                if task.status != "z":
+                if task.status != 10:
                     Completedict[task.part] = "Not Complete"
         context["stacking_tasks_not_completed"] = Completedict
         return context
@@ -1157,7 +1324,7 @@ def StartWireCutTask(request, pk):
     Task = WireCutTaskInstance.objects.get(pk = pk)
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
-    Task.status = "b"
+    Task.status = 1
     Task.starttime = str_Time
     Task.starttimenum = time.time()
     start = float(Task.createtimenum)
@@ -1178,7 +1345,7 @@ def FinishWireCutTask(request, pk):
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
     Task.finishtime = str_Time
-    Task.status = "z"
+    Task.status = 10
     Task.finishtimenum = time.time()
     start = float(Task.starttimenum)
     end = time.time()
@@ -1203,19 +1370,41 @@ class DeburrTaskListView(generic.ListView):
     
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
-         num_tasks_not_started = DeburrTaskInstance.objects.filter(status__exact="a").count()
-         tasks_remaining = DeburrTaskInstance.objects.exclude(status__exact="z").count()
+         num_tasks_not_started = DeburrTaskInstance.objects.filter(status__exact=2, part__archive__exact = False).count()
+         tasks_remaining = DeburrTaskInstance.objects.exclude(status__exact=10, part__archive__exact = False).count()
          part = None
          Completedict = {}
          for task in HeaderPlateTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      Completedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      Completedict[task.part] = "Not Complete"
+                     
+                     
          not_archived_tasks = DeburrTaskInstance.objects.exclude(part__archive__exact = True).count()
+         tasks_complete_count = DeburrTaskInstance.objects.filter(status__exact=10, part__archive__exact = False).count()
+         tasks_complete = DeburrTaskInstance.objects.filter(status__exact=10, part__archive__exact = False)
+         tasks_on_hold = DeburrTaskInstance.objects.filter(status__exact=3,part__archive__exact = False).count()
+         tasks_in_progress = DeburrTaskInstance.objects.filter(status__exact=1,part__archive__exact = False)
+         tasks_in_progress_count = DeburrTaskInstance.objects.filter(status__exact=1,part__archive__exact = False).count()
+         
+         tasks_avaliable = DeburrTaskInstance.objects.filter(status__exact=2,part__archive__exact = False)
+         tasks_avaliable_count = DeburrTaskInstance.objects.filter(status__exact=2,part__archive__exact = False).count()
+         
+         tasks_on_hold = DeburrTaskInstance.objects.filter(status__exact=3,part__archive__exact = False)
+         tasks_on_hold_count = DeburrTaskInstance.objects.filter(status__exact=3, part__archive__exact = False).count()
+         
+         context["tasks_complete"] = tasks_complete
+         context["tasks_complete_count"] = tasks_complete_count
+         context["tasks_on_hold_count"] = tasks_on_hold_count
+         context["tasks_on_hold"] = tasks_on_hold      
+         context["tasks_avaliable_count"] = tasks_avaliable_count
+         context["tasks_avaliable"] = tasks_avaliable
+         context["tasks_in_progress_count"] = tasks_in_progress_count
+         context["tasks_in_progress"] = tasks_in_progress
          context["not_archived_tasks"] = not_archived_tasks  
          context["header_plate_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -1232,10 +1421,10 @@ class DeburrTaskDetailView(generic.DetailView):
         for task in HeaderPlateTaskInstance.objects.all():
             if task.part != part:
                 part = task.part
-                if task.status != "z":
+                if task.status != 10:
                     Completedict[task.part] = "Not Complete"
             else:
-                if task.status != "z":
+                if task.status != 10:
                     Completedict[task.part] = "Not Complete"
         context["header_plate_tasks_not_completed"] = Completedict
         return context
@@ -1253,7 +1442,7 @@ def StartDeburrTask(request, pk):
     Task = DeburrTaskInstance.objects.get(pk = pk)
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
-    Task.status = "b"
+    Task.status = 1
     Task.starttime = str_Time
     Task.starttimenum = time.time()
     start = float(Task.createtimenum)
@@ -1274,7 +1463,7 @@ def FinishDeburrTask(request, pk):
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
     Task.finishtime = str_Time
-    Task.status = "z"
+    Task.status = 10
     Task.finishtimenum = time.time()
     start = float(Task.starttimenum)
     end = time.time()
@@ -1298,19 +1487,40 @@ class PlatingTaskListView(generic.ListView):
     
     def get_context_data(self, **kwargs):
          context = super().get_context_data(**kwargs)
-         num_tasks_not_started = PlatingTaskInstance.objects.filter(status__exact="a").count()
-         tasks_remaining = PlatingTaskInstance.objects.exclude(status__exact="z").count()
+         num_tasks_not_started = PlatingTaskInstance.objects.filter(status__exact=2, part__archive__exact = False).count()
+         tasks_remaining = PlatingTaskInstance.objects.exclude(status__exact=10, part__archive__exact = False).count()
          part = None
          Completedict = {}
          for task in DeburrTaskInstance.objects.all():
              if task.part != part:
                  part = task.part
-                 if task.status != "z":
+                 if task.status != 10:
                      Completedict[task.part] = "Not Complete"
              else:
-                if task.status != "z":
+                if task.status != 10:
                      Completedict[task.part] = "Not Complete"
+                     
          not_archived_tasks = PlatingTaskInstance.objects.exclude(part__archive__exact = True).count()
+         tasks_complete_count = PlatingTaskInstance.objects.filter(status__exact=10, part__archive__exact = False).count()
+         tasks_complete = PlatingTaskInstance.objects.filter(status__exact=10, part__archive__exact = False)
+         tasks_on_hold = PlatingTaskInstance.objects.filter(status__exact=3,part__archive__exact = False).count()
+         tasks_in_progress = PlatingTaskInstance.objects.filter(status__exact=1,part__archive__exact = False)
+         tasks_in_progress_count = PlatingTaskInstance.objects.filter(status__exact=1,part__archive__exact = False).count()
+         
+         tasks_avaliable = PlatingTaskInstance.objects.filter(status__exact=2,part__archive__exact = False)
+         tasks_avaliable_count = PlatingTaskInstance.objects.filter(status__exact=2,part__archive__exact = False).count()
+         
+         tasks_on_hold = PlatingTaskInstance.objects.filter(status__exact=3,part__archive__exact = False)
+         tasks_on_hold_count = PlatingTaskInstance.objects.filter(status__exact=3, part__archive__exact = False).count()
+         
+         context["tasks_complete"] = tasks_complete
+         context["tasks_complete_count"] = tasks_complete_count
+         context["tasks_on_hold_count"] = tasks_on_hold_count
+         context["tasks_on_hold"] = tasks_on_hold      
+         context["tasks_avaliable_count"] = tasks_avaliable_count
+         context["tasks_avaliable"] = tasks_avaliable
+         context["tasks_in_progress_count"] = tasks_in_progress_count
+         context["tasks_in_progress"] = tasks_in_progress
          context["not_archived_tasks"] = not_archived_tasks
          context["deburr_tasks_not_completed"] = Completedict
          context["num_tasks_not_started"] = num_tasks_not_started
@@ -1327,10 +1537,10 @@ class PlatingTaskDetailView(generic.DetailView):
         for task in DeburrTaskInstance.objects.all():
             if task.part != part:
                 part = task.part
-                if task.status != "z":
+                if task.status != 10:
                     Completedict[task.part] = "Not Complete"
             else:
-                if task.status != "z":
+                if task.status != 10:
                     Completedict[task.part] = "Not Complete"
         context["deburr_tasks_not_completed"] = Completedict
         return context
@@ -1348,7 +1558,7 @@ def StartPlatingTask(request, pk):
     Task = PlatingTaskInstance.objects.get(pk = pk)
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
-    Task.status = "b"
+    Task.status = 1
     Task.starttime = str_Time
     Task.starttimenum = time.time()
     start = float(Task.createtimenum)
@@ -1369,7 +1579,7 @@ def FinishPlatingTask(request, pk):
     str_Time = datetime.datetime.now()
     str_Time = str_Time.strftime("%X")+" on the "+str_Time.strftime("%d/%m/%Y")
     Task.finishtime = str_Time
-    Task.status = "z"
+    Task.status = 10
     Task.finishtimenum = time.time()
     start = float(Task.starttimenum)
     end = time.time()

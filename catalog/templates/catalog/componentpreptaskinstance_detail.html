@@ -16,21 +16,21 @@ a.ex1 {color: #bababa;}
   ({{componentpreptaskinstance.part.team}}) Serial: {{componentpreptaskinstance.part.serial}}</a> - 
   {{componentpreptaskinstance}}</h1>
     <h4 style = "color: #bababa;">Status: </h4>
-   {% if componentpreptaskinstance.status == "z" %}
+   {% if componentpreptaskinstance.status == 10 %}
     <span title="Task Complete">
       <div class = "text-success">Task Complete <img src="{% static 'catalog/tick.png' %}" alt="Complete"></div>
        </span>
-    {% elif componentpreptaskinstance.status == "b" %}
+    {% elif componentpreptaskinstance.status == 1 %}
     <span title="Task in progress">
       <div class = "text-info">In Progress <img src="{% static 'catalog/alarm-clock--arrow.png' %}" alt="In Progress"></div>
        
        </span>
-    {% elif componentpreptaskinstance.status == "h" %}
+    {% elif componentpreptaskinstance.status == 3 %}
     <span title="Task on hold">
        <div class = "text-warning">Task On Hold <img src="{% static 'catalog/alarm-clock--exclamation.png' %}" alt="On hold"></div>
        
        </span>
-       {% elif componentpreptaskinstance.status == "a" %}
+       {% elif componentpreptaskinstance.status == 2 %}
        <span title="Task not yet started">
       <span class = "text-success">
       Avaliable To Start
@@ -64,13 +64,13 @@ a.ex1 {color: #bababa;}
     
       <hr>
      <h5 style = "color: #bababa;">Current options</h5>
-    {% if componentpreptaskinstance.status == 'z' %}
+    {% if componentpreptaskinstance.status == 10 %}
     <p>Task Complete</p> 
-    {% elif componentpreptaskinstance.status == 'h' %}
+    {% elif componentpreptaskinstance.status == 3 %}
     <p style = "color: #bababa;"><a href="{% url 'startcptask' pk=componentpreptaskinstance.pk %}">Resume Task</a></p>
-    {% elif componentpreptaskinstance.status == 'a' %}
+    {% elif componentpreptaskinstance.status == 2 %}
     <p style = "color: #bababa;"><a href="{% url 'startcptask' pk=componentpreptaskinstance.pk %}">Begin Task</a></p>
-    {% elif componentpreptaskinstance.status == 'b' %}
+    {% elif componentpreptaskinstance.status == 1 %}
     <p><a href="{% url 'finishcptask' pk=componentpreptaskinstance.pk %}">Finish Task</a></p>
     {% endif %}
 {% endblock %}
