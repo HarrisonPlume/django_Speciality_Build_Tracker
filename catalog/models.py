@@ -352,7 +352,11 @@ class Part(models.Model):
     """ Model represents a Part to be completed"""
     title = models.CharField(max_length = 100)
     serial = models.CharField(max_length = 20,null = True)
-    Work_Order = models.CharField(max_length = 6, null = True)
+    CORE_TYPES = (("Radiator", "Radiator"), ("Intercooler", "Intercooler"),
+                  ("Oilcooler", "Oilcooler"),("ERS cooler", "ERS cooler"))
+    core_type = models.CharField(choices = CORE_TYPES, max_length = 40, blank = False,
+                                 default = "Rad", help_text = "Set Core Type")
+    Work_Order = models.CharField(max_length = 6, null = True, help_text= "Define Work Order No")
     team = models.ForeignKey(Team, on_delete = models.RESTRICT, null = True)
     Component_Prep_tasks = models.ManyToManyField(Component_Prep_Task, help_text = "Select \
                                      the component prep tasks \

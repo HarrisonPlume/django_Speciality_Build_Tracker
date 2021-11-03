@@ -9,6 +9,8 @@ a.ex3 {color: #28a745}
 </style>
 </head>
 <h1>{{part}} ({{part.team}}) Serial: {{part.serial}} </h1>
+<h5>Work Order: {{part.Work_Order}} </h5>
+<h5>Core Type: {{part.core_type}} </h5>
 {% if part.archive != True %}
 {% if user.is_authenticated %}
 <hr>

@@ -8,6 +8,9 @@ from django.core.exceptions import ValidationError
 class PartForm(forms.ModelForm):
     title = forms.CharField(max_length=15, label="Part Number")
     serial = forms.CharField(max_length=20,label="Serials To Create")
+    core_type = forms.ChoiceField(label="Core Type", choices = (("Radiator", "Radiator"), ("Intercooler", "Intercooler"),
+                  ("Oilcooler", "Oilcooler"),("ERS cooler", "ERS cooler")))
+    Work_Order = forms.CharField(max_length = 20, label= "Work Order")
     team = forms.ModelChoiceField(queryset=Team.objects.all(), label = "Team")
     Component_Prep_tasks = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
                                                           queryset=Component_Prep_Task.objects.all(),
@@ -44,7 +47,7 @@ class PartForm(forms.ModelForm):
     
     class Meta:
         model = Part
-        fields = ("title","serial","team","Component_Prep_tasks",
+        fields = ("title","serial","core_type","Work_Order","team","Component_Prep_tasks",
                   "Stacking_tasks", "Forming_tasks", "Header_Plate_tasks",
                   "Pitching_tasks", "Wire_Cut_tasks", "Deburr_tasks",
                   "Plating_tasks")

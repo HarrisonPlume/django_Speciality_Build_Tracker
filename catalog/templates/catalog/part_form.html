@@ -15,6 +15,7 @@ font-weight: bold;
 }
 a.ex2{color: #bababa;}
 </style>
+<body>
 <h1>Create / Update Part</h1>
 <hr>
 <a class = "ex2" href = "{% url 'teamcreate' %}">
@@ -29,4 +30,229 @@ a.ex2{color: #bababa;}
     <br>
     <input type="submit" value="Submit">
   </form>
+
+  <script>
+  
+  <!-- Radiator Component Prep Tasks -->
+  document.getElementById("id_Component_Prep_tasks_0").checked = true;
+  document.getElementById("id_Component_Prep_tasks_1").checked = true;
+  document.getElementById("id_Component_Prep_tasks_2").checked = false;
+  document.getElementById("id_Component_Prep_tasks_3").checked = false;
+  document.getElementById("id_Component_Prep_tasks_4").checked = false;
+  document.getElementById("id_Component_Prep_tasks_5").checked = false;
+  document.getElementById("id_Component_Prep_tasks_6").checked = false;
+  document.getElementById("id_Component_Prep_tasks_7").checked = true;
+  document.getElementById("id_Component_Prep_tasks_8").checked = true;
+  
+  <!-- Radiator Stacking Tasks -->
+  document.getElementById("id_Stacking_tasks_0").checked = true;
+  document.getElementById("id_Stacking_tasks_1").checked = true;
+  document.getElementById("id_Stacking_tasks_2").checked = true;
+  
+  <!-- Radiator HP Forming Tasks -->
+  document.getElementById("id_Forming_tasks_0").checked = true;
+  
+   <!-- Radiator HP Machining -->
+  document.getElementById("id_Header_Plate_tasks_0").checked = true;
+  document.getElementById("id_Header_Plate_tasks_1").checked = true;
+  
+     <!-- Radiator Pitching Tasks -->
+  document.getElementById("id_Pitching_tasks_0").checked = true;
+  document.getElementById("id_Pitching_tasks_1").checked = true;
+  
+   <!-- Radiator Wire Cut Tasks -->
+  document.getElementById("id_Wire_Cut_tasks_0").checked = true;
+  
+     <!-- Radiator Deburr Tasks -->
+  document.getElementById("id_Deburr_tasks_0").checked = true;
+  document.getElementById("id_Deburr_tasks_1").checked = true;
+  
+  <!-- Radiator Deburr Tasks -->
+  document.getElementById("id_Plating_tasks_0").checked = true;
+  document.getElementById("id_Plating_tasks_1").checked = true;
+  document.getElementById("id_Plating_tasks_2").checked = true;
+  document.getElementById("id_Plating_tasks_3").checked = true;
+  
+  document.getElementById("id_core_type").onchange = (e) => {
+  
+  var coretype = document.getElementById("id_core_type");
+  var type = coretype.options[coretype.selectedIndex].text
+  if (type == "Radiator" ){  
+  
+  <!-- Radiator Component Prep Tasks -->
+  document.getElementById("id_Component_Prep_tasks_0").checked = true;
+  document.getElementById("id_Component_Prep_tasks_1").checked = true;
+  document.getElementById("id_Component_Prep_tasks_2").checked = false;
+  document.getElementById("id_Component_Prep_tasks_3").checked = false;
+  document.getElementById("id_Component_Prep_tasks_4").checked = false;
+  document.getElementById("id_Component_Prep_tasks_5").checked = false;
+  document.getElementById("id_Component_Prep_tasks_6").checked = false;
+  document.getElementById("id_Component_Prep_tasks_7").checked = true;
+  document.getElementById("id_Component_Prep_tasks_8").checked = true;
+  
+  <!-- Radiator Stacking Tasks -->
+  document.getElementById("id_Stacking_tasks_0").checked = true;
+  document.getElementById("id_Stacking_tasks_1").checked = true;
+  document.getElementById("id_Stacking_tasks_2").checked = true;
+  
+  <!-- Radiator HP Forming Tasks -->
+  document.getElementById("id_Forming_tasks_0").checked = true;
+  
+   <!-- Radiator HP Machining -->
+  document.getElementById("id_Header_Plate_tasks_0").checked = true;
+  document.getElementById("id_Header_Plate_tasks_1").checked = true;
+  
+     <!-- Radiator Pitching Tasks -->
+  document.getElementById("id_Pitching_tasks_0").checked = true;
+  document.getElementById("id_Pitching_tasks_1").checked = true;
+  
+   <!-- Radiator Wire Cut Tasks -->
+  document.getElementById("id_Wire_Cut_tasks_0").checked = true;
+  
+     <!-- Radiator Deburr Tasks -->
+  document.getElementById("id_Deburr_tasks_0").checked = true;
+  document.getElementById("id_Deburr_tasks_1").checked = true;
+  
+  <!-- Radiator Deburr Tasks -->
+  document.getElementById("id_Plating_tasks_0").checked = true;
+  document.getElementById("id_Plating_tasks_1").checked = true;
+  document.getElementById("id_Plating_tasks_2").checked = true;
+  document.getElementById("id_Plating_tasks_3").checked = true;
+  }
+  
+  if (type =="Intercooler"){
+  
+  <!-- Intercooler Component Prep Tasks -->
+  document.getElementById("id_Component_Prep_tasks_0").checked = true;
+  document.getElementById("id_Component_Prep_tasks_1").checked = true;
+  document.getElementById("id_Component_Prep_tasks_2").checked = true;
+  document.getElementById("id_Component_Prep_tasks_3").checked = true;
+  document.getElementById("id_Component_Prep_tasks_4").checked = true;
+  document.getElementById("id_Component_Prep_tasks_5").checked = true;
+  document.getElementById("id_Component_Prep_tasks_6").checked = true;
+  document.getElementById("id_Component_Prep_tasks_7").checked = false;
+  document.getElementById("id_Component_Prep_tasks_8").checked = true;
+  
+  <!-- Intercooler Stacking Tasks -->
+  document.getElementById("id_Stacking_tasks_0").checked = true;
+  document.getElementById("id_Stacking_tasks_1").checked = true;
+  document.getElementById("id_Stacking_tasks_2").checked = true;
+  
+  <!-- Intercooler HP Forming Tasks -->
+  document.getElementById("id_Forming_tasks_0").checked = true;
+  
+   <!-- Intercooler HP Machining -->
+  document.getElementById("id_Header_Plate_tasks_0").checked = true;
+  document.getElementById("id_Header_Plate_tasks_1").checked = true;
+  
+     <!-- Intercooler Pitching Tasks -->
+  document.getElementById("id_Pitching_tasks_0").checked = true;
+  document.getElementById("id_Pitching_tasks_1").checked = true;
+  
+   <!-- Intercooler Wire Cut Tasks -->
+  document.getElementById("id_Wire_Cut_tasks_0").checked = true;
+  
+     <!-- Intercooler Deburr Tasks -->
+  document.getElementById("id_Deburr_tasks_0").checked = true;
+  document.getElementById("id_Deburr_tasks_1").checked = true;
+  
+  <!-- Intercooler Deburr Tasks -->
+  document.getElementById("id_Plating_tasks_0").checked = true;
+  document.getElementById("id_Plating_tasks_1").checked = true;
+  document.getElementById("id_Plating_tasks_2").checked = true;
+  document.getElementById("id_Plating_tasks_3").checked = true;
+  }
+  
+  
+  if (type =="Oilcooler"){
+  
+  <!-- Oilcooler Component Prep Tasks -->
+  document.getElementById("id_Component_Prep_tasks_0").checked = true;
+  document.getElementById("id_Component_Prep_tasks_1").checked = true;
+  document.getElementById("id_Component_Prep_tasks_2").checked = true;
+  document.getElementById("id_Component_Prep_tasks_3").checked = true;
+  document.getElementById("id_Component_Prep_tasks_4").checked = true;
+  document.getElementById("id_Component_Prep_tasks_5").checked = true;
+  document.getElementById("id_Component_Prep_tasks_6").checked = true;
+  document.getElementById("id_Component_Prep_tasks_7").checked = false;
+  document.getElementById("id_Component_Prep_tasks_8").checked = true;
+  
+  <!-- Oilcooler Stacking Tasks -->
+  document.getElementById("id_Stacking_tasks_0").checked = true;
+  document.getElementById("id_Stacking_tasks_1").checked = true;
+  document.getElementById("id_Stacking_tasks_2").checked = true;
+  
+  <!-- Oilcooler HP Forming Tasks -->
+  document.getElementById("id_Forming_tasks_0").checked = true;
+  
+   <!-- Oilcooler HP Machining -->
+  document.getElementById("id_Header_Plate_tasks_0").checked = true;
+  document.getElementById("id_Header_Plate_tasks_1").checked = true;
+  
+     <!-- Oilcooler Pitching Tasks -->
+  document.getElementById("id_Pitching_tasks_0").checked = true;
+  document.getElementById("id_Pitching_tasks_1").checked = true;
+  
+   <!-- Oilcooler Wire Cut Tasks -->
+  document.getElementById("id_Wire_Cut_tasks_0").checked = true;
+  
+     <!-- Oilcooler Deburr Tasks -->
+  document.getElementById("id_Deburr_tasks_0").checked = true;
+  document.getElementById("id_Deburr_tasks_1").checked = true;
+  
+  <!-- Oilcooler Deburr Tasks -->
+  document.getElementById("id_Plating_tasks_0").checked = true;
+  document.getElementById("id_Plating_tasks_1").checked = true;
+  document.getElementById("id_Plating_tasks_2").checked = true;
+  document.getElementById("id_Plating_tasks_3").checked = true;
+  }
+  
+    if (type == "ERS cooler" ){  
+  
+  <!-- ERS cooler Component Prep Tasks -->
+  document.getElementById("id_Component_Prep_tasks_0").checked = true;
+  document.getElementById("id_Component_Prep_tasks_1").checked = true;
+  document.getElementById("id_Component_Prep_tasks_2").checked = false;
+  document.getElementById("id_Component_Prep_tasks_3").checked = false;
+  document.getElementById("id_Component_Prep_tasks_4").checked = false;
+  document.getElementById("id_Component_Prep_tasks_5").checked = false;
+  document.getElementById("id_Component_Prep_tasks_6").checked = false;
+  document.getElementById("id_Component_Prep_tasks_7").checked = true;
+  document.getElementById("id_Component_Prep_tasks_8").checked = true;
+  
+  <!-- ERS cooler Stacking Tasks -->
+  document.getElementById("id_Stacking_tasks_0").checked = true;
+  document.getElementById("id_Stacking_tasks_1").checked = true;
+  document.getElementById("id_Stacking_tasks_2").checked = true;
+  
+  <!-- ERS cooler HP Forming Tasks -->
+  document.getElementById("id_Forming_tasks_0").checked = true;
+  
+   <!-- ERS cooler HP Machining -->
+  document.getElementById("id_Header_Plate_tasks_0").checked = true;
+  document.getElementById("id_Header_Plate_tasks_1").checked = true;
+  
+     <!-- ERS cooler Pitching Tasks -->
+  document.getElementById("id_Pitching_tasks_0").checked = true;
+  document.getElementById("id_Pitching_tasks_1").checked = true;
+  
+   <!-- ERS cooler Wire Cut Tasks -->
+  document.getElementById("id_Wire_Cut_tasks_0").checked = true;
+  
+     <!-- ERS cooler Deburr Tasks -->
+  document.getElementById("id_Deburr_tasks_0").checked = true;
+  document.getElementById("id_Deburr_tasks_1").checked = true;
+  
+  <!-- ERS cooler Deburr Tasks -->
+  document.getElementById("id_Plating_tasks_0").checked = true;
+  document.getElementById("id_Plating_tasks_1").checked = true;
+  document.getElementById("id_Plating_tasks_2").checked = true;
+  document.getElementById("id_Plating_tasks_3").checked = true;
+  }
+  
+  }
+  </script>
+  
+  
+</body>
 {% endblock %}

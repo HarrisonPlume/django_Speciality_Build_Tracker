@@ -11,6 +11,11 @@ a.ex2{color:#bababa;}
   <h1 style= "color:#bababa">Scan Display</h1>
   <h5>{{Barcode}}</h5>
   
+  {% for task in HPTasks %}
+  {{task.part.Work_Order}}
+  
+  {% endfor %}
+  
     
     
 {% endblock %}

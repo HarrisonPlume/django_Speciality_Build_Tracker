@@ -59,9 +59,10 @@ def index(request):
 
 def ScanResult(request):
     """ Page For Scanning Work Orders"""  
-    print("Yeet")
-    print(barcodestr)
-    context = {"Barcode": barcodestr}
+    
+    HPTasks = HeaderPlateTaskInstance.objects.exclude(status__exact =10, part__archive__exact = True)
+    context = {"Barcode": barcodestr,
+               "HPTasks": HPTasks}
     
     return render(request, "ScanDisplay.html", context = context)
 
